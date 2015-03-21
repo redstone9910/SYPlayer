@@ -94,19 +94,35 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="d6G-Z6-vUZ">
+                        <nil key="title"/>
                         <barButtonItem key="leftBarButtonItem" style="plain" id="wva-R7-rM1">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="MR0-iI-xKj">
-                                <rect key="frame" x="120" y="80" width="46" height="30"/>
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="MR0-iI-xKj">
+                                <rect key="frame" x="32" y="11" width="14" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="后退">
+                                <state key="normal" image="menu">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="backToRootClick:" destination="8s3-f6-Jpv" eventType="touchUpInside" id="4SU-mD-IAD"/>
+                                    <action selector="menuBtnClick" destination="8s3-f6-Jpv" eventType="touchUpInside" id="DQy-kx-SFC"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" style="plain" id="03M-4V-cSh">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="GX0-qA-OYh">
+                                <rect key="frame" x="260" y="11" width="17" height="22"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="star5">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="favoriteBtnClick" destination="8s3-f6-Jpv" eventType="touchUpInside" id="nEe-rB-Mqg"/>
                                 </connections>
                             </button>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="favoriteBtn" destination="GX0-qA-OYh" id="ENk-bL-W2r"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8A6-Tq-RAo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -119,6 +135,8 @@
         <image name="btn_volume3" width="78" height="114"/>
         <image name="btn_volume4" width="78" height="114"/>
         <image name="main_bg" width="640" height="640"/>
+        <image name="menu" width="14" height="9"/>
+        <image name="star5" width="17" height="16"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

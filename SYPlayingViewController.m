@@ -7,9 +7,18 @@
 //
 
 #import "SYPlayingViewController.h"
+#import "SYPlayListButton.h"
+#import "SYPlayerConsole.h"
 
-@interface SYPlayingViewController ()
-- (IBAction)backToRootClick:(id)sender;
+@interface SYPlayingViewController ()<SYPlayListButtonDelegate>
+
+@property (weak, nonatomic) IBOutlet UIButton *favoriteBtn;
+
+- (IBAction)favoriteBtnClick;
+
+- (IBAction)menuBtnClick;
+
+@property (nonatomic,assign,getter=isFavoriteSong) BOOL favoriteSong;
 
 @end
 
@@ -20,18 +29,17 @@
     // Do any additional setup after loading the view.
     
     self.navigationController.navigationBar.hidden = NO;
-}
+    SYPlayListButton *titleBtn = [SYPlayListButton playListButtonWithString:@"第一册"];
+    titleBtn.delegate = self;
+    self.navigationItem.titleView = titleBtn;
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    UIView *consoleView = [SYPlayerConsole playerConsole];
+    float consolY = self.view.bounds.size.height - consoleView.bounds.size.height;
+    CGRect frame = CGRectMake(0, consolY, consoleView.bounds.size.width, consoleView.bounds.size.height);
+    consoleView.frame = frame;
+    
+    [self.view addSubview:consoleView];
 }
-
-- (IBAction)backToRootClick:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
-    self.navigationController.navigationBar.hidden = YES;
-}
-
 
 #pragma mark - Navigation
 
@@ -39,6 +47,29 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+}
+
+#pragma mark - SYPlayListButtonDelegate
+
+-(void)playListButtonBtnClicked:(SYPlayListButton *)playListBtn
+{
+    NSLog(@"%@ Clicked!",playListBtn);
+}
+
+- (IBAction)favoriteBtnClick {
+    self.favoriteSong = !self.isFavoriteSong;
+    if (self.isFavoriteSong) {
+        [self.favoriteBtn setImage:[UIImage imageNamed:@"star5_full"] forState:UIControlStateNormal];
+    }
+    else
+    {
+        [self.favoriteBtn setImage:[UIImage imageNamed:@"star5"] forState:UIControlStateNormal];
+    }
+}
+
+- (IBAction)menuBtnClick {
+    [self.navigationController popViewControllerAnimated:YES];
+    self.navigationController.navigationBar.hidden = YES;
 }
 
 @end
