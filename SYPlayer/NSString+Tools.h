@@ -12,5 +12,6 @@
 @interface NSString (Tools)
 
 - (CGSize)sizeWithText:(NSString *)text font:(UIFont *)font maxSize:(CGSize)maxSize;
++(NSString *)stringFromTime:(int) time;
 
 @end

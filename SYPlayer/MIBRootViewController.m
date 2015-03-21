@@ -31,7 +31,7 @@
 
 -(void)awakeFromNib
 {
-    NSLog(@"awakeFromNib");
+//    NSLog(@"awakeFromNib");
 }
 
 #pragma mark - Navigation

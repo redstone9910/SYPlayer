@@ -23,4 +23,20 @@
     return [text boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
 }
 
+/** 时间转换为字符串 mm:ss */
++(NSString *)stringFromTime:(int)time
+{
+    NSMutableString *string = [NSMutableString string];
+    if (time < 0) {
+        [string appendString:@"-"];
+    }
+    
+    NSString *minute = [NSString stringWithFormat:@"%02d",(time / 60) % 100];
+    NSString *second = [NSString stringWithFormat:@"%02d",time % 60];
+    [string appendString:minute];
+    [string appendString:@":"];
+    [string appendString:second];
+    return string;
+}
+
 @end

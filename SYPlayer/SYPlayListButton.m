@@ -24,15 +24,15 @@
 - (IBAction)listBtnClick:(id) sender {
     if (self.isOpend) {
         self.Opened = NO;
-        [UIView animateWithDuration:0.2 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             self.titleArrow.transform = CGAffineTransformMakeRotation(0 * M_1_PI / 180);
         }];
     }
     else
     {
         self.Opened = YES;
-        [UIView animateWithDuration:0.2 animations:^{
-            self.titleArrow.transform = CGAffineTransformMakeRotation(90.0 / 180 * M_PI);
+        [UIView animateWithDuration:0.5 animations:^{
+            self.titleArrow.transform = CGAffineTransformMakeRotation(179.9 * M_PI / 180);
         }];
     }
     

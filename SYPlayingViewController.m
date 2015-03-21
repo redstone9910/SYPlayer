@@ -33,10 +33,11 @@
     titleBtn.delegate = self;
     self.navigationItem.titleView = titleBtn;
 
-    UIView *consoleView = [SYPlayerConsole playerConsole];
+    SYPlayerConsole *consoleView = [SYPlayerConsole playerConsole];
     float consolY = self.view.bounds.size.height - consoleView.bounds.size.height;
     CGRect frame = CGRectMake(0, consolY, consoleView.bounds.size.width, consoleView.bounds.size.height);
     consoleView.frame = frame;
+    consoleView.timeTotalInSecond = 300;
     
     [self.view addSubview:consoleView];
 }
@@ -53,7 +54,7 @@
 
 -(void)playListButtonBtnClicked:(SYPlayListButton *)playListBtn
 {
-    NSLog(@"%@ Clicked!",playListBtn);
+//    NSLog(@"%@ Clicked!",playListBtn);
 }
 
 - (IBAction)favoriteBtnClick {
