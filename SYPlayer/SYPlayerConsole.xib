@@ -16,7 +16,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </imageView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="OZi-E0-tgq" userLabel="PlayMode">
-                    <rect key="frame" x="20" y="60" width="16" height="16"/>
+                    <rect key="frame" x="12" y="52" width="32" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <state key="normal" image="btn_refresh">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -26,9 +26,9 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="HVn-Qr-pT6" userLabel="Prev">
-                    <rect key="frame" x="60" y="60" width="16" height="16"/>
+                    <rect key="frame" x="52" y="52" width="32" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" image="preSong">
+                    <state key="normal" image="btn_prev">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -36,9 +36,9 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="9Zg-q7-12g" userLabel="Next">
-                    <rect key="frame" x="224" y="60" width="16" height="16"/>
+                    <rect key="frame" x="208" y="52" width="32" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" image="nextSong">
+                    <state key="normal" image="btn_next">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -46,7 +46,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="sWL-yn-to6" userLabel="Power">
-                    <rect key="frame" x="284" y="60" width="16" height="16"/>
+                    <rect key="frame" x="276" y="52" width="32" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <state key="normal" image="btn_power">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -83,8 +83,8 @@
                 </slider>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="0zW-ss-quj" userLabel="Play">
                     <rect key="frame" x="137" y="45" width="46" height="46"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" image="play">
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                    <state key="normal" image="btn_play">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -111,11 +111,11 @@
     </objects>
     <resources>
         <image name="back_color" width="16" height="16"/>
+        <image name="btn_next" width="12" height="13"/>
+        <image name="btn_play" width="46" height="46"/>
         <image name="btn_power" width="15" height="16"/>
+        <image name="btn_prev" width="12" height="13"/>
         <image name="btn_refresh" width="16" height="15"/>
-        <image name="nextSong" width="12" height="13"/>
-        <image name="play" width="46" height="46"/>
-        <image name="preSong" width="12" height="13"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

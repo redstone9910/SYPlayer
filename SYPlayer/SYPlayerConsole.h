@@ -7,6 +7,33 @@
 //
 
 #import <UIKit/UIKit.h>
+
+@class SYPlayerConsole;
+
+#define _PLAY_MODE_COUNT_ 3
+typedef enum playModeState
+{
+    playModeStateRepeat = 0,
+    playModeStateShuttle = 1,
+    playModeStateSingleRepeat = 2,
+} playModeState;
+
+@protocol SYPlayerConsoleDelegate <NSObject>
+@optional
+/** 下一首 */
+-(void)playerConsoleNext:(SYPlayerConsole *)console;
+/** 上一首 */
+-(void)playerConsolePrev:(SYPlayerConsole *)console;
+/** 拖动进度条 */
+-(void)playerConsoleProgressChanged:(SYPlayerConsole *)console ;
+/** 播放/暂停状态改变 */
+-(void)playerConsolePlayingStatusChanged:(SYPlayerConsole *)console;
+/** 退出键按下 */
+-(void)playerConsolePowerOff:(SYPlayerConsole *)console;
+/** 播放模式改变 */
+-(void)playerConsolePlayModeStateChanged:(SYPlayerConsole *)console withModeName:(NSString *)name;
+@end
+
 @interface SYPlayerConsole : UIView
 /** 创建对象 */
 +(instancetype)playerConsole;
@@ -17,29 +44,11 @@
 @property (nonatomic,assign) int timeProgressInSecond;
 /** 正在播放/暂停 */
 @property (nonatomic,assign,getter=isPlaying) BOOL playing;
+/** console背景图片 */
+@property (nonatomic,strong) UIImage * backgroundImage;
+/** 当前播放模式 */
+@property (nonatomic,assign) playModeState playMode;
 
-typedef enum playModeState
-{
-    playModeStateAllRecycle = 0,
-    playModeStateRandom = 1,
-    playModeStateSingleRecycle = 2,
-    playModeStateSingle = 3,
-} playModeState;
-@end
-
-@protocol SYPlayerConsoleDelegate <NSObject>
-
-/** 下一首 */
--(void)playerConsoleNext:(SYPlayerConsole *)console;
-/** 上一首 */
--(void)playerConsolePrev:(SYPlayerConsole *)console;
-/** 拖动进度条 */
--(void)playerConsole:(SYPlayerConsole *)console progressStatusChanged:(float)value;
-/** 播放/暂停状态改变 */
--(void)playerConsole:(SYPlayerConsole *)console isPlayingStatusChanged:(BOOL)isPlaying;
-/** 退出键按下 */
--(void)playerConsolePowerOff:(SYPlayerConsole *)console;
-/** 播放模式改变 */
--(void)playerConsole:(SYPlayerConsole *)console playModeStateChanged:(playModeState)state;
-
+/** 代理,传递按钮事件 */
+@property(strong,nonatomic) id <SYPlayerConsoleDelegate> delegate;
 @end

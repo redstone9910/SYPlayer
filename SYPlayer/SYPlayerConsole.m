@@ -45,10 +45,6 @@
 /** 进度条抬起 */
 - (IBAction)progressTouchUp;
 
-/** 代理,传递按钮事件 */
-@property(strong,nonatomic) id <SYPlayerConsoleDelegate> delegate;
-/** 当前播放模式 */
-@property (nonatomic,assign) playModeState playMode;
 /** 正在滑动进度条 */
 @property (nonatomic,assign) BOOL playSliderChanging;
 
@@ -67,18 +63,34 @@
     
     return console;
 }
+
 /** 改变播放模式按钮按下 */
 - (IBAction)playModeClick {
-#pragma - warning 此处应该使用遍历方法！更新
-    if (++ self.playMode > 3) {
-        self.playMode = playModeStateAllRecycle;
+    switch (self.playMode) {
+        case playModeStateRepeat:
+            self.playMode = playModeStateShuttle;
+            break;
+        case playModeStateShuttle:
+            self.playMode = playModeStateSingleRepeat;
+            break;
+        case playModeStateSingleRepeat:
+            self.playMode = playModeStateRepeat;
+            break;
+        default:
+            break;
     }
 }
 /** 播放模式改变 */
 -(void)setPlayMode:(playModeState)playMode
 {
-    if ([self.delegate respondsToSelector:@selector(playerConsole:playModeStateChanged:)]) {
-        [self.delegate playerConsole:self playModeStateChanged:self.playMode];
+    _playMode = playMode;
+    NSArray *playModeAndImage = self.playModesAndImages[self.playMode];
+    NSString *imgNameStr = playModeAndImage[0];
+    NSString *modeNameStr = playModeAndImage[1];
+    [self.playModeBtn setImage:[UIImage imageNamed:imgNameStr] forState:UIControlStateNormal];
+    
+    if ([self.delegate respondsToSelector:@selector(playerConsolePlayModeStateChanged:withModeName:)]) {
+        [self.delegate playerConsolePlayModeStateChanged:self withModeName:modeNameStr];
     }
 }
 /** 退出键按下 */
@@ -90,9 +102,16 @@
 /** 播放/暂停键按下 */
 - (IBAction)playBtnClick {
     self.playing = !self.isPlaying;
-    if ([self.delegate respondsToSelector:@selector(playerConsole:isPlayingStatusChanged:)]) {
-        [self.delegate playerConsole:self isPlayingStatusChanged:self.isPlaying];
+    if ([self.delegate respondsToSelector:@selector(playerConsolePlayingStatusChanged:)]) {
+        [self.delegate playerConsolePlayingStatusChanged:self];
     }
+}
+/** 切换播放按钮图片 */
+-(void)setPlaying:(BOOL)playing
+{
+    _playing = playing;
+    //初始化播放/暂停
+    [self.playBtn setImage:[UIImage imageNamed:self.isPlaying ? @"btn_pause" : @"btn_play"] forState:UIControlStateNormal];
 }
 /** 上一首 */
 - (IBAction)prevBtnClick {
@@ -137,10 +156,17 @@
     self.timeProgress.text = [NSString stringFromTime:self.timeProgressInSecond];
     if(!self.playSliderChanging) self.playSlider.value = (float)self.timeProgressInSecond / (float)self.timeTotalInSecond;
     
-    if ([self.delegate respondsToSelector:@selector(playerConsole:progressStatusChanged:)]) {
-        [self.delegate playerConsole:self progressStatusChanged:self.playSlider.value];
+    if ([self.delegate respondsToSelector:@selector(playerConsoleProgressChanged:)]) {
+        [self.delegate playerConsoleProgressChanged:self];
     }
 }
+/** 更新背景图片 */
+-(void)setBackgroundImage:(UIImage *)backgroundImage
+{
+    _backgroundImage = backgroundImage;
+    [self.backGroundImg setImage:self.backgroundImage];
+}
+
 /** 从XIB加载完毕 */
 -(void)awakeFromNib
 {
@@ -151,9 +177,14 @@
     self.playSliderChanging = NO;//没有正在拖动
     //初始化变量
     if (self.playModesAndImages == nil) {
-        //        UIImage img = [UIImage imageNamed:]
-        NSArray *imgNameArray = @[@"order",@"random",@"lock",@"order",];
-        NSArray *modeNameArray = @[@"顺序播放",@"随机播放",@"单曲循环",@"单曲播放",];
+        NSArray *imgNameArray = @[@"mode_repeat",@"mode_shuffle",@"mode_single_repeat"];
+        NSArray *modeNameArray = @[@"顺序播放",@"随机播放",@"单曲循环"];
+        NSMutableArray * temp = [NSMutableArray array];
+        for (int i = 0; i < _PLAY_MODE_COUNT_; i ++) {
+            NSArray *array = @[imgNameArray[i],modeNameArray[i]];
+            [temp addObject:array];
+        }
+        self.playModesAndImages = temp;
     }
 }
 @end

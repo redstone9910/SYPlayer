@@ -13,6 +13,7 @@
 		524B01B31ABD299700E183CB /* NSString+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 524B01B21ABD299700E183CB /* NSString+Tools.m */; };
 		524B01B61ABD442600E183CB /* SYPlayerConsole.m in Sources */ = {isa = PBXBuildFile; fileRef = 524B01B51ABD442600E183CB /* SYPlayerConsole.m */; };
 		524B01B81ABD444F00E183CB /* SYPlayerConsole.xib in Resources */ = {isa = PBXBuildFile; fileRef = 524B01B71ABD444F00E183CB /* SYPlayerConsole.xib */; };
+		52B3B3671ABE3CBD00C574A8 /* SYLrcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B3B3661ABE3CBD00C574A8 /* SYLrcView.m */; };
 		52B6B4031ABC5E9B000461BF /* MIBRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B6B4021ABC5E9B000461BF /* MIBRootViewController.m */; };
 		52B6CC4D1A9BF53D00E043C0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B6CC4C1A9BF53D00E043C0 /* main.m */; };
 		52B6CC501A9BF53D00E043C0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B6CC4F1A9BF53D00E043C0 /* AppDelegate.m */; };
@@ -45,6 +46,8 @@
 		524B01B41ABD442600E183CB /* SYPlayerConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYPlayerConsole.h; sourceTree = "<group>"; };
 		524B01B51ABD442600E183CB /* SYPlayerConsole.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYPlayerConsole.m; sourceTree = "<group>"; };
 		524B01B71ABD444F00E183CB /* SYPlayerConsole.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SYPlayerConsole.xib; sourceTree = "<group>"; };
+		52B3B3651ABE3CBD00C574A8 /* SYLrcView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYLrcView.h; sourceTree = "<group>"; };
+		52B3B3661ABE3CBD00C574A8 /* SYLrcView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcView.m; sourceTree = "<group>"; };
 		52B6B4011ABC5E9B000461BF /* MIBRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIBRootViewController.h; sourceTree = "<group>"; };
 		52B6B4021ABC5E9B000461BF /* MIBRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIBRootViewController.m; sourceTree = "<group>"; };
 		52B6CC471A9BF53D00E043C0 /* SYPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SYPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,6 +110,8 @@
 				524B01B41ABD442600E183CB /* SYPlayerConsole.h */,
 				524B01B51ABD442600E183CB /* SYPlayerConsole.m */,
 				524B01B71ABD444F00E183CB /* SYPlayerConsole.xib */,
+				52B3B3651ABE3CBD00C574A8 /* SYLrcView.h */,
+				52B3B3661ABE3CBD00C574A8 /* SYLrcView.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -339,6 +344,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				52B6B4031ABC5E9B000461BF /* MIBRootViewController.m in Sources */,
+				52B3B3671ABE3CBD00C574A8 /* SYLrcView.m in Sources */,
 				524B01B61ABD442600E183CB /* SYPlayerConsole.m in Sources */,
 				524B01B31ABD299700E183CB /* NSString+Tools.m in Sources */,
 				52B6CC501A9BF53D00E043C0 /* AppDelegate.m in Sources */,
