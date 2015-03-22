@@ -17,10 +17,10 @@
  *  @param font    文字的字体
  *  @param maxSize 文字的最大尺寸
  */
-- (CGSize)sizeWithText:(NSString *)text font:(UIFont *)font maxSize:(CGSize)maxSize
+- (CGSize)sizeWithFont:(UIFont *)font maxSize:(CGSize)maxSize
 {
     NSDictionary *attrs = @{NSFontAttributeName : font};
-    return [text boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
+    return [self boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs context:nil].size;
 }
 
 /** 时间转换为字符串 mm:ss */
@@ -37,6 +37,12 @@
     [string appendString:@":"];
     [string appendString:second];
     return string;
+}
+
+/** 求字体高度 */
++(float)heightWithFont:(UIFont *)font
+{
+    return [@"A" sizeWithFont:font maxSize:CGSizeMake(0, 0)].height;
 }
 
 @end

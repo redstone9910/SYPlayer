@@ -60,7 +60,7 @@
 {
     [super layoutSubviews];
     NSString *title = self.titleBtn.titleLabel.text;
-    float titleLength = [title sizeWithText:title font:self.titleBtn.titleLabel.font maxSize:CGSizeMake(100, 100)].width;
+    float titleLength = [title sizeWithFont:self.titleBtn.titleLabel.font maxSize:CGSizeMake(100, 100)].width;
     float arrowCenterX = (self.bounds.size.width + titleLength + self.titleArrow.bounds.size.width) / 2;
     
     self.titleArrow.center = CGPointMake(arrowCenterX, self.titleArrow.center.y);

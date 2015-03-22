@@ -9,9 +9,10 @@
 #import "SYPlayingViewController.h"
 #import "SYPlayListButton.h"
 #import "SYPlayerConsole.h"
+#import "SYLrcView.h"
 #import "MBProgressHUD.h"
 
-@interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate>
+@interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *favoriteBtn;
 
@@ -21,6 +22,8 @@
 
 @property (nonatomic,assign,getter=isFavoriteSong) BOOL favoriteSong;
 
+@property (nonatomic,strong) SYPlayerConsole * playerConsole;
+@property (nonatomic,strong) SYLrcView *lrcView;
 @end
 
 @implementation SYPlayingViewController
@@ -38,10 +41,21 @@
     float consolY = self.view.bounds.size.height - consoleView.bounds.size.height;
     CGRect frame = CGRectMake(0, consolY, consoleView.bounds.size.width, consoleView.bounds.size.height);
     consoleView.frame = frame;
-    consoleView.timeTotalInSecond = 300;
+    consoleView.timeTotalInSecond = 30;
     consoleView.delegate = self;
+    self.playerConsole = consoleView;
+    [self.view addSubview:self.playerConsole];
     
-    [self.view addSubview:consoleView];
+    CGRect rect = self.view.frame;
+    rect.origin.y = self.navigationController.navigationBar.frame.size.height;//self.navigationController.navigationBar.frame.origin.y + 
+    rect.size.height = self.playerConsole.frame.origin.y - rect.origin.y;
+//    NSLog(@"%f,%f",rect.origin.y,self.navigationController.navigationBar.frame.origin.y);
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSString *file = [bundle pathForResource:@"001&002－Excuse Me.lrc" ofType:nil];
+    SYLrcView *lrcview = [SYLrcView lrcViewWithFrame:rect withLrcFile:file];
+    lrcview.delegate = self;
+    self.lrcView = lrcview;
+    [self.view addSubview:self.lrcView];
 }
 
 - (IBAction)menuBtnClick {
@@ -89,7 +103,8 @@
 /** 拖动进度条 */
 -(void)playerConsoleProgressChanged:(SYPlayerConsole *)console {
     
-    NSLog(@"拖动进度条:%%%02.1f",((float)console.timeProgressInSecond / (float)console.timeTotalInSecond) * 100);
+//    NSLog(@"拖动进度条:%%%02.1f",((float)console.timeProgressInSecond / (float)console.timeTotalInSecond) * 100);
+    self.lrcView.timeProgressInSecond = console.timeProgressInSecond;
 }
 /** 播放/暂停状态改变 */
 -(void)playerConsolePlayingStatusChanged:(SYPlayerConsole *)console{
@@ -106,5 +121,11 @@
 //    [hud setLabelText:name];
 //    [hud setMode:MBProgressHUDModeText];
 //    [hud show:YES];
+}
+#pragma - SYLrcViewDelegate
+-(void)lrcViewProgressChanged:(SYLrcView *)lrcView
+{
+//    NSLog(@"%d",lrcView.timeProgressInSecond);
+    self.playerConsole.timeProgressInSecond = lrcView.timeProgressInSecond;
 }
 @end

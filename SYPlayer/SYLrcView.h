@@ -23,12 +23,10 @@
 @property (nonatomic,assign) int timeProgressInSecond;
 /** 背景图片 */
 @property (nonatomic,strong) UIImage * backgroundImage;
-/** LRC字体 */
-@property (nonatomic,strong) UIFont * lrcFont;
 
 /** 创建新LRC View并设定LRC文件 */
-+(instancetype) lrcViewWithLrcFile:(NSString *)file;
++(instancetype) lrcViewWithFrame:(CGRect)frame withLrcFile:(NSString *)file;
 
 /** 代理 */
-@property (nonatomic,strong) id<SYLrcViewDelegate> delegate;
+@property (nonatomic,strong) id <SYLrcViewDelegate> delegate;
 @end
