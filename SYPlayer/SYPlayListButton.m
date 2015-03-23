@@ -10,35 +10,30 @@
 #import "NSString+Tools.h"
 
 @interface SYPlayListButton()
-- (IBAction)listBtnClick:(id)sender;
+- (IBAction)listBtnClick;
 
 @property (weak, nonatomic) IBOutlet UIButton *titleBtn;
 @property (weak, nonatomic) IBOutlet UIImageView *titleArrow;
-
-@property (nonatomic,assign,getter=isOpend) BOOL Opened;
 
 @end
 
 @implementation SYPlayListButton
 
-- (IBAction)listBtnClick:(id) sender {
-    if (self.isOpend) {
-        self.Opened = NO;
-        [UIView animateWithDuration:0.5 animations:^{
-            self.titleArrow.transform = CGAffineTransformMakeRotation(0 * M_1_PI / 180);
-        }];
-    }
-    else
-    {
-        self.Opened = YES;
-        [UIView animateWithDuration:0.5 animations:^{
-            self.titleArrow.transform = CGAffineTransformMakeRotation(179.9 * M_PI / 180);
-        }];
-    }
+-(void)setOpened:(BOOL)Opened
+{
+    _Opened = Opened;
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        self.titleArrow.transform = CGAffineTransformMakeRotation((self.isOpened ? 179.9 : 0) * M_PI / 180);
+    }];
     
     if ([self.delegate respondsToSelector:@selector(playListButtonBtnClicked:)]) {
         [self.delegate playListButtonBtnClicked:self];
     }
+}
+/** 点击下拉列表 */
+- (IBAction)listBtnClick{
+    self.Opened = !self.isOpened;
 }
 
 +(instancetype) playListButtonWithString:(NSString *) titleString
@@ -46,8 +41,7 @@
     NSBundle * bundle = [NSBundle mainBundle];
     NSArray * objs = [bundle loadNibNamed:NSStringFromClass(self) owner:nil options:nil];
     SYPlayListButton * plbtn = [objs lastObject];
-    [plbtn.titleBtn setTitle:titleString forState:normal];
-    plbtn.backgroundColor = [UIColor clearColor];
+    plbtn.titleText = titleString;
     return plbtn;
 }
 
@@ -64,5 +58,17 @@
     float arrowCenterX = (self.bounds.size.width + titleLength + self.titleArrow.bounds.size.width) / 2;
     
     self.titleArrow.center = CGPointMake(arrowCenterX, self.titleArrow.center.y);
+}
+/** 设定标题 */
+-(void)setTitleText:(NSString *)titleText
+{
+    _titleText = titleText;
+    
+    [self.titleBtn setTitle:self.titleText forState:normal];
+}
+-(void)awakeFromNib
+{
+    self.backgroundColor = [UIColor clearColor];
+    self.Opened = YES;
 }
 @end

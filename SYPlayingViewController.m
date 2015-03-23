@@ -10,20 +10,35 @@
 #import "SYPlayListButton.h"
 #import "SYPlayerConsole.h"
 #import "SYLrcView.h"
-#import "MBProgressHUD.h"
+#import "SYPlayListCell.h"
+#import "SYPlayListModel.h"
 
-@interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate>
+#import "MBProgressHUD.h"
+#import "FSAudioController.h"
+
+@interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *favoriteBtn;
-
-- (IBAction)favoriteBtnClick;
-
+/** 菜单按钮按下 */
 - (IBAction)menuBtnClick;
-
+/** 收藏按钮按下 */
+- (IBAction)favoriteBtnClick;
+/** 是否已收藏 */
 @property (nonatomic,assign,getter=isFavoriteSong) BOOL favoriteSong;
 
+/** 播放下拉列表 */
+@property (weak, nonatomic) IBOutlet UITableView *playListTable;
+/** 控制台 */
 @property (nonatomic,strong) SYPlayerConsole * playerConsole;
+/** 歌词显示 */
 @property (nonatomic,strong) SYLrcView *lrcView;
+
+/** 用于保存playListTable原始Frame */
+@property (nonatomic,assign) CGRect playListFrame;
+/** 播放列表数据数组 */
+@property (nonatomic,strong) NSArray * playListModelArrary;
+
+@property (nonatomic,strong) FSAudioController * playerController;
 @end
 
 @implementation SYPlayingViewController
@@ -56,28 +71,20 @@
     lrcview.delegate = self;
     self.lrcView = lrcview;
     [self.view addSubview:self.lrcView];
+    
+    self.playListFrame = self.playListTable.frame;
+//    self.playListTable.backgroundColor = [UIColor redColor];
+    [self.view bringSubviewToFront:self.playListTable];
+    self.playListTable.delegate = self;
+    self.playListTable.dataSource = self;
+    
+    self.playerController.delegate = self;
 }
-
+/** 菜单按钮 */
 - (IBAction)menuBtnClick {
     [self.navigationController popViewControllerAnimated:YES];
     self.navigationController.navigationBar.hidden = YES;
 }
-
-#pragma mark - Navigation
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-
-#pragma mark - SYPlayListButtonDelegate
-
-/** 播放列表展开/关闭 */
--(void)playListButtonBtnClicked:(SYPlayListButton *)playListBtn
-{
-//    NSLog(@"%@ Clicked!",playListBtn);
-}
-
 /** 收藏按钮按下 */
 - (IBAction)favoriteBtnClick {
     self.favoriteSong = !self.isFavoriteSong;
@@ -88,6 +95,31 @@
     {
         [self.favoriteBtn setImage:[UIImage imageNamed:@"star5"] forState:UIControlStateNormal];
     }
+}
+/** 延迟加载播放列表数据 */
+-(NSArray *)playListModelArrary
+{
+    if (_playListModelArrary == nil) {
+        NSArray *array = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"PlayList" ofType:@"plist"]];
+        NSMutableArray *retArray = [NSMutableArray array];
+        for (NSDictionary *dict in array) {
+            SYPlayListModel *model = [SYPlayListModel playListModelWithDict:dict];
+            [retArray addObject:model];
+        }
+        
+        _playListModelArrary = retArray;
+    }
+    
+    return _playListModelArrary;
+}
+/** 延迟加载playerController */
+-(FSAudioController *)playerController
+{
+    if(_playerController == nil)
+    {
+        _playerController = [[FSAudioController alloc] init];
+    }
+    return _playerController;
 }
 #pragma mark - SYPlayerConsoleDelegate
 
@@ -123,9 +155,65 @@
 //    [hud show:YES];
 }
 #pragma - SYLrcViewDelegate
+/** 拖动LRC视图改变播放进度 */
 -(void)lrcViewProgressChanged:(SYLrcView *)lrcView
 {
 //    NSLog(@"%d",lrcView.timeProgressInSecond);
     self.playerConsole.timeProgressInSecond = lrcView.timeProgressInSecond;
 }
+
+#pragma mark - Navigation
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+
+#pragma mark - SYPlayListButtonDelegate
+/** 播放列表展开/关闭 */
+-(void)playListButtonBtnClicked:(SYPlayListButton *)playListBtn
+{
+    CGRect frame = self.playListFrame;
+    if(!playListBtn.isOpened){
+        frame.size.height = 0;
+    }
+    
+    [self.view bringSubviewToFront:self.playListTable];
+    [UIView animateWithDuration:0.3 animations:^{
+        self.playListTable.frame = frame;
+    }];
+}
+
+#pragma playListTable DataSource
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [self.playListModelArrary count];
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 30;
+}
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    SYPlayListCell *cell = [SYPlayListCell cellWithTableView:tableView];
+    cell.playListData = self.playListModelArrary[indexPath.row];
+    
+    return cell;
+}
+
+#pragma playListTableDelegate
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"indexPath.row:%d",indexPath.row);
+    SYPlayListModel *model = self.playListModelArrary[indexPath.row];
+    
+    NSString *urlStr = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"mp3"];
+    urlStr = [@"file://" stringByAppendingString:[urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSURL *url = [NSURL URLWithString:urlStr];
+    
+    self.playerController.url = url;
+    [self.playerController play];
+}
+#pragma FSAudioControllerDelegate
+
 @end

@@ -4,7 +4,17 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Pods-FreeStreamer.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-MBProgressHUD.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Reachability.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -17,12 +27,22 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>089095E37380265E744660A8</key>
+		<key>0455C63F1CC6625385AE21C5</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B8EF4BEEE956197540BD6C0B</key>
+		<key>6D48A8C529C2D03E4A4CA321</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>85A9D3BAEDF261940998E387</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>FAF7B194A79AF47A89F874E7</key>
 		<dict>
 			<key>primary</key>
 			<true/>

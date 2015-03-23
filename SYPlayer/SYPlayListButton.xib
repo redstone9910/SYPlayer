@@ -18,7 +18,7 @@
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
-                        <action selector="listBtnClick:" destination="JcP-fp-lUY" eventType="touchUpInside" id="qib-ho-A8F"/>
+                        <action selector="listBtnClick" destination="JcP-fp-lUY" eventType="touchUpInside" id="gFi-Y0-M4G"/>
                     </connections>
                 </button>
                 <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="arrow" translatesAutoresizingMaskIntoConstraints="NO" id="fqZ-PF-NMw">

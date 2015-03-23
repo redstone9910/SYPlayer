@@ -16,6 +16,12 @@
 		52B3B3671ABE3CBD00C574A8 /* SYLrcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B3B3661ABE3CBD00C574A8 /* SYLrcView.m */; };
 		52B3B3691ABE4DC800C574A8 /* SYLrcView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 52B3B3681ABE4DC800C574A8 /* SYLrcView.xib */; };
 		52B3B36B1ABE946000C574A8 /* 001&002－Excuse Me.lrc in Resources */ = {isa = PBXBuildFile; fileRef = 52B3B36A1ABE946000C574A8 /* 001&002－Excuse Me.lrc */; };
+		52B3B36F1ABF881B00C574A8 /* SYPlayListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B3B36D1ABF881B00C574A8 /* SYPlayListCell.m */; };
+		52B3B3701ABF881B00C574A8 /* SYPlayListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 52B3B36E1ABF881B00C574A8 /* SYPlayListCell.xib */; };
+		52B3B3731ABFB79D00C574A8 /* SYPlayListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B3B3721ABFB79D00C574A8 /* SYPlayListModel.m */; };
+		52B3B3751ABFC20900C574A8 /* PlayList.plist in Resources */ = {isa = PBXBuildFile; fileRef = 52B3B3741ABFC20900C574A8 /* PlayList.plist */; };
+		52B3B3791ABFFF8C00C574A8 /* 001&002－Excuse Me.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 52B3B3781ABFFF8C00C574A8 /* 001&002－Excuse Me.mp3 */; };
+		52B3B37B1AC008F900C574A8 /* test.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 52B3B37A1AC008F900C574A8 /* test.mp3 */; };
 		52B6B4031ABC5E9B000461BF /* MIBRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B6B4021ABC5E9B000461BF /* MIBRootViewController.m */; };
 		52B6CC4D1A9BF53D00E043C0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B6CC4C1A9BF53D00E043C0 /* main.m */; };
 		52B6CC501A9BF53D00E043C0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B6CC4F1A9BF53D00E043C0 /* AppDelegate.m */; };
@@ -52,6 +58,14 @@
 		52B3B3661ABE3CBD00C574A8 /* SYLrcView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcView.m; sourceTree = "<group>"; };
 		52B3B3681ABE4DC800C574A8 /* SYLrcView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SYLrcView.xib; sourceTree = "<group>"; };
 		52B3B36A1ABE946000C574A8 /* 001&002－Excuse Me.lrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "001&002－Excuse Me.lrc"; sourceTree = "<group>"; };
+		52B3B36C1ABF881B00C574A8 /* SYPlayListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYPlayListCell.h; sourceTree = "<group>"; };
+		52B3B36D1ABF881B00C574A8 /* SYPlayListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYPlayListCell.m; sourceTree = "<group>"; };
+		52B3B36E1ABF881B00C574A8 /* SYPlayListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SYPlayListCell.xib; sourceTree = "<group>"; };
+		52B3B3711ABFB79D00C574A8 /* SYPlayListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYPlayListModel.h; sourceTree = "<group>"; };
+		52B3B3721ABFB79D00C574A8 /* SYPlayListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYPlayListModel.m; sourceTree = "<group>"; };
+		52B3B3741ABFC20900C574A8 /* PlayList.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PlayList.plist; sourceTree = "<group>"; };
+		52B3B3781ABFFF8C00C574A8 /* 001&002－Excuse Me.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "001&002－Excuse Me.mp3"; sourceTree = "<group>"; };
+		52B3B37A1AC008F900C574A8 /* test.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = test.mp3; sourceTree = "<group>"; };
 		52B6B4011ABC5E9B000461BF /* MIBRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIBRootViewController.h; sourceTree = "<group>"; };
 		52B6B4021ABC5E9B000461BF /* MIBRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIBRootViewController.m; sourceTree = "<group>"; };
 		52B6CC471A9BF53D00E043C0 /* SYPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SYPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -117,6 +131,9 @@
 				52B3B3651ABE3CBD00C574A8 /* SYLrcView.h */,
 				52B3B3661ABE3CBD00C574A8 /* SYLrcView.m */,
 				52B3B3681ABE4DC800C574A8 /* SYLrcView.xib */,
+				52B3B36C1ABF881B00C574A8 /* SYPlayListCell.h */,
+				52B3B36D1ABF881B00C574A8 /* SYPlayListCell.m */,
+				52B3B36E1ABF881B00C574A8 /* SYPlayListCell.xib */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -135,6 +152,8 @@
 		524B01A21ABD0FE300E183CB /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				52B3B3711ABFB79D00C574A8 /* SYPlayListModel.h */,
+				52B3B3721ABFB79D00C574A8 /* SYPlayListModel.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -183,6 +202,9 @@
 		52B6CC4A1A9BF53D00E043C0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				52B3B3741ABFC20900C574A8 /* PlayList.plist */,
+				52B3B37A1AC008F900C574A8 /* test.mp3 */,
+				52B3B3781ABFFF8C00C574A8 /* 001&002－Excuse Me.mp3 */,
 				52B3B36A1ABE946000C574A8 /* 001&002－Excuse Me.lrc */,
 				52B6CC571A9BF53D00E043C0 /* Images.xcassets */,
 				52B6CC4E1A9BF53D00E043C0 /* AppDelegate.h */,
@@ -295,9 +317,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				52B3B3691ABE4DC800C574A8 /* SYLrcView.xib in Resources */,
+				52B3B3701ABF881B00C574A8 /* SYPlayListCell.xib in Resources */,
+				52B3B3791ABFFF8C00C574A8 /* 001&002－Excuse Me.mp3 in Resources */,
 				524B01B81ABD444F00E183CB /* SYPlayerConsole.xib in Resources */,
 				52B6CC561A9BF53D00E043C0 /* Main.storyboard in Resources */,
+				52B3B37B1AC008F900C574A8 /* test.mp3 in Resources */,
 				52B6CC5B1A9BF53D00E043C0 /* LaunchScreen.xib in Resources */,
+				52B3B3751ABFC20900C574A8 /* PlayList.plist in Resources */,
 				52B6CC581A9BF53D00E043C0 /* Images.xcassets in Resources */,
 				52B3B36B1ABE946000C574A8 /* 001&002－Excuse Me.lrc in Resources */,
 				524B01A91ABD14E900E183CB /* SYPlayListButton.xib in Resources */,
@@ -358,7 +384,9 @@
 				52B6CC501A9BF53D00E043C0 /* AppDelegate.m in Sources */,
 				524B01AC1ABD194800E183CB /* SYPlayListButton.m in Sources */,
 				52B6CC4D1A9BF53D00E043C0 /* main.m in Sources */,
+				52B3B3731ABFB79D00C574A8 /* SYPlayListModel.m in Sources */,
 				524B019F1ABD072E00E183CB /* SYPlayingViewController.m in Sources */,
+				52B3B36F1ABF881B00C574A8 /* SYPlayListCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
