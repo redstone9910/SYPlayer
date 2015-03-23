@@ -20,7 +20,7 @@
 /** LRC源文件(全路径) */
 @property (nonatomic,copy) NSString * lrcFile;
 /** 当前播放进度(秒) */
-@property (nonatomic,assign) int timeProgressInSecond;
+@property (nonatomic,assign) float timeProgressInSecond;
 /** 背景图片 */
 @property (nonatomic,strong) UIImage * backgroundImage;
 

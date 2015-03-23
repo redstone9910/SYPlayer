@@ -61,18 +61,18 @@
 }
 
 /** 设定播放进度并更新View */
--(void)setTimeProgressInSecond:(int)timeProgressInSecond
+-(void)setTimeProgressInSecond:(float)timeProgressInSecond
 {
     _timeProgressInSecond = timeProgressInSecond;
-    
+#warning 歌词同步差一行
     if (!self.isDragging) {
-        for (int index = 0; index < self.lrcLineArray.count; index ++) {
+        for (int index = self.lrcLineArray.count - 1; index > 0; index --) {
             NSArray *ary1 = self.lrcLineArray[index];
             NSString *str1 = ary1[0];
             float time1 = [self timeWithString:str1];
             
             float lableH = [NSString heightWithFont:self.lrcFont] + 10;
-            if (timeProgressInSecond <= time1) {
+            if (timeProgressInSecond > time1) {
                 self.lrcScroll.contentOffset = CGPointMake(0, index * lableH);
                 
                 UILabel *lable =  self.lrcLableArray[index];

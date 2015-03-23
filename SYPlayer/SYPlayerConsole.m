@@ -142,7 +142,7 @@
 }
 
 /** 设定总时长并设定标签 */
--(void)setTimeTotalInSecond:(int)timeTotalInSecond
+-(void)setTimeTotalInSecond:(float)timeTotalInSecond
 {
     _timeTotalInSecond = timeTotalInSecond;
     self.timeTotal.text = [NSString stringFromTime:self.timeTotalInSecond];
@@ -150,7 +150,7 @@
 }
 
 /** 更新已播放时长 */
--(void)setTimeProgressInSecond:(int)timeProgressInSecond
+-(void)setTimeProgressInSecond:(float)timeProgressInSecond
 {
     _timeProgressInSecond = timeProgressInSecond;
     self.timeProgress.text = [NSString stringFromTime:self.timeProgressInSecond];

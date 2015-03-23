@@ -39,9 +39,9 @@ typedef enum playModeState
 +(instancetype)playerConsole;
 
 /** 总时长，单位秒 */
-@property (nonatomic,assign) int timeTotalInSecond;
+@property (nonatomic,assign) float timeTotalInSecond;
 /** 已播放时长 */
-@property (nonatomic,assign) int timeProgressInSecond;
+@property (nonatomic,assign) float timeProgressInSecond;
 /** 正在播放/暂停 */
 @property (nonatomic,assign,getter=isPlaying) BOOL playing;
 /** console背景图片 */

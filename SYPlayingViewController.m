@@ -37,8 +37,19 @@
 @property (nonatomic,assign) CGRect playListFrame;
 /** 播放列表数据数组 */
 @property (nonatomic,strong) NSArray * playListModelArrary;
-
+/** 流媒体播放器 */
 @property (nonatomic,strong) FSAudioController * playerController;
+/** 更新播放进度定时器 */
+@property (nonatomic,strong) NSTimer *progressUpdateTimer;
+
+/** 更新播放进度 */
+- (void)updatePlaybackProgress;
+/** 跳转到播放位置 */
+-(void)seekToNewTime:(float)newTime;
+/** 正在更新播放进度 */
+@property (nonatomic,assign,getter=isSeeking) BOOL seeking;
+
+//@property (nonatomic,assign) BOOL paused;
 @end
 
 @implementation SYPlayingViewController
@@ -62,23 +73,28 @@
     [self.view addSubview:self.playerConsole];
     
     CGRect rect = self.view.frame;
-    rect.origin.y = self.navigationController.navigationBar.frame.size.height;//self.navigationController.navigationBar.frame.origin.y + 
+    rect.origin.y = self.navigationController.navigationBar.frame.size.height;
     rect.size.height = self.playerConsole.frame.origin.y - rect.origin.y;
-//    NSLog(@"%f,%f",rect.origin.y,self.navigationController.navigationBar.frame.origin.y);
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSString *file = [bundle pathForResource:@"001&002－Excuse Me.lrc" ofType:nil];
-    SYLrcView *lrcview = [SYLrcView lrcViewWithFrame:rect withLrcFile:file];
+    SYLrcView *lrcview = [SYLrcView lrcViewWithFrame:rect withLrcFile:nil];
     lrcview.delegate = self;
     self.lrcView = lrcview;
     [self.view addSubview:self.lrcView];
     
     self.playListFrame = self.playListTable.frame;
-//    self.playListTable.backgroundColor = [UIColor redColor];
+    self.playListTable.rowHeight = 30;
     [self.view bringSubviewToFront:self.playListTable];
     self.playListTable.delegate = self;
     self.playListTable.dataSource = self;
     
     self.playerController.delegate = self;
+    
+    if (!self.progressUpdateTimer) {
+        self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.5
+                                                                        target:self
+                                                                      selector:@selector(updatePlaybackProgress)
+                                                                      userInfo:nil
+                                                                       repeats:YES];
+    }
 }
 /** 菜单按钮 */
 - (IBAction)menuBtnClick {
@@ -121,45 +137,76 @@
     }
     return _playerController;
 }
-#pragma mark - SYPlayerConsoleDelegate
-
-/** 下一首 */
--(void)playerConsoleNext:(SYPlayerConsole *)console
+/** 更新播放进度 */
+- (void)updatePlaybackProgress
 {
-    NSLog(@"下一首");
+    self.seeking = YES;
+    if (self.playerController.activeStream.continuous) {
+//        self.playerConsole.timeProgressInSecond = 0;
+//        self.playerConsole.timeTotalInSecond = 0;
+    } else {
+        FSStreamPosition cur = self.playerController.activeStream.currentTimePlayed;
+        FSStreamPosition end = self.playerController.activeStream.duration;
+        
+        float timeTotle = end.minute * 60 + end.second;
+        if (self.playerConsole.timeTotalInSecond != timeTotle) {
+            self.playerConsole.timeTotalInSecond = timeTotle;
+        }
+        self.playerConsole.timeProgressInSecond = cur.minute * 60 + cur.second;
+    }
+}
+/** 跳转到播放位置 */
+-(void)seekToNewTime:(float)newTime
+{
+    FSStreamPosition pos = {0};
+    pos.position = newTime / self.playerConsole.timeTotalInSecond;
+    
+    [self.playerController.activeStream seekToPosition:pos];
+//    NSLog(@"seekToNewTime:%.1f",newTime);
+}
+#pragma mark - SYPlayerConsoleDelegate
+/** 下一首 */
+-(void)playerConsoleNext:(SYPlayerConsole *)console{
 }
 /** 上一首 */
 -(void)playerConsolePrev:(SYPlayerConsole *)console{
-    NSLog(@"上一首");
 }
 /** 拖动进度条 */
 -(void)playerConsoleProgressChanged:(SYPlayerConsole *)console {
-    
-//    NSLog(@"拖动进度条:%%%02.1f",((float)console.timeProgressInSecond / (float)console.timeTotalInSecond) * 100);
     self.lrcView.timeProgressInSecond = console.timeProgressInSecond;
+    if (self.isSeeking) {
+        self.seeking = NO;
+    }
+    else [self seekToNewTime:console.timeProgressInSecond];
 }
 /** 播放/暂停状态改变 */
 -(void)playerConsolePlayingStatusChanged:(SYPlayerConsole *)console{
-    NSLog(@"播放/暂停状态:%@",console.isPlaying ? @"Playing":@"Pause");
+    NSLog(@"isPlaying = %d",console.isPlaying);
+    if (console.isPlaying) {
+        [self.playerController pause];
+    }
+    else [self.playerController pause];
 }
 /** 退出键按下 */
 -(void)playerConsolePowerOff:(SYPlayerConsole *)console{
-    NSLog(@"退出");
 }
 /** 播放模式改变 */
 -(void)playerConsolePlayModeStateChanged:(SYPlayerConsole *)console withModeName:(NSString *)name{
-    NSLog(@"模式:%d,%@",console.playMode ,name);
 //    MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
 //    [hud setLabelText:name];
 //    [hud setMode:MBProgressHUDModeText];
 //    [hud show:YES];
 }
-#pragma - SYLrcViewDelegate
+#pragma mark - SYLrcViewDelegate
 /** 拖动LRC视图改变播放进度 */
 -(void)lrcViewProgressChanged:(SYLrcView *)lrcView
 {
-//    NSLog(@"%d",lrcView.timeProgressInSecond);
     self.playerConsole.timeProgressInSecond = lrcView.timeProgressInSecond;
+    
+    if (self.isSeeking) {
+        self.seeking = NO;
+    }
+    else [self seekToNewTime:lrcView.timeProgressInSecond];
 }
 
 #pragma mark - Navigation
@@ -184,7 +231,7 @@
     }];
 }
 
-#pragma playListTable DataSource
+#pragma mark playListTable DataSource
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return [self.playListModelArrary count];
@@ -201,18 +248,25 @@
     return cell;
 }
 
-#pragma playListTableDelegate
+#pragma mark playListTableDelegate
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"indexPath.row:%d",indexPath.row);
+    NSLog(@"indexPath.row:%d",(int)indexPath.row);
     SYPlayListModel *model = self.playListModelArrary[indexPath.row];
     
-    NSString *urlStr = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"mp3"];
-    urlStr = [@"file://" stringByAppendingString:[urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    NSURL *url = [NSURL URLWithString:urlStr];
+    NSString *mp3Path = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"mp3"];
+    mp3Path = [@"file://" stringByAppendingString:[mp3Path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSURL *url = [NSURL URLWithString:mp3Path];
     
     self.playerController.url = url;
     [self.playerController play];
+    self.playerConsole.playing = YES;
+    
+    NSString *lrcPath = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"lrc"];
+    self.lrcView.lrcFile = lrcPath;
+    
+    SYPlayListButton *titleBtn = self.navigationItem.titleView;
+    titleBtn.Opened = NO;
 }
 #pragma FSAudioControllerDelegate
 
