@@ -7,6 +7,7 @@
 //
 
 #import "MIBRootViewController.h"
+#import "SYPlayingViewController.h"
 
 @interface MIBRootViewController ()
 - (IBAction)lesson1BtnClick:(id)sender;
@@ -40,11 +41,20 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    
+    id vc = segue.destinationViewController;
+    
+    if([vc isKindOfClass:[SYPlayingViewController class]])
+    {
+        SYPlayingViewController *sVc = (SYPlayingViewController *)vc;
+        sVc.title = self.title;
+    }
 }
 
 
 - (IBAction)lesson1BtnClick:(id)sender {
-    [self performSegueWithIdentifier:@"main2playing" sender:nil];
+    self.title = @"第一册";
+    [self performSegueWithIdentifier:@"main2playing" sender:self];
 }
 
 @end

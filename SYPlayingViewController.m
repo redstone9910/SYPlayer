@@ -17,7 +17,9 @@
 #import "FSAudioController.h"
 
 @interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate>
-
+/** 菜单按钮 */
+@property (weak, nonatomic) IBOutlet UIButton *menuBtn;
+/** 收藏按钮 */
 @property (weak, nonatomic) IBOutlet UIButton *favoriteBtn;
 /** 菜单按钮按下 */
 - (IBAction)menuBtnClick;
@@ -50,6 +52,10 @@
 @property (nonatomic,assign,getter=isSeeking) BOOL seeking;
 
 //@property (nonatomic,assign) BOOL paused;
+
+/** 标题按钮 */
+@property (nonatomic,strong) SYPlayListButton *titleBtn;
+
 @end
 
 @implementation SYPlayingViewController
@@ -58,10 +64,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.navigationController.navigationBar.hidden = NO;
-    SYPlayListButton *titleBtn = [SYPlayListButton playListButtonWithString:@"第一册"];
-    titleBtn.delegate = self;
-    self.navigationItem.titleView = titleBtn;
+    self.titleBtn = [SYPlayListButton playListButtonWithString:self.title];
+    self.titleBtn.delegate = self;
+    self.titleBtn.frame = CGRectMake(0, 20, self.view.frame.size.width, 44);
+    [self.view addSubview:self.titleBtn];
 
     SYPlayerConsole *consoleView = [SYPlayerConsole playerConsole];
     float consolY = self.view.bounds.size.height - consoleView.bounds.size.height;
@@ -73,7 +79,7 @@
     [self.view addSubview:self.playerConsole];
     
     CGRect rect = self.view.frame;
-    rect.origin.y = self.navigationController.navigationBar.frame.size.height;
+    rect.origin.y = self.titleBtn.frame.origin.y + self.titleBtn.frame.size.height;
     rect.size.height = self.playerConsole.frame.origin.y - rect.origin.y;
     SYLrcView *lrcview = [SYLrcView lrcViewWithFrame:rect withLrcFile:nil];
     lrcview.delegate = self;
@@ -88,6 +94,8 @@
     
     self.playerController.delegate = self;
     
+    [self.view bringSubviewToFront:self.menuBtn];
+    [self.view bringSubviewToFront:self.favoriteBtn];
     if (!self.progressUpdateTimer) {
         self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.1
                                                                         target:self
@@ -98,8 +106,6 @@
 }
 /** 菜单按钮 */
 - (IBAction)menuBtnClick {
-    [self.navigationController popViewControllerAnimated:YES];
-    self.navigationController.navigationBar.hidden = YES;
 }
 /** 收藏按钮按下 */
 - (IBAction)favoriteBtnClick {
@@ -189,6 +195,9 @@
 }
 /** 退出键按下 */
 -(void)playerConsolePowerOff:(SYPlayerConsole *)console{
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
 }
 /** 播放模式改变 */
 -(void)playerConsolePlayModeStateChanged:(SYPlayerConsole *)console withModeName:(NSString *)name{
@@ -245,7 +254,14 @@
     SYPlayListCell *cell = [SYPlayListCell cellWithTableView:tableView];
     cell.playListData = self.playListModelArrary[indexPath.row];
     
-    return cell;
+//    NSString *Id = @"listCell";
+//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Id];
+//    
+//    if (cell == nil) {
+//        cell = [[UITableViewCell alloc] init];
+//    }
+//    
+//    return cell;
 }
 
 #pragma mark playListTableDelegate
@@ -265,8 +281,7 @@
     NSString *lrcPath = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"lrc"];
     self.lrcView.lrcFile = lrcPath;
     
-    SYPlayListButton *titleBtn = (SYPlayListButton *)self.navigationItem.titleView;
-    titleBtn.Opened = NO;
+    self.titleBtn.Opened = NO;
 }
 #pragma FSAudioControllerDelegate
 
