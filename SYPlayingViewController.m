@@ -261,7 +261,7 @@
 //        cell = [[UITableViewCell alloc] init];
 //    }
 //    
-//    return cell;
+    return cell;
 }
 
 #pragma mark playListTableDelegate
