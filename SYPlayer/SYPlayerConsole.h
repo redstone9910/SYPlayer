@@ -50,5 +50,5 @@ typedef enum playModeState
 @property (nonatomic,assign) playModeState playMode;
 
 /** 代理,传递按钮事件 */
-@property(strong,nonatomic) id <SYPlayerConsoleDelegate> delegate;
+@property(weak,nonatomic) id <SYPlayerConsoleDelegate> delegate;
 @end

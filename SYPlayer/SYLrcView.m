@@ -72,7 +72,7 @@
             float time1 = [self timeWithString:str1];
             
             float lableH = [NSString heightWithFont:self.lrcFont] + 10;
-            if (timeProgressInSecond > time1) {
+            if (timeProgressInSecond >= time1) {
                 self.lrcScroll.contentOffset = CGPointMake(0, index * lableH);
                 
                 UILabel *lable =  self.lrcLableArray[index];

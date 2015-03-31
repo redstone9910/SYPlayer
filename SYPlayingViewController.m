@@ -89,7 +89,7 @@
     self.playerController.delegate = self;
     
     if (!self.progressUpdateTimer) {
-        self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.5
+        self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.1
                                                                         target:self
                                                                       selector:@selector(updatePlaybackProgress)
                                                                       userInfo:nil
@@ -265,7 +265,7 @@
     NSString *lrcPath = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"lrc"];
     self.lrcView.lrcFile = lrcPath;
     
-    SYPlayListButton *titleBtn = self.navigationItem.titleView;
+    SYPlayListButton *titleBtn = (SYPlayListButton *)self.navigationItem.titleView;
     titleBtn.Opened = NO;
 }
 #pragma FSAudioControllerDelegate

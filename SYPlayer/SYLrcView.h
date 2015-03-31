@@ -28,5 +28,5 @@
 +(instancetype) lrcViewWithFrame:(CGRect)frame withLrcFile:(NSString *)file;
 
 /** 代理 */
-@property (nonatomic,strong) id <SYLrcViewDelegate> delegate;
+@property (nonatomic,weak) id <SYLrcViewDelegate> delegate;
 @end

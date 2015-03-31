@@ -122,5 +122,17 @@
 		<key>downloading</key>
 		<integer>0</integer>
 	</dict>
+	<dict>
+		<key>mp3URL</key>
+		<string>001&amp;002－Excuse Me</string>
+		<key>playing</key>
+		<integer>0</integer>
+		<key>songName</key>
+		<string>以父之名</string>
+		<key>downloadProgress</key>
+		<real>0</real>
+		<key>downloading</key>
+		<integer>0</integer>
+	</dict>
 </array>
 </plist>

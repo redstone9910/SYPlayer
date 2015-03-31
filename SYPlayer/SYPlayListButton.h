@@ -16,7 +16,7 @@
 
 @interface SYPlayListButton : UIView
 /** 代理 */
-@property (nonatomic,strong) id<SYPlayListButtonDelegate> delegate;
+@property (nonatomic,weak) id<SYPlayListButtonDelegate> delegate;
 /** 是否已展开 */
 @property (nonatomic,assign,getter=isOpened) BOOL Opened;
 /** 通过标题创建新对象 */

@@ -28,6 +28,6 @@
 /** 是否下载中 */
 @property (nonatomic,assign,getter=isDownloading) BOOL downloading;
 /** 代理 */
-@property (nonatomic,strong) id<SYPlayListCellDelegate> delegate;
+@property (nonatomic,weak) id<SYPlayListCellDelegate> delegate;
 
 @end
