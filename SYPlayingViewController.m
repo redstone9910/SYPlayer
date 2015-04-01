@@ -106,6 +106,7 @@
 }
 /** 菜单按钮 */
 - (IBAction)menuBtnClick {
+    self.titleBtn.Opened = !self.titleBtn.isOpened;
 }
 /** 收藏按钮按下 */
 - (IBAction)favoriteBtnClick {
@@ -187,7 +188,7 @@
 }
 /** 播放/暂停状态改变 */
 -(void)playerConsolePlayingStatusChanged:(SYPlayerConsole *)console{
-    NSLog(@"isPlaying = %d",console.isPlaying);
+//    NSLog(@"isPlaying = %d",console.isPlaying);
     if (console.isPlaying) {
         [self.playerController pause];
     }
@@ -254,20 +255,12 @@
     SYPlayListCell *cell = [SYPlayListCell cellWithTableView:tableView];
     cell.playListData = self.playListModelArrary[indexPath.row];
     
-//    NSString *Id = @"listCell";
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Id];
-//    
-//    if (cell == nil) {
-//        cell = [[UITableViewCell alloc] init];
-//    }
-//    
     return cell;
 }
 
 #pragma mark playListTableDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"indexPath.row:%d",(int)indexPath.row);
     SYPlayListModel *model = self.playListModelArrary[indexPath.row];
     
     NSString *mp3Path = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"mp3"];
@@ -280,6 +273,8 @@
     
     NSString *lrcPath = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"lrc"];
     self.lrcView.lrcFile = lrcPath;
+    
+    self.titleBtn.titleText = [NSString stringWithFormat:@"%@:%@",self.title,model.songName];
     
     self.titleBtn.Opened = NO;
 }

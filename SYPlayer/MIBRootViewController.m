@@ -10,8 +10,10 @@
 #import "SYPlayingViewController.h"
 
 @interface MIBRootViewController ()
-- (IBAction)lesson1BtnClick:(id)sender;
-
+- (IBAction)lesson1BtnClick;
+- (IBAction)lesson2BtnClick;
+- (IBAction)lesson3BtnClick;
+- (IBAction)lesson4BtnClick;
 @end
 
 @implementation MIBRootViewController
@@ -52,8 +54,23 @@
 }
 
 
-- (IBAction)lesson1BtnClick:(id)sender {
+- (IBAction)lesson1BtnClick {
     self.title = @"第一册";
+    [self performSegueWithIdentifier:@"main2playing" sender:self];
+}
+
+- (IBAction)lesson2BtnClick {
+    self.title = @"第二册";
+    [self performSegueWithIdentifier:@"main2playing" sender:self];
+}
+
+- (IBAction)lesson3BtnClick {
+    self.title = @"第三册";
+    [self performSegueWithIdentifier:@"main2playing" sender:self];
+}
+
+- (IBAction)lesson4BtnClick {
+    self.title = @"第四册";
     [self performSegueWithIdentifier:@"main2playing" sender:self];
 }
 

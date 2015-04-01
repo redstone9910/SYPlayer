@@ -104,6 +104,11 @@
     _lrcFile = lrcFile;
     
     if(self.lrcLableArray.count > 0)[self.lrcLableArray removeAllObjects];
+    for (UIView *lable in self.lrcScroll.subviews) {
+        if ([lable isKindOfClass:[UILabel class]]) {
+            [lable removeFromSuperview];
+        }
+    }
     
     if (nil == self.lrcFile) {
         self.titleLabel.text = @"未找到歌词";

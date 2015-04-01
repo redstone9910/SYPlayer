@@ -57,7 +57,6 @@
     self.titleBtn.frame = self.bounds;
     self.titleBtn.titleLabel.frame = self.titleBtn.bounds;
     self.titleBtn.titleLabel.textAlignment = NSTextAlignmentLeft;
-    NSLog(@"%@,%@",self.titleBtn,self.titleBtn.titleLabel);
     
     NSString *title = self.titleBtn.titleLabel.text;
     float titleLength = [title sizeWithFont:self.titleBtn.titleLabel.font maxSize:CGSizeMake(100, 100)].width;
