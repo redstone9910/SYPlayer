@@ -265,7 +265,7 @@
 }
 
 #pragma mark playListTableDelegate
--(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"indexPath.row:%d",(int)indexPath.row);
     SYPlayListModel *model = self.playListModelArrary[indexPath.row];
