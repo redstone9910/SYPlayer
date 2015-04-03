@@ -1,15 +1,15 @@
 //
-//  SYPlayListCell.m
+//  SYSongCell.m
 //  SYPlayer
 //
 //  Created by YinYanhui on 15-3-23.
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
 
-#import "SYPlayListCell.h"
-#import "SYPlayListModel.h"
+#import "SYSongCell.h"
+#import "SYSongModel.h"
 
-@interface SYPlayListCell()
+@interface SYSongCell()
 /** 播放按钮 */
 @property (weak, nonatomic) IBOutlet UIButton *playBtn;
 /** 歌曲名 */
@@ -22,13 +22,13 @@
 - (IBAction)playBtnClick;
 @end
 
-@implementation SYPlayListCell
+@implementation SYSongCell
 /** 通过tableView缓存池创建 */
 +(instancetype)cellWithTableView:(UITableView *)tableView
 {
     NSString *ID = @"playListCell";
     
-    SYPlayListCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
+    SYSongCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
     if (cell == nil) {
         NSBundle *bundle = [NSBundle mainBundle];
         NSArray *objs = [bundle loadNibNamed:NSStringFromClass(self) owner:nil options:nil];
@@ -59,10 +59,10 @@
     self.playing = !self.isPlaying;
 }
 /** 设定数据并更新Cell */
--(void)setPlayListData:(SYPlayListModel *)playListData
+-(void)setPlayListData:(SYSongModel *)playListData
 {
     _playListData = playListData;
-    SYPlayListModel *data = self.playListData;
+    SYSongModel *data = self.playListData;
     
     self.playing = data.playing;
     self.songName = data.songName;

@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SYPlayListModel.h"
 
 @interface SYPlayingViewController : UIViewController
-
+@property (nonatomic,strong) SYPlayListModel * playListModel;
 @end

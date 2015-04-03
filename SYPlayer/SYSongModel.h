@@ -1,5 +1,5 @@
 //
-//  SYPlayListModel.h
+//  SYSongModel.h
 //  SYPlayer
 //
 //  Created by YinYanhui on 15-3-23.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface SYPlayListModel : NSObject
+@interface SYSongModel : NSObject
 /** 正在播放/暂停 */
 @property (nonatomic,assign,getter = isPlaying) BOOL playing;
 /** 歌曲名 */
@@ -19,7 +19,10 @@
 @property (nonatomic,assign,getter=isDownloading) BOOL downloading;
 /** 本地文件路径 */
 @property (nonatomic,copy) NSString * mp3URL;
-
+/** 通过字典创建 */
 -(instancetype) initWithDict:(NSDictionary *)dict;
-+(instancetype) playListModelWithDict:(NSDictionary*)dict;
+/** 通过字典初始化 */
++(instancetype) songModelWithDict:(NSDictionary*)dict;
+/** 通过歌曲名数组创建Plist文件 */
++(NSString *) songModelArrayWithFileNameArray:(NSArray *)nameArray withPlistFileName:(NSString *)plist;
 @end

@@ -8,12 +8,17 @@
 
 #import "MIBRootViewController.h"
 #import "SYPlayingViewController.h"
+#import "SYPlayListModel.h"
 
 @interface MIBRootViewController ()
 - (IBAction)lesson1BtnClick;
 - (IBAction)lesson2BtnClick;
 - (IBAction)lesson3BtnClick;
 - (IBAction)lesson4BtnClick;
+
+@property (nonatomic,strong) NSArray *lessonArray;
+@property (nonatomic,assign) int lessonNum;
+
 @end
 
 @implementation MIBRootViewController
@@ -22,9 +27,21 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-//    self.navigationController.view.backgroundColor = [UIColor clearColor];
-//    self.navigationController.view.hidden = YES;
-    self.navigationController.navigationBar.hidden = YES;
+    
+    NSString *fileName = [[NSBundle mainBundle] pathForResource:@"nec_mp3_file_list" ofType:@"txt"];
+    NSString *plistFilePath = [SYPlayListModel playListArrayFileWithMp3FileList:fileName withPlistFileName:@"root.plist"];
+    
+    if(plistFilePath != nil)
+    {
+        NSMutableArray *lessonArray = [NSMutableArray array];
+        NSArray *fileArray = [NSArray arrayWithContentsOfFile:plistFilePath];
+        for (NSDictionary *dict in fileArray) {
+            SYPlayListModel *model = [SYPlayListModel playListWithDict:dict];
+            [lessonArray addObject:model];
+        }
+        
+        self.lessonArray = lessonArray;
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -49,28 +66,29 @@
     if([vc isKindOfClass:[SYPlayingViewController class]])
     {
         SYPlayingViewController *sVc = (SYPlayingViewController *)vc;
-        sVc.title = self.title;
+        SYPlayListModel *model = self.lessonArray[self.lessonNum - 1];
+        sVc.playListModel = model;
     }
 }
 
 
 - (IBAction)lesson1BtnClick {
-    self.title = @"第一册";
+    self.lessonNum = 1;
     [self performSegueWithIdentifier:@"main2playing" sender:self];
 }
 
 - (IBAction)lesson2BtnClick {
-    self.title = @"第二册";
+    self.lessonNum = 2;
     [self performSegueWithIdentifier:@"main2playing" sender:self];
 }
 
 - (IBAction)lesson3BtnClick {
-    self.title = @"第三册";
+    self.lessonNum = 3;
     [self performSegueWithIdentifier:@"main2playing" sender:self];
 }
 
 - (IBAction)lesson4BtnClick {
-    self.title = @"第四册";
+    self.lessonNum = 4;
     [self performSegueWithIdentifier:@"main2playing" sender:self];
 }
 

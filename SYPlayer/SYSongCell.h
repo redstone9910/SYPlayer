@@ -1,5 +1,5 @@
 //
-//  SYPlayListCell.h
+//  SYSongCell.h
 //  SYPlayer
 //
 //  Created by YinYanhui on 15-3-23.
@@ -7,18 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-@class SYPlayListModel;
-@class SYPlayListCell;
+@class SYSongModel;
+@class SYSongCell;
 
-@protocol SYPlayListCellDelegate <NSObject>
+@protocol SYSongCellDelegate <NSObject>
 /** 下载按钮点击 */
--(void)playListCellDownloadBtnClick:(SYPlayListCell *)cell;
+-(void)playListCellDownloadBtnClick:(SYSongCell *)cell;
 @end
 
-@interface SYPlayListCell : UITableViewCell
+@interface SYSongCell : UITableViewCell
 /** 通过tableView缓存池创建 */
 +(instancetype) cellWithTableView:(UITableView *)tableView;
-@property (nonatomic,strong) SYPlayListModel *playListData;
+@property (nonatomic,strong) SYSongModel *playListData;
 /** 正在播放/暂停 */
 @property (nonatomic,assign,getter = isPlaying) BOOL playing;
 /** 歌曲名 */
@@ -28,6 +28,6 @@
 /** 是否下载中 */
 @property (nonatomic,assign,getter=isDownloading) BOOL downloading;
 /** 代理 */
-@property (nonatomic,weak) id<SYPlayListCellDelegate> delegate;
+@property (nonatomic,weak) id<SYSongCellDelegate> delegate;
 
 @end

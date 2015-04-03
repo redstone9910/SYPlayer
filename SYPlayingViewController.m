@@ -10,8 +10,8 @@
 #import "SYPlayListButton.h"
 #import "SYPlayerConsole.h"
 #import "SYLrcView.h"
-#import "SYPlayListCell.h"
-#import "SYPlayListModel.h"
+#import "SYSongCell.h"
+#import "SYSongModel.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -38,7 +38,7 @@
 /** 用于保存playListTable原始Frame */
 @property (nonatomic,assign) CGRect playListFrame;
 /** 播放列表数据数组 */
-@property (nonatomic,strong) NSArray * playListModelArrary;
+@property (nonatomic,strong) NSArray * songModelArrary;
 /** 流媒体播放器 */
 @property (nonatomic,strong) FSAudioController * playerController;
 /** 更新播放进度定时器 */
@@ -56,6 +56,8 @@
 /** 标题按钮 */
 @property (nonatomic,strong) SYPlayListButton *titleBtn;
 
+@property (nonatomic,copy) NSString * plistPath;
+
 @end
 
 @implementation SYPlayingViewController
@@ -64,7 +66,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.titleBtn = [SYPlayListButton playListButtonWithString:self.title];
+    NSString *path = [SYSongModel songModelArrayWithFileNameArray:self.playListModel.songList withPlistFileName:@"song_list.plist"];
+    if (path != nil) {
+        self.plistPath = path;
+    }
+    
+    self.titleBtn = [SYPlayListButton playListButtonWithString:self.playListModel.lessonTitle];
     self.titleBtn.delegate = self;
     self.titleBtn.frame = CGRectMake(0, 20, self.view.frame.size.width, 44);
     [self.view addSubview:self.titleBtn];
@@ -120,20 +127,21 @@
     }
 }
 /** 延迟加载播放列表数据 */
--(NSArray *)playListModelArrary
+-(NSArray *)songModelArrary
 {
-    if (_playListModelArrary == nil) {
-        NSArray *array = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"PlayList" ofType:@"plist"]];
+    if (_songModelArrary == nil) {
+//        NSArray *array = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"PlayList" ofType:@"plist"]];
+        NSArray *array = [NSArray arrayWithContentsOfFile:self.plistPath];
         NSMutableArray *retArray = [NSMutableArray array];
         for (NSDictionary *dict in array) {
-            SYPlayListModel *model = [SYPlayListModel playListModelWithDict:dict];
+            SYSongModel *model = [SYSongModel songModelWithDict:dict];
             [retArray addObject:model];
         }
         
-        _playListModelArrary = retArray;
+        _songModelArrary = retArray;
     }
     
-    return _playListModelArrary;
+    return _songModelArrary;
 }
 /** 延迟加载playerController */
 -(FSAudioController *)playerController
@@ -244,7 +252,7 @@
 #pragma mark playListTable DataSource
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.playListModelArrary count];
+    return [self.songModelArrary count];
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -252,8 +260,8 @@
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    SYPlayListCell *cell = [SYPlayListCell cellWithTableView:tableView];
-    cell.playListData = self.playListModelArrary[indexPath.row];
+    SYSongCell *cell = [SYSongCell cellWithTableView:tableView];
+    cell.playListData = self.songModelArrary[indexPath.row];
     
     return cell;
 }
@@ -261,9 +269,10 @@
 #pragma mark playListTableDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    SYPlayListModel *model = self.playListModelArrary[indexPath.row];
+    SYSongModel *model = self.songModelArrary[indexPath.row];
     
-    NSString *mp3Path = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"mp3"];
+//    NSString *mp3Path = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"mp3"];
+    NSString *mp3Path = model.mp3URL;
     mp3Path = [@"file://" stringByAppendingString:[mp3Path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     NSURL *url = [NSURL URLWithString:mp3Path];
     
@@ -271,10 +280,11 @@
     [self.playerController play];
     self.playerConsole.playing = YES;
     
-    NSString *lrcPath = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"lrc"];
+//    NSString *lrcPath = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"lrc"];
+    NSString *lrcPath = [model.mp3URL stringByReplacingOccurrencesOfString:@"mp3" withString:@"lrc"];
     self.lrcView.lrcFile = lrcPath;
     
-    self.titleBtn.titleText = [NSString stringWithFormat:@"%@:%@",self.title,model.songName];
+    self.titleBtn.titleText = [NSString stringWithFormat:@"%@-%@",self.playListModel.lessonTitle,model.songName];
     
     self.titleBtn.Opened = NO;
 }
