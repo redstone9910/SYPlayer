@@ -5,7 +5,7 @@
 //  Created by YinYanhui on 15-3-22.
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
-#warning 1.滑动时自动左移10 2.滑动过快时不能刷新全部行字体
+#warning 1.滑动时自动左移10 2.滑动过快时不能刷新全部行字体 3.尚存在若干歌曲不能正确同步歌词的bug
 #import "SYLrcView.h"
 #import "NSString+Tools.h"
 

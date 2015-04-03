@@ -12,7 +12,7 @@
 
 @protocol SYSongCellDelegate <NSObject>
 /** 下载按钮点击 */
--(void)playListCellDownloadBtnClick:(SYSongCell *)cell;
+-(void)songCellDownloadBtnClick:(SYSongCell *)cell;
 @end
 
 @interface SYSongCell : UITableViewCell

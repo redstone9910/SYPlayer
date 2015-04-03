@@ -58,8 +58,7 @@
     self.titleBtn.titleLabel.frame = self.titleBtn.bounds;
     self.titleBtn.titleLabel.textAlignment = NSTextAlignmentLeft;
     
-    NSString *title = self.titleBtn.titleLabel.text;
-    float titleLength = [title sizeWithFont:self.titleBtn.titleLabel.font maxSize:CGSizeMake(100, 100)].width;
+    float titleLength = [self.titleText sizeWithFont:self.titleBtn.titleLabel.font maxSize:CGSizeMake(1000, 1000)].width;
     float arrowCenterX = (self.bounds.size.width + titleLength + self.titleArrow.bounds.size.width) / 2;
     
     self.titleArrow.center = CGPointMake(arrowCenterX, self.titleArrow.center.y);

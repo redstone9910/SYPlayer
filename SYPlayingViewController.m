@@ -16,7 +16,7 @@
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
 
-@interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate>
+@interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate,UIAlertViewDelegate,SYSongCellDelegate>
 /** 菜单按钮 */
 @property (weak, nonatomic) IBOutlet UIButton *menuBtn;
 /** 收藏按钮 */
@@ -51,12 +51,14 @@
 /** 正在更新播放进度 */
 @property (nonatomic,assign,getter=isSeeking) BOOL seeking;
 
-//@property (nonatomic,assign) BOOL paused;
-
 /** 标题按钮 */
 @property (nonatomic,strong) SYPlayListButton *titleBtn;
-
+/** 存储播放列表数据的plist文件路径 */
 @property (nonatomic,copy) NSString * plistPath;
+/** 当前被选中的行号 */
+@property (nonatomic,assign) NSInteger selectedRowNum;
+/** 下载提示窗口 */
+@property (nonatomic,strong) UIAlertView * downloadAlert;
 
 @end
 
@@ -66,10 +68,13 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    NSString *path = [SYSongModel songModelArrayWithFileNameArray:self.playListModel.songList withPlistFileName:@"song_list.plist"];
+    NSString *path = [SYSongModel songModelArrayWithFileNameArray:self.playListModel.songList withPlistFileName:@"song_list.plist" atPath:self.playListModel.lessonTitle];
     if (path != nil) {
         self.plistPath = path;
     }
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"本课未下载" message:@"是否下载？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"下载", nil];
+    self.downloadAlert = alert;
     
     self.titleBtn = [SYPlayListButton playListButtonWithString:self.playListModel.lessonTitle];
     self.titleBtn.delegate = self;
@@ -262,6 +267,7 @@
 {
     SYSongCell *cell = [SYSongCell cellWithTableView:tableView];
     cell.playListData = self.songModelArrary[indexPath.row];
+    cell.delegate = self;
     
     return cell;
 }
@@ -269,25 +275,62 @@
 #pragma mark playListTableDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    SYSongModel *model = self.songModelArrary[indexPath.row];
+    self.selectedRowNum = indexPath.row;
     
-//    NSString *mp3Path = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"mp3"];
-    NSString *mp3Path = model.mp3URL;
-    mp3Path = [@"file://" stringByAppendingString:[mp3Path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    NSURL *url = [NSURL URLWithString:mp3Path];
-    
-    self.playerController.url = url;
-    [self.playerController play];
-    self.playerConsole.playing = YES;
-    
-//    NSString *lrcPath = [[NSBundle mainBundle]pathForResource:model.mp3URL ofType:@"lrc"];
-    NSString *lrcPath = [model.mp3URL stringByReplacingOccurrencesOfString:@"mp3" withString:@"lrc"];
-    self.lrcView.lrcFile = lrcPath;
-    
-    self.titleBtn.titleText = [NSString stringWithFormat:@"%@-%@",self.playListModel.lessonTitle,model.songName];
-    
-    self.titleBtn.Opened = NO;
+    SYSongModel *model = self.songModelArrary[self.selectedRowNum];
+    if (model.downloadProgress >= 1) {
+        NSString *mp3Path = model.mp3URL;
+        mp3Path = [@"file://" stringByAppendingString:[mp3Path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        NSURL *url = [NSURL URLWithString:mp3Path];
+        
+        self.playerController.url = url;
+        [self.playerController play];
+        self.playerConsole.playing = YES;
+        
+        NSString *lrcPath = [model.mp3URL stringByReplacingOccurrencesOfString:@"mp3" withString:@"lrc"];
+        self.lrcView.lrcFile = lrcPath;
+        
+        NSArray *ary = [model.songName componentsSeparatedByString:@"－"];
+        NSString *str = [ary firstObject];
+        self.titleBtn.titleText = [NSString stringWithFormat:@"%@-%@",self.playListModel.lessonTitle,str];
+        
+        self.titleBtn.Opened = NO;
+    }else{
+        if (model.downloading == NO) {
+            [self.downloadAlert show];
+        }
+        else
+        {
+#warning 下载暂停
+            NSLog(@"暂停");
+        }
+    }
 }
-#pragma FSAudioControllerDelegate
+#pragma mark FSAudioControllerDelegate
 
+#pragma mark UIAlertViewDelegate
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        SYSongModel *model = self.songModelArrary[self.selectedRowNum];
+        model.downloading = YES;
+        [self.playListTable reloadData];
+#warning 此处需添加更新文件下载进度的代码，以及在载入文件列表时判断下载进度
+    }
+}
+
+#pragma mark SYSongCellDelegate
+-(void)songCellDownloadBtnClick:(SYSongCell *)cell
+{
+    self.selectedRowNum = [self.playListTable indexPathForCell:cell].row;
+    SYSongModel *model = self.songModelArrary[self.selectedRowNum];
+    if (model.downloading == NO) {
+        [self.downloadAlert show];
+    }
+    else
+    {
+#warning 下载暂停
+        NSLog(@"暂停");
+    }
+}
 @end

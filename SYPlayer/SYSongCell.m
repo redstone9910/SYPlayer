@@ -50,8 +50,8 @@
 }
 /** 下载按钮按下 */
 - (IBAction)downloadBtnClick {
-    if ([self.delegate respondsToSelector:@selector(playListCellDownloadBtnClick:)]) {
-        [self.delegate playListCellDownloadBtnClick:self];
+    if ([self.delegate respondsToSelector:@selector(songCellDownloadBtnClick:)]) {
+        [self.delegate songCellDownloadBtnClick:self];
     }
 }
 /** 播放/暂停按钮点击 */
@@ -96,6 +96,7 @@
 {
     _downloadProgress = downloadProgress;
     
+    self.playBtn.enabled = NO;//本地不存在的歌曲不能播放
     if (self.isDownloading) {
         if (self.downloadProgress < 1) {
             [self.downloadBtn setTitle:[NSString stringWithFormat:@"%3d%%",(int)(self.downloadProgress * 100)] forState:UIControlStateNormal];
@@ -103,6 +104,8 @@
         else
         {
             [self.downloadBtn setTitle:@"已下载" forState:UIControlStateNormal];
+            self.downloadBtn.enabled = NO;
+            self.playBtn.enabled = YES;//下载完成，可以播放
         }
     }
     else

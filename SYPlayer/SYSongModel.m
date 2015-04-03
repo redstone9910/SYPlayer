@@ -23,7 +23,7 @@
     return self;
 }
 
-+(NSString *)songModelArrayWithFileNameArray:(NSArray *)nameArray withPlistFileName:(NSString *)plist
++(NSString *)songModelArrayWithFileNameArray:(NSArray *)nameArray withPlistFileName:(NSString *)plist atPath:(NSString *)rootPath
 {
     NSMutableArray *ret = [NSMutableArray array];
     
@@ -31,24 +31,42 @@
     for (NSString *song in nameArray) {
         NSArray *array = [song componentsSeparatedByString:@"mp3"];
         NSString *file = [array firstObject];
-//        NSString *path = [bundle pathForResource:song ofType:nil];
-//        NSArray *b = [bundle pathsForResourcesOfType:@"mp3" inDirectory:@"NCE2-美音-(MP3+LRC)"];
-        NSString *path = [[[bundle resourcePath] stringByAppendingPathComponent:@"第二册"] stringByAppendingPathComponent:song];
-        if (path != nil) {
-            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-            
-            [dict setObject:path forKey:@"mp3URL"];
-            [dict setObject:[NSNumber numberWithBool:NO] forKey:@"playing"];
-            
-            NSArray *a = [file componentsSeparatedByString:@"."];
-            NSString *s = [a firstObject];
-            [dict setObject:s forKey:@"songName"];
-            
-            [dict setObject:[NSNumber numberWithInt:0] forKey:@"downloadProgress"];
-            [dict setObject:[NSNumber numberWithInt:0] forKey:@"downloading"];
-            
-            [ret addObject:dict];
+        int downloading = 0;
+        float downloadProgress = 0;
+        NSString *path = [[[bundle resourcePath] stringByAppendingPathComponent:rootPath] stringByAppendingPathComponent:song];//查找resource目录
+        if([[NSFileManager defaultManager]fileExistsAtPath:path])
+        {
+            downloading = 1;
+            downloadProgress = 1;
         }
+        else
+        {
+            path = [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents" ] stringByAppendingPathComponent:rootPath] stringByAppendingPathComponent:song];//查找沙盒Document目录
+            if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+            {
+                downloading = 1;
+                downloadProgress = 1;
+            }
+            else
+            {
+                path = @"";
+            }
+        }
+        
+        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+        
+        [dict setObject:path forKey:@"mp3URL"];
+        
+        [dict setObject:[NSNumber numberWithBool:NO] forKey:@"playing"];
+        
+        NSArray *a = [file componentsSeparatedByString:@"."];
+        NSString *s = [a firstObject];
+        [dict setObject:s forKey:@"songName"];
+        
+        [dict setObject:[NSNumber numberWithInt:downloadProgress] forKey:@"downloadProgress"];
+        [dict setObject:[NSNumber numberWithInt:downloading] forKey:@"downloading"];
+        
+        [ret addObject:dict];
     }
     
     NSString *destPath = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:plist];

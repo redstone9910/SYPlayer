@@ -24,5 +24,5 @@
 /** 通过字典初始化 */
 +(instancetype) songModelWithDict:(NSDictionary*)dict;
 /** 通过歌曲名数组创建Plist文件 */
-+(NSString *) songModelArrayWithFileNameArray:(NSArray *)nameArray withPlistFileName:(NSString *)plist;
++(NSString *) songModelArrayWithFileNameArray:(NSArray *)nameArray withPlistFileName:(NSString *)plist atPath:(NSString *)rootPath;
 @end
