@@ -98,7 +98,12 @@
     self.lrcView = lrcview;
     [self.view addSubview:self.lrcView];
     
-    self.playListFrame = self.playListTable.frame;
+    float tableX = self.playListTable.frame.origin.x;
+    float tableY = self.playListTable.frame.origin.y;
+    float tableH = self.playerConsole.frame.origin.y - tableY;
+    float tableW = self.playListTable.frame.size.width;
+    self.playListFrame = CGRectMake(tableX, tableY, tableW, tableH);
+    self.playListTable.frame = self.playListFrame;
     self.playListTable.rowHeight = 30;
     [self.view bringSubviewToFront:self.playListTable];
     self.playListTable.delegate = self;
@@ -210,7 +215,7 @@
 /** 退出键按下 */
 -(void)playerConsolePowerOff:(SYPlayerConsole *)console{
     [self dismissViewControllerAnimated:YES completion:^{
-        
+        self.playerController = nil;
     }];
 }
 /** 播放模式改变 */
