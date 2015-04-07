@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		521F15351AD4042C0049E225 /* MIBServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 521F15341AD4042C0049E225 /* MIBServer.m */; };
 		522BB7191ACD321A00E834A4 /* nec_mp3_file_list.txt in Resources */ = {isa = PBXBuildFile; fileRef = 522BB7181ACD321A00E834A4 /* nec_mp3_file_list.txt */; };
 		522BB71C1ACD393300E834A4 /* SYPlayListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 522BB71B1ACD393300E834A4 /* SYPlayListModel.m */; };
 		522BB89F1ACD6A1100E834A4 /* 第二册 in Resources */ = {isa = PBXBuildFile; fileRef = 522BB89E1ACD6A1100E834A4 /* 第二册 */; };
@@ -44,6 +45,8 @@
 
 /* Begin PBXFileReference section */
 		3E6801AC50639668D3115AA8 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		521F15331AD4042C0049E225 /* MIBServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIBServer.h; sourceTree = "<group>"; };
+		521F15341AD4042C0049E225 /* MIBServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIBServer.m; sourceTree = "<group>"; };
 		522BB7181ACD321A00E834A4 /* nec_mp3_file_list.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = nec_mp3_file_list.txt; sourceTree = "<group>"; };
 		522BB71A1ACD393300E834A4 /* SYPlayListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYPlayListModel.h; sourceTree = "<group>"; };
 		522BB71B1ACD393300E834A4 /* SYPlayListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYPlayListModel.m; sourceTree = "<group>"; };
@@ -120,6 +123,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		521F15321AD403EC0049E225 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				521F15331AD4042C0049E225 /* MIBServer.h */,
+				521F15341AD4042C0049E225 /* MIBServer.m */,
+			);
+			name = Other;
+			sourceTree = "<group>";
+		};
 		524B01A01ABD0FCB00E183CB /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -193,6 +205,7 @@
 		52B6CC491A9BF53D00E043C0 /* SYPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				521F15321AD403EC0049E225 /* Other */,
 				524B01AD1ABD252F00E183CB /* Categorys */,
 				524B01A21ABD0FE300E183CB /* Model */,
 				524B01A11ABD0FCF00E183CB /* Controller */,
@@ -387,6 +400,7 @@
 				52B6CC4D1A9BF53D00E043C0 /* main.m in Sources */,
 				52B3B3731ABFB79D00C574A8 /* SYSongModel.m in Sources */,
 				524B019F1ABD072E00E183CB /* SYPlayingViewController.m in Sources */,
+				521F15351AD4042C0049E225 /* MIBServer.m in Sources */,
 				52B3B36F1ABF881B00C574A8 /* SYSongCell.m in Sources */,
 				522BB71C1ACD393300E834A4 /* SYPlayListModel.m in Sources */,
 			);

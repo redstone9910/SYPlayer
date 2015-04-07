@@ -12,6 +12,7 @@
 #import "SYLrcView.h"
 #import "SYSongCell.h"
 #import "SYSongModel.h"
+#import "MIBServer.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -60,6 +61,8 @@
 /** 下载提示窗口 */
 @property (nonatomic,strong) UIAlertView * downloadAlert;
 
+/** 开始下载 */
+-(void)startDownload:(BOOL)start;
 @end
 
 @implementation SYPlayingViewController
@@ -306,8 +309,7 @@
         }
         else
         {
-#warning 下载暂停
-            NSLog(@"暂停");
+            [self startDownload:NO];
         }
     }
 }
@@ -317,10 +319,7 @@
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1) {
-        SYSongModel *model = self.songModelArrary[self.selectedRowNum];
-        model.downloading = YES;
-        [self.playListTable reloadData];
-#warning 此处需添加更新文件下载进度的代码，以及在载入文件列表时判断下载进度
+        [self startDownload:YES];
     }
 }
 
@@ -330,7 +329,24 @@
     self.selectedRowNum = [self.playListTable indexPathForCell:cell].row;
     SYSongModel *model = self.songModelArrary[self.selectedRowNum];
     if (model.downloading == NO) {
-        [self.downloadAlert show];
+//        [self.downloadAlert show];
+        [self startDownload:YES];
+    }
+    else
+    {
+        [self startDownload:NO];
+    }
+}
+
+-(void)startDownload:(BOOL)start
+{
+    //model.downloading == NO
+    if (start) {
+        SYSongModel *model = self.songModelArrary[self.selectedRowNum];
+        model.downloading = YES;
+        [self.playListTable reloadData];
+#warning 此处需添加更新文件下载进度的代码，以及在载入文件列表时判断下载进度
+        [MIBServer postLogonMD5WithName:@"wangwu" withPwd:@"ww"];
     }
     else
     {
