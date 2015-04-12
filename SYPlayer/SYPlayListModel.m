@@ -7,6 +7,11 @@
 //
 
 #import "SYPlayListModel.h"
+#import "Gloable.h"
+
+@interface SYPlayListModel ()
+
+@end
 
 @implementation SYPlayListModel
 /** 通过字典创建 */
@@ -51,7 +56,7 @@
     [playListDict setObject:songList forKey:@"songList"];
     [listArray addObject:playListDict];//上一册添加进plist文件
     
-    NSString *destPath = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:plist];
+    NSString *destPath = [catchePath stringByAppendingPathComponent:plist];
     if([listArray writeToFile:destPath atomically:YES]) return destPath;
     else return nil;
 }

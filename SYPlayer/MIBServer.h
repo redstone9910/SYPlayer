@@ -10,9 +10,11 @@
 
 @interface MIBServer : NSObject
 
+typedef void (^MIBCompleteBlock)(NSString *filePath);
+
 /** Get方法登录服务器 */
-+(void)getLogonWithName:(NSString *)userName withPwd:(NSString *)userPWD;
-+(void)getLogonMD5WithName:(NSString *)userName withPwd:(NSString *)userPWD;
-+(void)postLogonWithName:(NSString *)userName withPwd:(NSString *)userPWD;
-+(void)postLogonMD5WithName:(NSString *)userName withPwd:(NSString *)userPWD;
++(void)getLogonWithName:(NSString *)userName password:(NSString *)userPWD fileName:(NSString *)fileName onComplete:(MIBCompleteBlock)complete;
++(void)getLogonMD5WithName:(NSString *)userName password:(NSString *)userPWD fileName:(NSString *)fileName onComplete:(MIBCompleteBlock)complete;
++(void)postLogonWithName:(NSString *)userName password:(NSString *)userPWD fileName:(NSString *)fileName onComplete:(MIBCompleteBlock)complete;
++(void)postLogonMD5WithName:(NSString *)userName password:(NSString *)userPWD fileName:(NSString *)fileName onComplete:(MIBCompleteBlock)complete;
 @end

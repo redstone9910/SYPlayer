@@ -100,6 +100,9 @@ public:
     float bitrate();
     
     UInt64 contentLength();
+    int playbackDataCount();
+    int audioQueueNumberOfBuffersInUse();
+    int audioQueuePacketCount();
     
     /* Audio_Queue_Delegate */
     void audioQueueStateChanged(Audio_Queue::State state);
@@ -192,8 +195,10 @@ private:
     void setState(State state);
     void setCookiesForStream(AudioFileStreamID inAudioFileStream);
     
+    void createWatchdogTimer();
+    void invalidateWatchdogTimer();
+    
     int cachedDataCount();
-    int playbackDataCount();
     void enqueueCachedData(int minPacketsRequired);
     void cleanupCachedData();
     
@@ -213,6 +218,7 @@ public:
     virtual void audioStreamErrorOccurred(int errorCode, CFStringRef errorDescription) = 0;
     virtual void audioStreamMetaDataAvailable(std::map<CFStringRef,CFStringRef> metaData) = 0;
     virtual void samplesAvailable(AudioBufferList samples, AudioStreamPacketDescription description) = 0;
+    virtual void bitrateAvailable() = 0;
 };    
 
 } // namespace astreamer

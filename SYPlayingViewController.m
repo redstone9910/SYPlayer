@@ -13,6 +13,7 @@
 #import "SYSongCell.h"
 #import "SYSongModel.h"
 #import "MIBServer.h"
+#import "UIImageView+WebCache.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -57,12 +58,9 @@
 /** 存储播放列表数据的plist文件路径 */
 @property (nonatomic,copy) NSString * plistPath;
 /** 当前被选中的行号 */
-@property (nonatomic,assign) NSInteger selectedRowNum;
+@property (nonatomic,strong) NSIndexPath *selectedIndexpath;
 /** 下载提示窗口 */
 @property (nonatomic,strong) UIAlertView * downloadAlert;
-
-/** 开始下载 */
--(void)startDownload:(BOOL)start;
 @end
 
 @implementation SYPlayingViewController
@@ -71,7 +69,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    NSString *path = [SYSongModel songModelArrayWithFileNameArray:self.playListModel.songList withPlistFileName:@"song_list.plist" atPath:self.playListModel.lessonTitle];
+    NSString *path = [SYSongModel songModelArrayWithFileNameArray:self.playListModel.songList withPlistFileName:[NSString stringWithFormat:@"song_list_%@.plist",self.playListModel.lessonTitle] atPath:self.playListModel.lessonTitle];
     if (path != nil) {
         self.plistPath = path;
     }
@@ -283,9 +281,9 @@
 #pragma mark playListTableDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.selectedRowNum = indexPath.row;
+    self.selectedIndexpath = indexPath;
     
-    SYSongModel *model = self.songModelArrary[self.selectedRowNum];
+    SYSongModel *model = self.songModelArrary[self.selectedIndexpath.row];
     if (model.downloadProgress >= 1) {
         NSString *mp3Path = model.mp3URL;
         mp3Path = [@"file://" stringByAppendingString:[mp3Path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
@@ -307,10 +305,6 @@
         if (model.downloading == NO) {
             [self.downloadAlert show];
         }
-        else
-        {
-            [self startDownload:NO];
-        }
     }
 }
 #pragma mark FSAudioControllerDelegate
@@ -319,39 +313,31 @@
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1) {
-        [self startDownload:YES];
+        SYSongModel *model = self.songModelArrary[self.selectedIndexpath.row];
+
+        [model prepareDownload:^(float progress) {
+            NSLog(@"downloading:%.1f%%",progress * 100);
+            [self.playListTable reloadRowsAtIndexPaths:@[self.selectedIndexpath] withRowAnimation:NO];
+        } onComplete:^(BOOL complete) {
+            [self.playListTable reloadRowsAtIndexPaths:@[self.selectedIndexpath] withRowAnimation:NO];
+            NSLog(@"下载%@",complete ? @"完成" : @"失败");
+        }];
     }
 }
 
 #pragma mark SYSongCellDelegate
 -(void)songCellDownloadBtnClick:(SYSongCell *)cell
 {
-    self.selectedRowNum = [self.playListTable indexPathForCell:cell].row;
-    SYSongModel *model = self.songModelArrary[self.selectedRowNum];
+    NSIndexPath *indexpath = [self.playListTable indexPathForCell:cell];
+    SYSongModel *model = self.songModelArrary[indexpath.row];
     if (model.downloading == NO) {
-//        [self.downloadAlert show];
-        [self startDownload:YES];
-    }
-    else
-    {
-        [self startDownload:NO];
-    }
-}
-
--(void)startDownload:(BOOL)start
-{
-    //model.downloading == NO
-    if (start) {
-        SYSongModel *model = self.songModelArrary[self.selectedRowNum];
-        model.downloading = YES;
-        [self.playListTable reloadData];
-#warning 此处需添加更新文件下载进度的代码，以及在载入文件列表时判断下载进度
-        [MIBServer postLogonMD5WithName:@"wangwu" withPwd:@"ww"];
-    }
-    else
-    {
-#warning 下载暂停
-        NSLog(@"暂停");
+        [model prepareDownload:^(float progress) {
+            NSLog(@"downloading:%.1f%%",progress * 100);
+            [self.playListTable reloadRowsAtIndexPaths:@[indexpath] withRowAnimation:NO];
+        } onComplete:^(BOOL complete) {
+            [self.playListTable reloadRowsAtIndexPaths:@[indexpath] withRowAnimation:NO];
+            NSLog(@"下载%@",complete ? @"完成" : @"失败");
+        }];
     }
 }
 @end

@@ -1,16 +1,25 @@
 PODS:
-  - FreeStreamer (2.12.5):
+  - FreeStreamer (2.12.9):
     - Reachability (~> 3.0)
   - MBProgressHUD (0.9.1)
-  - Reachability (3.2)
+  - MKNetworkKit (0.87):
+    - Reachability (~> 3.1.0)
+  - Reachability (3.1.1)
+  - SDWebImage (3.7.2):
+    - SDWebImage/Core (= 3.7.2)
+  - SDWebImage/Core (3.7.2)
 
 DEPENDENCIES:
   - FreeStreamer (~> 2.12.5)
   - MBProgressHUD (~> 0.9.1)
+  - MKNetworkKit
+  - SDWebImage (~> 3.7.2)
 
 SPEC CHECKSUMS:
-  FreeStreamer: 4df993c48fc30ad84e597255a5300eda8702a102
-  MBProgressHUD: f3747dcbd45a9e855a6b0674550651e0b7ed250c
-  Reachability: 1ef8adf5c4e3d362f96515d4278f68dad3c26930
+  FreeStreamer: ed90a09e6a9db752a469722c5bfa549b81f0b539
+  MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
+  MKNetworkKit: 60ad3c83b62183e40ba75ce772c9427c25b520de
+  Reachability: dd9aa4fb6667b9f787690a74f53cb7634ce99893
+  SDWebImage: 71b7cdc1d1721d6a82ed62889030225f2c249e29
 
 COCOAPODS: 0.35.0
