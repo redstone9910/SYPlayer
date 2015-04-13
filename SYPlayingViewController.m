@@ -45,6 +45,7 @@
 @property (nonatomic,strong) NSArray * songModelArrary;
 /** 更新songModelArrary内容到plist文件 */
 -(BOOL)refreshSongModelArrary;
+#warning 改写成单例模式
 /** 流媒体播放器 */
 @property (nonatomic,strong) FSAudioController * playerController;
 /** 更新播放进度定时器 */
@@ -72,7 +73,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+#warning 应当验证plist文件
     NSString *path = [catchePath stringByAppendingPathComponent:[NSString stringWithFormat:@"song_list_%@.plist",self.playListModel.lessonTitle]];
     if(![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         path = [SYSongModel songModelArrayWithFileNameArray:self.playListModel.songList withPlistFileName:[NSString stringWithFormat:@"song_list_%@.plist",self.playListModel.lessonTitle] atPath:self.playListModel.lessonTitle];
@@ -129,6 +130,7 @@
 }
 /** 菜单按钮 */
 - (IBAction)menuBtnClick {
+#warning 增加"下载全部"菜单
     self.titleBtn.Opened = !self.titleBtn.isOpened;
 }
 /** 收藏按钮按下 */
@@ -253,13 +255,6 @@
         self.seeking = NO;
     }
     else [self seekToNewTime:lrcView.timeProgressInSecond];
-}
-
-#pragma mark - Navigation
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
 }
 
 #pragma mark - SYPlayListButtonDelegate

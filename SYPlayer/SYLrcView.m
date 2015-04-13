@@ -5,11 +5,12 @@
 //  Created by YinYanhui on 15-3-22.
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
-#warning 1.滑动时自动左移10 2.滑动过快时不能刷新全部行字体 3.尚存在若干歌曲不能正确同步歌词的bug
+#warning 2.滑动过快时不能刷新全部行字体 4.长度超过屏幕宽度时的处理
 #import "SYLrcView.h"
 #import "NSString+Tools.h"
 
 #define LRCOFFSET 0.3
+#define edgeInsets 10
 
 @interface SYLrcView ()<UIScrollViewDelegate>
 
@@ -60,20 +61,25 @@
     return lrcview;
 }
 
+-(void)awakeFromNib
+{
+    
+}
+
 /** 设定播放进度并更新View */
 -(void)setTimeProgressInSecond:(float)timeProgressInSecond
 {
     _timeProgressInSecond = timeProgressInSecond;
 #warning 歌词同步差一行
     if (!self.isDragging) {
-        for (int index = self.lrcLineArray.count - 1; index > 0; index --) {
+        for (long index = self.lrcLineArray.count - 1; index > 0; index --) {
             NSArray *ary1 = self.lrcLineArray[index];
             NSString *str1 = ary1[0];
             float time1 = [self timeWithString:str1];
             
             float lableH = [NSString heightWithFont:self.lrcFont] + 10;
             if (timeProgressInSecond >= time1) {
-                self.lrcScroll.contentOffset = CGPointMake(0, index * lableH);
+                self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, index * lableH);
                 
                 UILabel *lable =  self.lrcLableArray[index];
                 lable.font = self.lrcCurrentFont;
@@ -95,7 +101,7 @@
 /** 设定并更新背景图片 */
 -(void)setBackgroundImage:(UIImage *)backgroundImage
 {
-    
+    _backgroundImage = backgroundImage;
 }
 
 /** 设定LRC源文件 */
@@ -129,7 +135,7 @@
         
         self.lrcLineArray = objsArray;
         float lableH = [NSString heightWithFont:self.lrcFont] + 10;
-        self.lrcScroll.contentOffset = CGPointMake(0, 0);
+        self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, 0);
         self.lrcScroll.contentSize = CGSizeMake(0, self.lrcLineArray.count * lableH + self.lrcScroll.bounds.size.height);
         
         for (int index = 0; index < self.lrcLineArray.count; index ++) {
@@ -194,7 +200,7 @@
     NSArray *array = [string componentsSeparatedByString:@":"];
     NSString *mStr = array[0];
     NSString *sStr = array[1];
-    return [mStr floatValue] + [sStr floatValue];
+    return [mStr floatValue] * 60 + [sStr floatValue];
 }
 ///** 设定并更新LRC字体 */
 //-(void)setLrcFont:(UIFont *)lrcFont
@@ -205,9 +211,8 @@
 -(void)layoutSubviews
 {
     [super layoutSubviews];
-    
     self.lrcScroll.frame = self.frame;
-    self.lrcScroll.contentInset = UIEdgeInsetsMake(10, 10, 10, 10);
+    self.lrcScroll.contentInset = UIEdgeInsetsMake(edgeInsets, edgeInsets, edgeInsets, edgeInsets);
 }
 /** 文件转为lrc字符串 */
 -(NSString *)lrcWithFile:(NSString *)file
@@ -217,7 +222,7 @@
     return lrcString;
 }
 
-#pragma - UIScrollViewDelegate
+#pragma mark - UIScrollViewDelegate
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
