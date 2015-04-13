@@ -18,6 +18,8 @@
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
 
+#import "Gloable.h"
+
 @interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate,UIAlertViewDelegate,SYSongCellDelegate>
 /** 菜单按钮 */
 @property (weak, nonatomic) IBOutlet UIButton *menuBtn;
@@ -41,6 +43,8 @@
 @property (nonatomic,assign) CGRect playListFrame;
 /** 播放列表数据数组 */
 @property (nonatomic,strong) NSArray * songModelArrary;
+/** 更新songModelArrary内容到plist文件 */
+-(BOOL)refreshSongModelArrary;
 /** 流媒体播放器 */
 @property (nonatomic,strong) FSAudioController * playerController;
 /** 更新播放进度定时器 */
@@ -69,10 +73,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    NSString *path = [SYSongModel songModelArrayWithFileNameArray:self.playListModel.songList withPlistFileName:[NSString stringWithFormat:@"song_list_%@.plist",self.playListModel.lessonTitle] atPath:self.playListModel.lessonTitle];
-    if (path != nil) {
-        self.plistPath = path;
+    NSString *path = [catchePath stringByAppendingPathComponent:[NSString stringWithFormat:@"song_list_%@.plist",self.playListModel.lessonTitle]];
+    if(![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        path = [SYSongModel songModelArrayWithFileNameArray:self.playListModel.songList withPlistFileName:[NSString stringWithFormat:@"song_list_%@.plist",self.playListModel.lessonTitle] atPath:self.playListModel.lessonTitle];
     }
+    self.plistPath = path;
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"本课未下载" message:@"是否下载？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"下载", nil];
     self.downloadAlert = alert;
@@ -153,6 +158,18 @@
     }
     
     return _songModelArrary;
+}
+/** 更新songModelArrary内容到plist文件 */
+-(BOOL)refreshSongModelArrary
+{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (SYSongModel *model in self.songModelArrary) {
+        NSDictionary *dict = [model dictFromSongModel];
+        [array addObject:dict];
+    }
+    [array writeToFile:self.plistPath atomically:YES];
+    
+    return [[NSFileManager defaultManager] fileExistsAtPath:self.plistPath];
 }
 /** 延迟加载playerController */
 -(FSAudioController *)playerController
@@ -314,13 +331,19 @@
 {
     if (buttonIndex == 1) {
         SYSongModel *model = self.songModelArrary[self.selectedIndexpath.row];
-
-        [model prepareDownload:^(float progress) {
+        
+        NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
+        [model prepareDownloadToFile:dirPath onDownloading:^(float progress) {
             NSLog(@"downloading:%.1f%%",progress * 100);
             [self.playListTable reloadRowsAtIndexPaths:@[self.selectedIndexpath] withRowAnimation:NO];
         } onComplete:^(BOOL complete) {
             [self.playListTable reloadRowsAtIndexPaths:@[self.selectedIndexpath] withRowAnimation:NO];
-            NSLog(@"下载%@",complete ? @"完成" : @"失败");
+            if (complete) {
+                NSLog(@"下载完成");
+                [self refreshSongModelArrary];
+            } else {
+                NSLog(@"下载失败");
+            }
         }];
     }
 }
@@ -330,13 +353,20 @@
 {
     NSIndexPath *indexpath = [self.playListTable indexPathForCell:cell];
     SYSongModel *model = self.songModelArrary[indexpath.row];
+    
+    NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
     if (model.downloading == NO) {
-        [model prepareDownload:^(float progress) {
+        [model prepareDownloadToFile:dirPath onDownloading:^(float progress) {
             NSLog(@"downloading:%.1f%%",progress * 100);
             [self.playListTable reloadRowsAtIndexPaths:@[indexpath] withRowAnimation:NO];
         } onComplete:^(BOOL complete) {
             [self.playListTable reloadRowsAtIndexPaths:@[indexpath] withRowAnimation:NO];
-            NSLog(@"下载%@",complete ? @"完成" : @"失败");
+            if (complete) {
+                NSLog(@"下载完成");
+                [self refreshSongModelArrary];
+            } else {
+                NSLog(@"下载失败");
+            }
         }];
     }
 }

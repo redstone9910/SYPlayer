@@ -13,11 +13,22 @@
 
 @interface SYSongModel ()
 /** 开始下载 */
--(void)startDownload:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock;
+-(void)startDownloadToFile:(NSString *)dirPath onDownloading:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock;
 @property (strong, nonatomic) MKNetworkOperation *downloadOperation;
 @end
 
 @implementation SYSongModel
+
+-(void)setMp3URL:(NSString *)mp3URL
+{
+    _mp3URL = mp3URL;
+    
+    if([[NSFileManager defaultManager]fileExistsAtPath:self.mp3URL])
+    {
+        self.downloading = 1;
+        self.downloadProgress = 1;
+    }
+}
 
 /** 通过字典创建 */
 +(instancetype)songModelWithDict:(NSDictionary *)dict
@@ -32,20 +43,37 @@
     }
     return self;
 }
+/** model转dic */
+-(NSDictionary *)dictFromSongModel
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
--(void)prepareDownload:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock
+    [dict setObject:self.mp3URL forKey:@"mp3URL"];
+    [dict setObject:[NSNumber numberWithBool:self.isPlaying] forKey:@"playing"];
+    [dict setObject:self.songName forKey:@"songName"];
+    [dict setObject:[NSNumber numberWithInt:self.downloadProgress] forKey:@"downloadProgress"];
+    [dict setObject:[NSNumber numberWithInt:self.isDownloading] forKey:@"downloading"];
+    
+    return [dict copy];
+}
+-(void)prepareDownloadToFile:(NSString *)dirPath onDownloading:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock
 {
     if ([self.mp3URL isEqualToString:@""]) {
-        [MIBServer getLogonMD5WithName:@"wangwu" password:@"ww" fileName:self.songName onComplete:^(NSString *filePath) {
-            self.mp3URL = filePath;
-            [self startDownload:downloadingBlock onComplete:completeBlock];
+        [MIBServer getLogonMD5WithName:@"wangwu" password:@"ww" fileName:self.songName onComplete:^(NSString *fileURL) {
+            if (fileURL == nil)
+            {
+                completeBlock(NO);
+                return;
+            }
+            self.mp3URL = fileURL;
+            [self startDownloadToFile:dirPath onDownloading:downloadingBlock onComplete:completeBlock];
         }];
     }else{
-        [self startDownload:downloadingBlock onComplete:completeBlock];
+        [self startDownloadToFile:dirPath onDownloading:downloadingBlock onComplete:completeBlock];
     }
 }
 
--(void)startDownload:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock
+-(void)startDownloadToFile:(NSString *)dirPath onDownloading:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock
 {
     __weak SYSongModel * weakSelf = self;
     
@@ -53,8 +81,12 @@
     downloadingBlock(0);
     
     NSString *urlStr = [self.mp3URL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-#warning 下载到"第x册"目录。更新plist文件（播放时找不到）。
-    NSString *downloadPath = [[catchePath stringByAppendingPathComponent:self.songName] stringByAppendingString:@".mp3"];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:NO attributes:nil error:nil];
+    }
+    NSString *downloadPath = [[dirPath stringByAppendingPathComponent:self.songName] stringByAppendingString:@".mp3.download"];
+    
     self.downloadOperation = [[[MKDownloader alloc] init] downloadFatAssFileFrom:urlStr toFile:downloadPath];
     [self.downloadOperation onDownloadProgressChanged:^(double progress) {
         self.downloadProgress = progress;
@@ -62,8 +94,22 @@
     }];
     
     [self.downloadOperation addCompletionHandler:^(MKNetworkOperation *completedOperation) {
-        weakSelf.downloadProgress = 1;
-        completeBlock(YES);
+        //重命名文件
+        NSString *mp3Path = [downloadPath stringByReplacingOccurrencesOfString:@".download" withString:@""];
+        [[NSFileManager defaultManager] copyItemAtPath:downloadPath toPath:mp3Path error:nil];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:mp3Path]) {
+            [[NSFileManager defaultManager] removeItemAtPath:downloadPath error:nil];
+            
+            weakSelf.downloadProgress = 1;
+            weakSelf.mp3URL = mp3Path;
+            //下载LRC文件
+            NSString *lrcURL = [urlStr stringByReplacingOccurrencesOfString:@".mp3" withString:@".lrc"];
+            NSString *lrcPath = [mp3Path stringByReplacingOccurrencesOfString:@".mp3" withString:@".lrc"];
+            weakSelf.downloadOperation = [[[MKDownloader alloc] init] downloadFatAssFileFrom:lrcURL toFile:lrcPath];
+            completeBlock(YES);
+        } else {
+            completeBlock(NO);
+        }
     } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
         weakSelf.downloadProgress = 0;
         completeBlock(NO);

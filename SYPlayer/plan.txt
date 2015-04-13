@@ -3,3 +3,5 @@ http://www.xyuan360.com/logon.php
 2.发送MD5加密文件名验证请求，正确则返回下载地址URL(exp. http://www.xyuan360.com/downloads/xxxx.mp3)
 此处需要服务器端按照文件名-MD5对应列表检索出文件名，并搜索对应文件的路径。
 3.开始下载
+屏幕适配
+修正LRCView

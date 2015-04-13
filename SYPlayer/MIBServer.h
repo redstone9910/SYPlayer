@@ -10,7 +10,7 @@
 
 @interface MIBServer : NSObject
 
-typedef void (^MIBCompleteBlock)(NSString *filePath);
+typedef void (^MIBCompleteBlock)(NSString *fileURL);
 
 /** Get方法登录服务器 */
 +(void)getLogonWithName:(NSString *)userName password:(NSString *)userPWD fileName:(NSString *)fileName onComplete:(MIBCompleteBlock)complete;

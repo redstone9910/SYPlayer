@@ -26,7 +26,9 @@ typedef void(^MIBSongDownloadingBlock)(float progress);
 /** 通过字典初始化 */
 +(instancetype) songModelWithDict:(NSDictionary*)dict;
 /** 准备开始下载 */
--(void)prepareDownload:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock;
+-(void)prepareDownloadToFile:(NSString *)dirPath onDownloading:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock;
 /** 通过歌曲名数组创建Plist文件 */
 +(NSString *) songModelArrayWithFileNameArray:(NSArray *)nameArray withPlistFileName:(NSString *)plist atPath:(NSString *)rootPath;
+/** model转dic */
+-(NSDictionary *)dictFromSongModel;
 @end

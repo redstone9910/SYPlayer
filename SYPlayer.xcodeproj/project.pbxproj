@@ -30,7 +30,6 @@
 		52B3B36F1ABF881B00C574A8 /* SYSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B3B36D1ABF881B00C574A8 /* SYSongCell.m */; };
 		52B3B3701ABF881B00C574A8 /* SYSongCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 52B3B36E1ABF881B00C574A8 /* SYSongCell.xib */; };
 		52B3B3731ABFB79D00C574A8 /* SYSongModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B3B3721ABFB79D00C574A8 /* SYSongModel.m */; };
-		52B3B3751ABFC20900C574A8 /* PlayList.plist in Resources */ = {isa = PBXBuildFile; fileRef = 52B3B3741ABFC20900C574A8 /* PlayList.plist */; };
 		52B6B4031ABC5E9B000461BF /* MIBRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B6B4021ABC5E9B000461BF /* MIBRootViewController.m */; };
 		52B6CC4D1A9BF53D00E043C0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B6CC4C1A9BF53D00E043C0 /* main.m */; };
 		52B6CC501A9BF53D00E043C0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B6CC4F1A9BF53D00E043C0 /* AppDelegate.m */; };
@@ -87,7 +86,6 @@
 		52B3B36E1ABF881B00C574A8 /* SYSongCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SYSongCell.xib; sourceTree = "<group>"; };
 		52B3B3711ABFB79D00C574A8 /* SYSongModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYSongModel.h; sourceTree = "<group>"; };
 		52B3B3721ABFB79D00C574A8 /* SYSongModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYSongModel.m; sourceTree = "<group>"; };
-		52B3B3741ABFC20900C574A8 /* PlayList.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PlayList.plist; sourceTree = "<group>"; };
 		52B6B4011ABC5E9B000461BF /* MIBRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIBRootViewController.h; sourceTree = "<group>"; };
 		52B6B4021ABC5E9B000461BF /* MIBRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIBRootViewController.m; sourceTree = "<group>"; };
 		52B6CC471A9BF53D00E043C0 /* SYPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SYPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -246,7 +244,6 @@
 				522BB89E1ACD6A1100E834A4 /* 第二册 */,
 				522BB7181ACD321A00E834A4 /* nec_mp3_file_list.txt */,
 				522ACD571ADA1D3100F12819 /* plan.txt */,
-				52B3B3741ABFC20900C574A8 /* PlayList.plist */,
 				52B6CC571A9BF53D00E043C0 /* Images.xcassets */,
 				52B6CC4E1A9BF53D00E043C0 /* AppDelegate.h */,
 				52B6CC4F1A9BF53D00E043C0 /* AppDelegate.m */,
@@ -368,7 +365,6 @@
 				52B6CC561A9BF53D00E043C0 /* Main.storyboard in Resources */,
 				522694CC1AD79065003C2EFF /* song_list_第一册.plist in Resources */,
 				52B6CC5B1A9BF53D00E043C0 /* LaunchScreen.xib in Resources */,
-				52B3B3751ABFC20900C574A8 /* PlayList.plist in Resources */,
 				52B6CC581A9BF53D00E043C0 /* Images.xcassets in Resources */,
 				522BB7191ACD321A00E834A4 /* nec_mp3_file_list.txt in Resources */,
 				522694C31AD54373003C2EFF /* root.plist in Resources */,
