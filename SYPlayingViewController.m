@@ -14,6 +14,8 @@
 #import "SYSongModel.h"
 #import "MIBServer.h"
 #import "UIImageView+WebCache.h"
+#import "Reachability.h"
+#import "UIAlertView+Blocks.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -66,6 +68,10 @@
 @property (nonatomic,strong) NSIndexPath *selectedIndexpath;
 /** 下载提示窗口 */
 @property (nonatomic,strong) UIAlertView * downloadAlert;
+/** 下载 */
+-(void)downloadToDir:(NSString *)dirPath OnModel:(SYSongModel *)model onIndexPath:(NSIndexPath *)indexPath;
+/** 下载（带WIFI检测） */
+-(void)downloadWithWifiCheckToDir:(NSString *)dirPath OnModel:(SYSongModel *)model onIndexPath:(NSIndexPath *)indexPath;
 @end
 
 @implementation SYPlayingViewController
@@ -74,7 +80,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 #warning 应当验证plist文件
-    NSString *path = [catchePath stringByAppendingPathComponent:[NSString stringWithFormat:@"song_list_%@.plist",self.playListModel.lessonTitle]];
+    NSString *path = [catchePath stringByAppendingPathComponent:[NSString stringWithFormat:@"song_list0_%@.plist",self.playListModel.lessonTitle]];
     if(![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         path = [SYSongModel songModelArrayWithFileNameArray:self.playListModel.songList withPlistFileName:[NSString stringWithFormat:@"song_list_%@.plist",self.playListModel.lessonTitle] atPath:self.playListModel.lessonTitle];
     }
@@ -120,6 +126,7 @@
     
     [self.view bringSubviewToFront:self.menuBtn];
     [self.view bringSubviewToFront:self.favoriteBtn];
+
     if (!self.progressUpdateTimer) {
         self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.1
                                                                         target:self
@@ -197,7 +204,8 @@
         if (self.playerConsole.timeTotalInSecond != timeTotle) {
             self.playerConsole.timeTotalInSecond = timeTotle;
         }
-        self.playerConsole.timeProgressInSecond = cur.minute * 60 + cur.second;
+        self.playerConsole.timeProgressInSecond = cur.playbackTimeInSeconds;
+        self.lrcView.timeProgressInSecond = cur.playbackTimeInSeconds;
     }
 }
 /** 跳转到播放位置 */
@@ -208,6 +216,39 @@
     
     [self.playerController.activeStream seekToPosition:pos];
 //    NSLog(@"seekToNewTime:%.1f",newTime);
+}
+
+/** 下载（带WIFI检测） */
+-(void)downloadWithWifiCheckToDir:(NSString *)dirPath OnModel:(SYSongModel *)model onIndexPath:(NSIndexPath *)indexPath
+{
+    Reachability *wifiChecker = [Reachability reachabilityForInternetConnection];
+    if ([wifiChecker isReachableViaWiFi]) {
+        [self downloadToDir:dirPath OnModel:model onIndexPath:indexPath];
+    }else{
+        RIButtonItem *cancelButtonItem = [RIButtonItem itemWithLabel:@"算了暂时不下载啦" action:^{
+        }];
+        RIButtonItem *okButtonItem = [RIButtonItem itemWithLabel:@"我是土豪继续下载" action:^{
+            [self downloadToDir:dirPath OnModel:model onIndexPath:indexPath];
+        }];
+        
+        UIAlertView *wifiAlert = [[UIAlertView alloc] initWithTitle:@"警告!木有WiFi!" message:@"继续下载可能会产生流量费用哦！" cancelButtonItem:cancelButtonItem otherButtonItems:okButtonItem, nil];
+        [wifiAlert show];
+    }
+}
+/** 下载 */
+-(void)downloadToDir:(NSString *)dirPath OnModel:(SYSongModel *)model onIndexPath:(NSIndexPath *)indexPath
+{
+    [model prepareDownloadToFile:dirPath onDownloading:^(float progress) {
+        [self.playListTable reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:NO];
+    } onComplete:^(BOOL complete) {
+        [self.playListTable reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:NO];
+        if (complete) {
+            [self refreshSongModelArrary];
+        } else {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"下载失败" message:@"貌似网络不给力呀亲╭(╯3╰)╮" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alert show];
+        }
+    }];
 }
 #pragma mark - SYPlayerConsoleDelegate
 /** 下一首 */
@@ -328,18 +369,7 @@
         SYSongModel *model = self.songModelArrary[self.selectedIndexpath.row];
         
         NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
-        [model prepareDownloadToFile:dirPath onDownloading:^(float progress) {
-            NSLog(@"downloading:%.1f%%",progress * 100);
-            [self.playListTable reloadRowsAtIndexPaths:@[self.selectedIndexpath] withRowAnimation:NO];
-        } onComplete:^(BOOL complete) {
-            [self.playListTable reloadRowsAtIndexPaths:@[self.selectedIndexpath] withRowAnimation:NO];
-            if (complete) {
-                NSLog(@"下载完成");
-                [self refreshSongModelArrary];
-            } else {
-                NSLog(@"下载失败");
-            }
-        }];
+        [self downloadWithWifiCheckToDir:dirPath OnModel:model onIndexPath:self.selectedIndexpath];
     }
 }
 
@@ -351,18 +381,7 @@
     
     NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
     if (model.downloading == NO) {
-        [model prepareDownloadToFile:dirPath onDownloading:^(float progress) {
-            NSLog(@"downloading:%.1f%%",progress * 100);
-            [self.playListTable reloadRowsAtIndexPaths:@[indexpath] withRowAnimation:NO];
-        } onComplete:^(BOOL complete) {
-            [self.playListTable reloadRowsAtIndexPaths:@[indexpath] withRowAnimation:NO];
-            if (complete) {
-                NSLog(@"下载完成");
-                [self refreshSongModelArrary];
-            } else {
-                NSLog(@"下载失败");
-            }
-        }];
+        [self downloadWithWifiCheckToDir:dirPath OnModel:model onIndexPath:indexpath];
     }
 }
 @end

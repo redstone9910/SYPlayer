@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "BB45C971F6A090E2A30609A4"
-               BuildableName = "libPods-FreeStreamer.a"
-               BlueprintName = "Pods-FreeStreamer"
+               BlueprintIdentifier = "7D1993ABEDD127EC31F4B892"
+               BuildableName = "libPods-UIAlertView-Blocks.a"
+               BlueprintName = "Pods-UIAlertView-Blocks"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

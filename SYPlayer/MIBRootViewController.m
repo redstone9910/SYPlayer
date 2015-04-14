@@ -10,6 +10,9 @@
 #import "SYPlayingViewController.h"
 #import "SYPlayListModel.h"
 
+#warning 屏幕适配
+#warning 广告
+#warning 统计
 @interface MIBRootViewController ()
 - (IBAction)lesson1BtnClick;
 - (IBAction)lesson2BtnClick;

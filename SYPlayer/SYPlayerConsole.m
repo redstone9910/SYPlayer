@@ -46,7 +46,7 @@
 - (IBAction)progressTouchUp;
 
 /** 正在滑动进度条 */
-@property (nonatomic,assign) BOOL playSliderChanging;
+@property (nonatomic,assign) BOOL playSliderDraging;
 
 /** 播放模式图片数组 */
 @property (nonatomic,strong) NSArray * playModesAndImages;
@@ -126,19 +126,26 @@
     }
 }
 
-/** 拖动进度条 */
-- (IBAction)progressChanged {
-    self.timeProgressInSecond = self.timeTotalInSecond * self.playSlider.value;
-}
-
 /** 开始拖动进度条，不允许更改value */
 - (IBAction)progressTouchDown {
-    self.playSliderChanging = YES;
+    self.playSliderDraging = YES;
+}
+
+/** 拖动进度条 */
+- (IBAction)progressChanged {
+    if(self.playSliderDraging)
+    {
+        self.timeProgressInSecond = self.timeTotalInSecond * self.playSlider.value;
+        
+        if ([self.delegate respondsToSelector:@selector(playerConsoleProgressChanged:)]) {
+            [self.delegate playerConsoleProgressChanged:self];
+        }
+    }
 }
 
 /** 拖动进度条结束，允许更改value */
 - (IBAction)progressTouchUp {
-    self.playSliderChanging = NO;
+    self.playSliderDraging = NO;
 }
 
 /** 设定总时长并设定标签 */
@@ -154,10 +161,8 @@
 {
     _timeProgressInSecond = timeProgressInSecond;
     self.timeProgress.text = [NSString stringFromTime:self.timeProgressInSecond];
-    if(!self.playSliderChanging) self.playSlider.value = (float)self.timeProgressInSecond / (float)self.timeTotalInSecond;
-    
-    if ([self.delegate respondsToSelector:@selector(playerConsoleProgressChanged:)]) {
-        [self.delegate playerConsoleProgressChanged:self];
+    if(!self.playSliderDraging){
+        self.playSlider.value = self.timeProgressInSecond / self.timeTotalInSecond;
     }
 }
 /** 更新背景图片 */
@@ -174,7 +179,7 @@
     [self.playSlider setThumbImage:[UIImage imageNamed:@"dot"] forState:UIControlStateNormal];
     self.playSlider.maximumTrackTintColor = [UIColor blackColor];
     self.playSlider.minimumTrackTintColor = [UIColor lightGrayColor];
-    self.playSliderChanging = NO;//没有正在拖动
+    self.playSliderDraging = NO;//没有正在拖动
     //初始化变量
     if (self.playModesAndImages == nil) {
         NSArray *imgNameArray = @[@"mode_repeat",@"mode_shuffle",@"mode_single_repeat"];

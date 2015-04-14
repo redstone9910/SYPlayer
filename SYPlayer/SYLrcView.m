@@ -5,7 +5,7 @@
 //  Created by YinYanhui on 15-3-22.
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
-#warning 2.滑动过快时不能刷新全部行字体 4.长度超过屏幕宽度时的处理
+#warning 4.长度超过屏幕宽度时的处理
 #import "SYLrcView.h"
 #import "NSString+Tools.h"
 
@@ -70,31 +70,36 @@
 -(void)setTimeProgressInSecond:(float)timeProgressInSecond
 {
     _timeProgressInSecond = timeProgressInSecond;
-#warning 歌词同步差一行
     if (!self.isDragging) {
-        for (long index = self.lrcLineArray.count - 1; index > 0; index --) {
-            NSArray *ary1 = self.lrcLineArray[index];
-            NSString *str1 = ary1[0];
-            float time1 = [self timeWithString:str1];
-            
-            float lableH = [NSString heightWithFont:self.lrcFont] + 10;
-            if (timeProgressInSecond >= time1) {
-                self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, index * lableH);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            for (long index = self.lrcLineArray.count - 1; index > -1; index --) {
+                NSArray *ary1 = self.lrcLineArray[index];
+                NSString *str1 = ary1[0];
+                float time1 = [self timeWithString:str1];
                 
-                UILabel *lable =  self.lrcLableArray[index];
-                lable.font = self.lrcCurrentFont;
-                if (index > 0) {
-                    UILabel *lable =  self.lrcLableArray[index - 1];
-                    lable.font = self.lrcPasteFont;
+                float lableH = [NSString heightWithFont:self.lrcFont] + 10;
+                if (timeProgressInSecond >= time1) {
+                    self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, index * lableH);
+                    
+                    UILabel *lable =  self.lrcLableArray[index];
+                    lable.font = self.lrcCurrentFont;
+                    if (index > 0) {
+                        for (long i = index; i > 0; i --) {
+                            UILabel *lable =  self.lrcLableArray[i - 1];
+                            lable.font = self.lrcPasteFont;
+                        }
+                    }
+                    if (index < self.lrcLineArray.count - 1) {
+                        for (long i = index; i < self.lrcLineArray.count - 1; i ++) {
+                            UILabel *lable =  self.lrcLableArray[i + 1];
+                            lable.font = self.lrcFont;
+                        }
+                    }
+                    
+                    break;
                 }
-                if (index < self.lrcLineArray.count - 1) {
-                    UILabel *lable =  self.lrcLableArray[index + 1];
-                    lable.font = self.lrcFont;
-                }
-                
-                break;
             }
-        }
+        });
     }
 }
 

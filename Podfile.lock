@@ -8,12 +8,14 @@ PODS:
   - SDWebImage (3.7.2):
     - SDWebImage/Core (= 3.7.2)
   - SDWebImage/Core (3.7.2)
+  - UIAlertView-Blocks (1.0)
 
 DEPENDENCIES:
   - FreeStreamer (~> 2.12.5)
   - MBProgressHUD (~> 0.9.1)
   - MKNetworkKit
   - SDWebImage (~> 3.7.2)
+  - UIAlertView-Blocks
 
 SPEC CHECKSUMS:
   FreeStreamer: ed90a09e6a9db752a469722c5bfa549b81f0b539
@@ -21,5 +23,6 @@ SPEC CHECKSUMS:
   MKNetworkKit: 60ad3c83b62183e40ba75ce772c9427c25b520de
   Reachability: dd9aa4fb6667b9f787690a74f53cb7634ce99893
   SDWebImage: 71b7cdc1d1721d6a82ed62889030225f2c249e29
+  UIAlertView-Blocks: 7904744fca618afbd2ec646608924f5e69d5acd1
 
 COCOAPODS: 0.35.0
