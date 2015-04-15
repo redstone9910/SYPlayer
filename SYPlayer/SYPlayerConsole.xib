@@ -69,6 +69,10 @@
                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" id="qBf-wR-gAs" userLabel="BufferProgress">
+                    <rect key="frame" x="46" y="27" width="225" height="2"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </progressView>
                 <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" id="cY2-zm-B1d" userLabel="PlaySlider">
                     <rect key="frame" x="46" y="12" width="225" height="31"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -91,18 +95,27 @@
                         <action selector="playBtnClick" destination="8Ux-rI-zbv" eventType="touchUpInside" id="k1F-mj-udp"/>
                     </connections>
                 </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="q5s-NH-rIX" userLabel="StatusLabel">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="backGroundImg" destination="7it-Vk-TR3" id="b29-gi-6uT"/>
+                <outlet property="bufferProgressIndicator" destination="qBf-wR-gAs" id="C7T-Wg-P3s"/>
                 <outlet property="nextBtn" destination="9Zg-q7-12g" id="F9v-qr-v8H"/>
                 <outlet property="playBtn" destination="0zW-ss-quj" id="gMt-bQ-dVb"/>
                 <outlet property="playModeBtn" destination="OZi-E0-tgq" id="Yxa-hb-auR"/>
                 <outlet property="playSlider" destination="cY2-zm-B1d" id="RAy-3K-OV4"/>
                 <outlet property="powerBtn" destination="sWL-yn-to6" id="7Ll-dB-gbg"/>
                 <outlet property="prevBtn" destination="HVn-Qr-pT6" id="WsV-AH-7SS"/>
+                <outlet property="statusLabel" destination="q5s-NH-rIX" id="IEJ-b5-ma2"/>
                 <outlet property="timeProgress" destination="DWp-Ru-6m0" id="DX2-VO-OJ4"/>
                 <outlet property="timeTotal" destination="Zhm-NB-eFA" id="fj4-UO-cwZ"/>
             </connections>

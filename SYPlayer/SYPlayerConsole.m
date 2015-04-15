@@ -16,6 +16,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *timeProgress;
 /** 播放进度 */
 @property (weak, nonatomic) IBOutlet UISlider *playSlider;
+/** 缓冲进度 */
+@property (weak, nonatomic) IBOutlet UIProgressView *bufferProgressIndicator;
 /** 背景图片 */
 @property (weak, nonatomic) IBOutlet UIImageView *backGroundImg;
 /** 播放模式按钮 */
@@ -28,6 +30,10 @@
 @property (weak, nonatomic) IBOutlet UIButton *prevBtn;
 /** 下一首 */
 @property (weak, nonatomic) IBOutlet UIButton *nextBtn;
+/** 状态 */
+@property (weak, nonatomic) IBOutlet UILabel *statusLabel;
+
+
 /** 改变播放模式 */
 - (IBAction)playModeClick;
 /** 退出 */
@@ -63,7 +69,18 @@
     
     return console;
 }
-
+/** 设定buffer进度并更新View */
+-(void)setBufferProgress:(float)bufferProgress
+{
+    _bufferProgress = bufferProgress;
+    self.bufferProgressIndicator.progress = self.bufferProgress;
+}
+/** 设定status并更新label */
+-(void)setStatusText:(NSString *)statusText
+{
+    _statusText = statusText;
+    self.statusLabel.text = self.statusText;
+}
 /** 改变播放模式按钮按下 */
 - (IBAction)playModeClick {
     switch (self.playMode) {
@@ -110,8 +127,19 @@
 -(void)setPlaying:(BOOL)playing
 {
     _playing = playing;
-    //初始化播放/暂停
+    if(self.isPlaying) self.stopped = NO;
     [self.playBtn setImage:[UIImage imageNamed:self.isPlaying ? @"btn_pause" : @"btn_play"] forState:UIControlStateNormal];
+}
+
+-(void)setStopped:(BOOL)stopped
+{
+    _stopped = stopped;
+    if (self.isStopped) {
+        self.timeTotalInSecond = 0;
+        self.playBtn.enabled = NO;
+    }else{
+        self.playBtn.enabled = YES;
+    }
 }
 /** 上一首 */
 - (IBAction)prevBtnClick {

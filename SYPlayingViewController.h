@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "SYPlayListModel.h"
+@class FSStreamConfiguration;
 
 @interface SYPlayingViewController : UIViewController
 @property (nonatomic,strong) SYPlayListModel * playListModel;
+@property (nonatomic,strong) FSStreamConfiguration * configuration;
 @end

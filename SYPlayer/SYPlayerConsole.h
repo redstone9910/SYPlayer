@@ -44,10 +44,16 @@ typedef enum playModeState
 @property (nonatomic,assign) float timeProgressInSecond;
 /** 正在播放/暂停 */
 @property (nonatomic,assign,getter=isPlaying) BOOL playing;
+/** 停止 */
+@property (nonatomic,assign,getter=isStopped) BOOL stopped;
 /** console背景图片 */
 @property (nonatomic,strong) UIImage * backgroundImage;
 /** 当前播放模式 */
 @property (nonatomic,assign) playModeState playMode;
+/** 缓冲进度值 */
+@property (nonatomic,assign) float bufferProgress;
+/** status字符串 */
+@property (nonatomic,copy) NSString * statusText;
 
 /** 代理,传递按钮事件 */
 @property(weak,nonatomic) id <SYPlayerConsoleDelegate> delegate;
