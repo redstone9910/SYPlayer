@@ -656,7 +656,10 @@
     
     if (model.downloadProgress < 1)
     {
-        [model findPath:self.playListModel.lessonTitle];
+#warning 此处保存更新plist文件
+        if([model findPath:self.playListModel.lessonTitle]){
+            [self refreshSongModelArrary];
+        }
         long index = [self.songModelArrary indexOfObject:model];
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
         [self.playListTable reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:NO];
@@ -846,7 +849,9 @@
     SYSongCell *cell = [SYSongCell cellWithTableView:tableView];
     SYSongModel *model = self.songModelArrary[indexPath.row];
     if (model.downloadProgress < 1){
-        [model findPath:self.playListModel.lessonTitle];
+        if([model findPath:self.playListModel.lessonTitle]){
+            [self refreshSongModelArrary];
+        }
     }
     cell.playListData = model;
     cell.delegate = self;
