@@ -37,6 +37,7 @@
 		52B6CC581A9BF53D00E043C0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52B6CC571A9BF53D00E043C0 /* Images.xcassets */; };
 		52B6CC5B1A9BF53D00E043C0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 52B6CC591A9BF53D00E043C0 /* LaunchScreen.xib */; };
 		52B6CC671A9BF53D00E043C0 /* SYPlayerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B6CC661A9BF53D00E043C0 /* SYPlayerTests.m */; };
+		52B8A7161ADF3870000270CB /* 第一册 in Resources */ = {isa = PBXBuildFile; fileRef = 52B8A7151ADF3870000270CB /* 第一册 */; };
 		CA50C99333C41E2EBAF497B9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6782EEA4628A06A5D583C063 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -99,6 +100,7 @@
 		52B6CC601A9BF53D00E043C0 /* SYPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SYPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		52B6CC651A9BF53D00E043C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52B6CC661A9BF53D00E043C0 /* SYPlayerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SYPlayerTests.m; sourceTree = "<group>"; };
+		52B8A7151ADF3870000270CB /* 第一册 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "第一册"; sourceTree = "<group>"; };
 		6782EEA4628A06A5D583C063 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1BA314FB55BFFFFDDB77F2E /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -237,6 +239,7 @@
 			isa = PBXGroup;
 			children = (
 				522694C51AD79065003C2EFF /* song_list_第二册.plist */,
+				52B8A7151ADF3870000270CB /* 第一册 */,
 				522694C61AD79065003C2EFF /* song_list_第三册.plist */,
 				522694C71AD79065003C2EFF /* song_list_第四册.plist */,
 				522694C81AD79065003C2EFF /* song_list_第一册.plist */,
@@ -359,6 +362,7 @@
 				52B3B3691ABE4DC800C574A8 /* SYLrcView.xib in Resources */,
 				522ACD581ADA1D3100F12819 /* plan.txt in Resources */,
 				52B3B3701ABF881B00C574A8 /* SYSongCell.xib in Resources */,
+				52B8A7161ADF3870000270CB /* 第一册 in Resources */,
 				524B01B81ABD444F00E183CB /* SYPlayerConsole.xib in Resources */,
 				522694CB1AD79065003C2EFF /* song_list_第四册.plist in Resources */,
 				522BB89F1ACD6A1100E834A4 /* 第二册 in Resources */,

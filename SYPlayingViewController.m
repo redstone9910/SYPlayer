@@ -144,10 +144,10 @@
                 weakSelf.playerConsole.playing = NO;
                 break;
             case kFsAudioStreamBuffering:
-                NSLog(@"kFsAudioStreamBuffering");
+//                NSLog(@"kFsAudioStreamBuffering");
                 break;
             case kFsAudioStreamSeeking:
-                NSLog(@"kFsAudioStreamSeeking");
+//                NSLog(@"kFsAudioStreamSeeking");
                 break;
             case kFsAudioStreamPlaying:
                 NSLog(@"kFsAudioStreamPlaying");
@@ -534,7 +534,7 @@
 //        [playListItemArray addObject:item];
 //    }
 //    [self.audioController playFromPlaylist:[playListItemArray copy]];
-    
+#warning 列表为空时闪退！
     SYSongModel *model = self.songModelArrary[0];
     [self playModel:model];
     
@@ -674,6 +674,7 @@
 
 -(BOOL)playModel:(SYSongModel *)model
 {
+    if(model == nil) return NO;
     if (model.downloadProgress >= 1) {
         NSString *mp3Path = model.mp3URL;
         if([mp3Path hasPrefix:@"/"]) mp3Path = [@"file://" stringByAppendingPathComponent:[mp3Path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];

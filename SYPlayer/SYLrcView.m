@@ -5,12 +5,12 @@
 //  Created by YinYanhui on 15-3-22.
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
-#warning 4.长度超过屏幕宽度时的处理
 #import "SYLrcView.h"
 #import "NSString+Tools.h"
 
 #define LRCOFFSET 0.3
 #define edgeInsets 10
+#define lineMargin 10
 
 @interface SYLrcView ()<UIScrollViewDelegate>
 
@@ -77,22 +77,22 @@
                 NSString *str1 = ary1[0];
                 float time1 = [self timeWithString:str1];
                 
-                float lableH = [NSString heightWithFont:self.lrcFont] + 10;
                 if (timeProgressInSecond >= time1) {
-                    self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, index * lableH);
+                    UILabel *label0 =  [self.lrcLableArray firstObject];
+                    UILabel *label =  self.lrcLableArray[index];
+                    label.font = self.lrcCurrentFont;
+                    self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, label.frame.origin.y - label0.frame.origin.y);
                     
-                    UILabel *lable =  self.lrcLableArray[index];
-                    lable.font = self.lrcCurrentFont;
                     if (index > 0) {
                         for (long i = index; i > 0; i --) {
-                            UILabel *lable =  self.lrcLableArray[i - 1];
-                            lable.font = self.lrcPasteFont;
+                            UILabel *label =  self.lrcLableArray[i - 1];
+                            label.font = self.lrcPasteFont;
                         }
                     }
                     if (index < self.lrcLineArray.count - 1) {
                         for (long i = index; i < self.lrcLineArray.count - 1; i ++) {
-                            UILabel *lable =  self.lrcLableArray[i + 1];
-                            lable.font = self.lrcFont;
+                            UILabel *label =  self.lrcLableArray[i + 1];
+                            label.font = self.lrcFont;
                         }
                     }
                     
@@ -115,9 +115,9 @@
     _lrcFile = lrcFile;
     
     if(self.lrcLableArray.count > 0)[self.lrcLableArray removeAllObjects];
-    for (UIView *lable in self.lrcScroll.subviews) {
-        if ([lable isKindOfClass:[UILabel class]]) {
-            [lable removeFromSuperview];
+    for (UIView *label in self.lrcScroll.subviews) {
+        if ([label isKindOfClass:[UILabel class]]) {
+            [label removeFromSuperview];
         }
     }
     
@@ -139,21 +139,33 @@
         }
         
         self.lrcLineArray = objsArray;
-        float lableH = [NSString heightWithFont:self.lrcFont] + 10;
-        self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, 0);
-        self.lrcScroll.contentSize = CGSizeMake(0, self.lrcLineArray.count * lableH + self.lrcScroll.bounds.size.height);
         
         for (int index = 0; index < self.lrcLineArray.count; index ++) {
             NSArray *timelrc = self.lrcLineArray[index];
             
-            UILabel *lable = [[UILabel alloc] initWithFrame:CGRectMake(0, self.lrcScroll.bounds.size.height * LRCOFFSET  + index * lableH,self.lrcScroll.bounds.size.width , lableH)];
-            lable.text = timelrc[1];
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.font = self.lrcFont;
+            NSString *labelText = timelrc[1];
+            float labelTextH = [labelText sizeWithFont:self.lrcFont maxSize:CGSizeMake(self.frame.size.width - edgeInsets * 2, 0)].height;
+            float labelH = lineMargin + labelTextH;
+            float labelY = self.lrcScroll.bounds.size.height * LRCOFFSET;
+            if (index > 0) {
+                UILabel *lastLabel = self.lrcLableArray[index - 1];
+                labelY = lastLabel.frame.origin.y + lastLabel.frame.size.height;
+            }
             
-            [self.lrcScroll addSubview:lable];
-            [self.lrcLableArray addObject:lable];
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, labelY, self.lrcScroll.bounds.size.width - edgeInsets * 2 , labelH)];
+            label.numberOfLines = 0;
+            label.textAlignment = NSTextAlignmentLeft;
+            label.text = labelText;
+            label.font = self.lrcFont;
+            
+            [self.lrcScroll addSubview:label];
+            [self.lrcLableArray addObject:label];
         }
+        
+        self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, 0);
+        UILabel *lastLabel = self.lrcLableArray[self.lrcLineArray.count - 1];
+        float labelY = lastLabel.frame.origin.y + lastLabel.frame.size.height;
+        self.lrcScroll.contentSize = CGSizeMake(0, labelY + self.lrcScroll.bounds.size.height * (1 - LRCOFFSET));
     }
 }
 /** 分离时间和歌词 */
@@ -216,7 +228,7 @@
 -(void)layoutSubviews
 {
     [super layoutSubviews];
-    self.lrcScroll.frame = self.frame;
+    self.lrcScroll.frame = self.bounds;
     self.lrcScroll.contentInset = UIEdgeInsetsMake(edgeInsets, edgeInsets, edgeInsets, edgeInsets);
 }
 /** 文件转为lrc字符串 */
@@ -238,23 +250,38 @@
     static int last_index = 0;
     
     if (self.isDragging) {
-        float lableH = [NSString heightWithFont:self.lrcFont] + 10;
+//        float labelH = [NSString heightWithFont:self.lrcFont] + 10;
         //取出对应位置的label并设定字体
-        int index = self.lrcScroll.contentOffset.y / lableH;
-        if(index > self.lrcLineArray.count - 1) index = (int)(self.lrcLineArray.count - 1);
+//        int index = self.lrcScroll.contentOffset.y / labelH;
+//        if(index > self.lrcLineArray.count - 1) index = (int)(self.lrcLineArray.count - 1);
+        
+        int index = 0;
+        float offset = self.lrcScroll.contentOffset.y + self.lrcScroll.frame.size.height * LRCOFFSET;
+        for (int i = 0; i < self.lrcLableArray.count; i ++) {
+            UILabel *label = self.lrcLableArray[i];
+            UILabel *nextLabel = label;
+            if (i < self.lrcLableArray.count - 1) {
+                nextLabel = self.lrcLableArray[i + 1];
+            }
+            
+            if ((offset >= label.frame.origin.y) && (offset <= nextLabel.frame.origin.y)) {
+                index = i;
+                break;
+            }
+        }
         
         if (last_index != index) {
             last_index = index;
             
-            UILabel *lable =  self.lrcLableArray[index];
-            lable.font = self.lrcCurrentFont;
+            UILabel *label =  self.lrcLableArray[index];
+            label.font = self.lrcCurrentFont;
             if (index > 0) {
-                UILabel *lable =  self.lrcLableArray[index - 1];
-                lable.font = self.lrcPasteFont;
+                UILabel *label =  self.lrcLableArray[index - 1];
+                label.font = self.lrcPasteFont;
             }
             if (index < self.lrcLineArray.count - 1) {
-                UILabel *lable =  self.lrcLableArray[index + 1];
-                lable.font = self.lrcFont;
+                UILabel *label =  self.lrcLableArray[index + 1];
+                label.font = self.lrcFont;
             }
             //取出label的time
             NSArray *ary1 = self.lrcLineArray[index];
