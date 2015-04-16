@@ -19,17 +19,55 @@
 
 @implementation SYSongModel
 
--(void)setMp3URL:(NSString *)mp3URL
+-(NSString *)mp3URL
 {
-    _mp3URL = mp3URL;
-    
-    if([[NSFileManager defaultManager]fileExistsAtPath:self.mp3URL])
-    {
-        self.downloading = 1;
-        self.downloadProgress = 1;
+    if ([_mp3URL hasPrefix:@"/"]) {
+        if([[NSFileManager defaultManager]fileExistsAtPath:_mp3URL])
+        {
+            self.downloading = YES;
+            self.downloadProgress = 1;
+        }else {
+            _mp3URL = @"";
+            self.downloading = NO;
+            self.downloadProgress = 0;
+        }
     }
+    return _mp3URL;
 }
 
+-(float)downloadProgress
+{
+    [self mp3URL];
+    return _downloadProgress;
+}
+
+-(BOOL)isDownloading
+{
+    [self mp3URL];
+    return _downloading;
+}
+/** 根据歌曲名查找文件 */
+-(BOOL)findPath:(NSString *)rootPath
+{
+    NSString *song = [self.songName stringByAppendingString:@".mp3"];
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSString *path = [[[bundle resourcePath] stringByAppendingPathComponent:rootPath] stringByAppendingPathComponent:song];//查找resource目录
+    if([[NSFileManager defaultManager]fileExistsAtPath:path]){
+        self.mp3URL = path;
+        return YES;
+    }else{
+        path = [[catchePath stringByAppendingPathComponent:rootPath] stringByAppendingPathComponent:song];//查找沙盒Document目录
+        if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+        {
+            self.mp3URL = path;
+            return YES;
+        }
+        else
+        {
+            return NO;
+        }
+    }
+}
 /** 通过字典创建 */
 +(instancetype)songModelWithDict:(NSDictionary *)dict
 {
@@ -112,6 +150,7 @@
         }
     } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
         weakSelf.downloadProgress = 0;
+        weakSelf.downloading = NO;
         completeBlock(NO);
     }];
 }

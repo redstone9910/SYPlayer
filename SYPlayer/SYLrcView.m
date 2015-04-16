@@ -8,9 +8,9 @@
 #import "SYLrcView.h"
 #import "NSString+Tools.h"
 
-#define LRCOFFSET 0.3
+#define lrcOffset 0.3
 #define edgeInsets 10
-#define lineMargin 10
+#define lineMargin 5
 
 @interface SYLrcView ()<UIScrollViewDelegate>
 
@@ -146,7 +146,7 @@
             NSString *labelText = timelrc[1];
             float labelTextH = [labelText sizeWithFont:self.lrcFont maxSize:CGSizeMake(self.frame.size.width - edgeInsets * 2, 0)].height;
             float labelH = lineMargin + labelTextH;
-            float labelY = self.lrcScroll.bounds.size.height * LRCOFFSET;
+            float labelY = self.lrcScroll.bounds.size.height * lrcOffset;
             if (index > 0) {
                 UILabel *lastLabel = self.lrcLableArray[index - 1];
                 labelY = lastLabel.frame.origin.y + lastLabel.frame.size.height;
@@ -165,7 +165,7 @@
         self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, 0);
         UILabel *lastLabel = self.lrcLableArray[self.lrcLineArray.count - 1];
         float labelY = lastLabel.frame.origin.y + lastLabel.frame.size.height;
-        self.lrcScroll.contentSize = CGSizeMake(0, labelY + self.lrcScroll.bounds.size.height * (1 - LRCOFFSET));
+        self.lrcScroll.contentSize = CGSizeMake(0, labelY + self.lrcScroll.bounds.size.height * (1 - lrcOffset));
     }
 }
 /** 分离时间和歌词 */
@@ -256,7 +256,7 @@
 //        if(index > self.lrcLineArray.count - 1) index = (int)(self.lrcLineArray.count - 1);
         
         int index = 0;
-        float offset = self.lrcScroll.contentOffset.y + self.lrcScroll.frame.size.height * LRCOFFSET;
+        float offset = self.lrcScroll.contentOffset.y + self.lrcScroll.frame.size.height * lrcOffset;
         for (int i = 0; i < self.lrcLableArray.count; i ++) {
             UILabel *label = self.lrcLableArray[i];
             UILabel *nextLabel = label;

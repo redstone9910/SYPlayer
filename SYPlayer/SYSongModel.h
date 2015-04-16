@@ -31,4 +31,6 @@ typedef void(^MIBSongDownloadingBlock)(float progress);
 +(NSString *) songModelArrayWithFileNameArray:(NSArray *)nameArray withPlistFileName:(NSString *)plist atPath:(NSString *)rootPath;
 /** model转dic */
 -(NSDictionary *)dictFromSongModel;
+/** 根据歌曲名查找文件 */
+-(BOOL)findPath:(NSString *)rootPath;
 @end
