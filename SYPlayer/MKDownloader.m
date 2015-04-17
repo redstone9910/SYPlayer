@@ -41,17 +41,17 @@
     return op;
 }
 /** 单例 */
-//+(instancetype)allocWithZone:(struct _NSZone *)zone
-//{
-//    static MKDownloader *instance = nil;
-//    static dispatch_once_t *Token;
-//    
-//    if (instance == nil) {
-//        dispatch_once(Token, ^{
-//            instance = [super allocWithZone:zone];
-//        });
-//    }
-//    return instance;
-//}
++(instancetype)allocWithZone:(struct _NSZone *)zone
+{
+    static MKDownloader *instance = nil;
+    static dispatch_once_t Token;
+    
+    if (instance == nil) {
+        dispatch_once(&Token, ^{
+            instance = [super allocWithZone:zone];
+        });
+    }
+    return instance;
+}
 
 @end

@@ -12,6 +12,7 @@
 #import "SYLrcView.h"
 #import "SYSongCell.h"
 #import "SYSongModel.h"
+#import "SYAudioController.h"
 #import "MIBServer.h"
 #import "UIImageView+WebCache.h"
 #import "Reachability.h"
@@ -49,9 +50,8 @@
 @property (nonatomic,strong) NSArray * songModelArrary;
 /** 更新songModelArrary内容到plist文件 */
 -(BOOL)refreshSongModelArrary;
-#warning 改写成单例模式
 /** 流媒体播放器 */
-@property (nonatomic,strong) FSAudioController * audioController;
+@property (nonatomic,strong) SYAudioController * audioController;
 /** 更新播放进度定时器 */
 @property (nonatomic,strong) NSTimer *progressUpdateTimer;
 
@@ -241,302 +241,15 @@
         } else if (metaData[@"StreamTitle"]) {
             [streamInfo appendString:metaData[@"StreamTitle"]];
         }
-        
-        if (metaData[@"StreamUrl"] && [metaData[@"StreamUrl"] length] > 0) {
-//            weakSelf.stationURL = [NSURL URLWithString:metaData[@"StreamUrl"]];
-            
-//            weakSelf.navigationItem.rightBarButtonItem = weakSelf.infoButton;
-        }
-        
-//        [weakSelf.statusLabel setHidden:NO];
-//        weakSelf.statusLabel.text = streamInfo;
+
         weakSelf.playerConsole.statusText = streamInfo;
         
-//        [weakSelf.stateLogger logMessageWithTimestamp:[NSString stringWithFormat:@"Meta data received: %@", streamInfo]];
     };
 
-/*
-    __weak SYPlayingViewController *weakSelf = self;
-    
-    self.audioController.onStateChange = ^(FSAudioStreamState state) {
-        switch (state) {
-            case kFsAudioStreamRetrievingURL:
-//                weakSelf.enableLogging = NO;
-                
-                [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-                
-                [weakSelf showStatus:@"Retrieving URL..."];
-                
-                weakSelf.playerConsole.statusText = @"";
-                
-//                weakSelf.progressSlider.enabled = NO;
-//                weakSelf.playButton.hidden = YES;
-//                weakSelf.pauseButton.hidden = NO;
-//                weakSelf.paused = NO;
-                weakSelf.playerConsole.playing = YES;
-                
-//                [weakSelf.stateLogger logMessageWithTimestamp:@"State change: retrieving URL"];
-                
-                break;
-                
-            case kFsAudioStreamStopped:
-//                weakSelf.enableLogging = NO;
-                
-                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-                
-                weakSelf.playerConsole.statusText = @"";
-                
-//                weakSelf.progressSlider.enabled = NO;
-//                weakSelf.playButton.hidden = NO;
-//                weakSelf.pauseButton.hidden = YES;
-//                weakSelf.paused = NO;
-                weakSelf.playerConsole.playing = YES;
-                
-//                [weakSelf.stateLogger logMessageWithTimestamp:@"State change: stopped"];
-                
-                break;
-                
-            case kFsAudioStreamBuffering: {
-//                if (weakSelf.initialBuffering) {
-//                    weakSelf.enableLogging = NO;
-//                    weakSelf.initialBuffering = NO;
-//                } else {
-//                    weakSelf.enableLogging = YES;
-//                }
-                
-                NSString *bufferingStatus = nil;
-                if (weakSelf.configuration.usePrebufferSizeCalculationInSeconds) {
-                    bufferingStatus = [[NSString alloc] initWithFormat:@"Buffering %f seconds...", weakSelf.audioController.activeStream.configuration.requiredPrebufferSizeInSeconds];
-                } else {
-                    bufferingStatus = [[NSString alloc] initWithFormat:@"Buffering %i bytes...", (weakSelf.audioController.activeStream.continuous ? weakSelf.configuration.requiredInitialPrebufferedByteCountForContinuousStream :
-                                                                                                  weakSelf.configuration.requiredInitialPrebufferedByteCountForNonContinuousStream)];
-                }
-                
-                [weakSelf showStatus:bufferingStatus];
-                
-                [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-//                weakSelf.progressSlider.enabled = NO;
-//                weakSelf.playButton.hidden = YES;
-//                weakSelf.pauseButton.hidden = NO;
-//                weakSelf.paused = NO;
-                weakSelf.playerConsole.playing = YES;
-                
-//                [weakSelf.stateLogger logMessageWithTimestamp:@"State change: buffering"];
-                
-                break;
-            }
-                
-            case kFsAudioStreamSeeking:
-//                weakSelf.enableLogging = NO;
-                
-                [weakSelf showStatus:@"Seeking..."];
-                
-                [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-//                weakSelf.progressSlider.enabled = NO;
-//                weakSelf.playButton.hidden = YES;
-//                weakSelf.pauseButton.hidden = NO;
-//                weakSelf.paused = NO;
-                weakSelf.playerConsole.playing = YES;
-                
-//                [weakSelf.stateLogger logMessageWithTimestamp:@"State change: seeking"];
-                
-                break;
-                
-            case kFsAudioStreamPlaying:
-//                weakSelf.enableLogging = YES;
-                
-#if DO_STATKEEPING
-                NSLog(@"%@", weakSelf.audioController.activeStream);
-#endif
-                
-                [weakSelf determineStationNameWithMetaData:nil];
-                
-                [weakSelf clearStatus];
-                
-                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-                
-//                weakSelf.progressSlider.enabled = YES;
-                
-                if (!weakSelf.progressUpdateTimer) {
-                    weakSelf.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.5
-                                                                                    target:weakSelf
-                                                                                  selector:@selector(updatePlaybackProgress)
-                                                                                  userInfo:nil
-                                                                                   repeats:YES];
-                }
-                
-                if (weakSelf.volumeBeforeRamping > 0) {
-                    // If we have volume before ramping set, it means we were seeked
-                    
-#if PAUSE_AFTER_SEEKING
-                    [weakSelf pause:weakSelf];
-                    weakSelf.audioController.volume = weakSelf.volumeBeforeRamping;
-                    weakSelf.volumeBeforeRamping = 0;
-                    
-                    break;
-#else
-                    weakSelf.rampStep = 1;
-                    weakSelf.rampStepCount = 5; // 50ms and 5 steps = 250ms ramp
-                    weakSelf.rampUp = true;
-                    weakSelf.postRampAction = @selector(finalizeSeeking);
-                    
-                    weakSelf.volumeRampTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 // 50ms
-                                                                                target:weakSelf
-                                                                              selector:@selector(rampVolume)
-                                                                              userInfo:nil
-                                                                               repeats:YES];
-#endif
-                }
-                [weakSelf toggleNextPreviousButtons];
-//                weakSelf.playButton.hidden = YES;
-//                weakSelf.pauseButton.hidden = NO;
-//                weakSelf.paused = NO;
-                weakSelf.playerConsole.playing = YES;
-                
-//                [weakSelf.stateLogger logMessageWithTimestamp:@"State change: playing"];
-                
-                break;
-                
-            case kFsAudioStreamFailed:
-//                weakSelf.enableLogging = YES;
-                
-                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-//                weakSelf.progressSlider.enabled = NO;
-//                weakSelf.playButton.hidden = NO;
-//                weakSelf.pauseButton.hidden = YES;
-//                weakSelf.paused = NO;
-                weakSelf.playerConsole.playing = YES;
-                
-//                [weakSelf.stateLogger logMessageWithTimestamp:@"State change: failed"];
-                
-                break;
-            case kFsAudioStreamPlaybackCompleted:
-//                weakSelf.enableLogging = NO;
-                
-                [weakSelf toggleNextPreviousButtons];
-                
-//                [weakSelf.stateLogger logMessageWithTimestamp:@"State change: playback completed"];
-                
-                break;
-                
-            case kFsAudioStreamRetryingStarted:
-//                weakSelf.enableLogging = YES;
-                
-                [weakSelf showStatus:@"Attempt to retry playback..."];
-                
-//                [weakSelf.stateLogger logMessageWithTimestamp:@"State change: retrying started"];
-                
-                break;
-                
-            case kFsAudioStreamRetryingSucceeded:
-//                weakSelf.enableLogging = YES;
-//                
-//                [weakSelf.stateLogger logMessageWithTimestamp:@"State change: retrying succeeded"];
-                
-                break;
-                
-            case kFsAudioStreamRetryingFailed:
-//                weakSelf.enableLogging = YES;
-                
-                [weakSelf showErrorStatus:@"Failed to retry playback"];
-                
-//                [weakSelf.stateLogger logMessageWithTimestamp:@"State change: retrying failed"];
-                
-                break;
-                
-            default:
-                break;
-        }
-    };
-    
-    self.audioController.onFailure = ^(FSAudioStreamError error, NSString *errorDescription) {
-        NSString *errorCategory;
-        
-        switch (error) {
-            case kFsAudioStreamErrorOpen:
-                errorCategory = @"Cannot open the audio stream: ";
-                break;
-            case kFsAudioStreamErrorStreamParse:
-                errorCategory = @"Cannot read the audio stream: ";
-                break;
-            case kFsAudioStreamErrorNetwork:
-                errorCategory = @"Network failed: cannot play the audio stream: ";
-                break;
-            case kFsAudioStreamErrorUnsupportedFormat:
-                errorCategory = @"Unsupported format: ";
-                break;
-            case kFsAudioStreamErrorStreamBouncing:
-                errorCategory = @"Network failed: cannot get enough data to play: ";
-                break;
-            default:
-                errorCategory = @"Unknown error occurred: ";
-                break;
-        }
-        
-        NSString *formattedError = [NSString stringWithFormat:@"%@ %@", errorCategory, errorDescription];
-        
-        [weakSelf.stateLogger logMessageWithTimestamp:[NSString stringWithFormat:@"Audio stream failure: %@", formattedError]];
-        
-        [weakSelf showErrorStatus:formattedError];
-    };
-    
-    self.audioController.onMetaDataAvailable = ^(NSDictionary *metaData) {
-        NSMutableString *streamInfo = [[NSMutableString alloc] init];
-        
-        [weakSelf determineStationNameWithMetaData:metaData];
-        
-        NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
-        
-        if (metaData[@"MPMediaItemPropertyTitle"]) {
-            songInfo[MPMediaItemPropertyTitle] = metaData[@"MPMediaItemPropertyTitle"];
-        } else if (metaData[@"StreamTitle"]) {
-            songInfo[MPMediaItemPropertyTitle] = metaData[@"StreamTitle"];
-        }
-        
-        if (metaData[@"MPMediaItemPropertyArtist"]) {
-            songInfo[MPMediaItemPropertyArtist] = metaData[@"MPMediaItemPropertyArtist"];
-        }
-        
-        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:songInfo];
-        
-        if (metaData[@"MPMediaItemPropertyArtist"] &&
-            metaData[@"MPMediaItemPropertyTitle"]) {
-            [streamInfo appendString:metaData[@"MPMediaItemPropertyArtist"]];
-            [streamInfo appendString:@" - "];
-            [streamInfo appendString:metaData[@"MPMediaItemPropertyTitle"]];
-        } else if (metaData[@"StreamTitle"]) {
-            [streamInfo appendString:metaData[@"StreamTitle"]];
-        }
-        
-        if (metaData[@"StreamUrl"] && [metaData[@"StreamUrl"] length] > 0) {
-            weakSelf.stationURL = [NSURL URLWithString:metaData[@"StreamUrl"]];
-            
-            weakSelf.navigationItem.rightBarButtonItem = weakSelf.infoButton;
-        }
-        
-        [weakSelf.statusLabel setHidden:NO];
-        weakSelf.playerConsole.statusText = streamInfo;
-        
-        [weakSelf.stateLogger logMessageWithTimestamp:[NSString stringWithFormat:@"Meta data received: %@", streamInfo]];
-    };
-*/
-
-//    NSMutableArray *playListItemArray = [[NSMutableArray alloc] init];
-//    for (SYSongModel *model in self.songModelArrary) {
-//        FSPlaylistItem *item = [[FSPlaylistItem alloc] init];
-//        
-//        item.title = model.songName;
-//        NSString *urlStr = [model.mp3URL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//        if ([urlStr hasPrefix:@"/"]) {
-//            urlStr = [@"file://" stringByAppendingPathComponent:urlStr];
-//        }
-//        NSURL *url = [NSURL URLWithString:urlStr];
-//        item.url = url;
-//        [playListItemArray addObject:item];
-//    }
-//    [self.audioController playFromPlaylist:[playListItemArray copy]];
-    SYSongModel *model = self.songModelArrary[0];
-    [self playModel:model];
+    if(!self.audioController.isPlaying){
+        SYSongModel *model = self.songModelArrary[0];
+        [self playModel:model];
+    }
     
     if (!self.progressUpdateTimer) {
         self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.2
@@ -654,12 +367,11 @@
 {
     if(model == nil) return NO;
     
+    if([model findPath:self.playListModel.lessonTitle]){
+        [self refreshSongModelArrary];
+    }
     if (model.downloadProgress < 1)
     {
-#warning 此处保存更新plist文件
-        if([model findPath:self.playListModel.lessonTitle]){
-            [self refreshSongModelArrary];
-        }
         long index = [self.songModelArrary indexOfObject:model];
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
         [self.playListTable reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:NO];
@@ -742,7 +454,7 @@
 {
     if(_audioController == nil)
     {
-        _audioController = [[FSAudioController alloc] init];
+        _audioController = [[SYAudioController alloc] init];
     }
     return _audioController;
 }
@@ -757,10 +469,6 @@
         [self.playListTable selectRowAtIndexPath:newIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         SYSongModel *model = self.songModelArrary[newIndexPath.row];
         [self playModel:model];
-//        if([self playModel:model])
-//        {
-//            self.selectedIndexpath = newIndexPath;
-//        }
         self.titleBtn.Opened = NO;
     }
 }
@@ -772,10 +480,6 @@
         [self.playListTable selectRowAtIndexPath:newIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         SYSongModel *model = self.songModelArrary[newIndexPath.row];
         [self playModel:model];
-//        if([self playModel:model])
-//        {
-//            self.selectedIndexpath = newIndexPath;
-//        }
         self.titleBtn.Opened = NO;
     }
 }
@@ -789,7 +493,6 @@
 }
 /** 播放/暂停状态改变 */
 -(void)playerConsolePlayingStatusChanged:(SYPlayerConsole *)console{
-//    NSLog(@"isPlaying = %d",console.isPlaying);
     if (console.isPlaying) {
         [self.audioController pause];
     }
@@ -798,7 +501,7 @@
 /** 退出键按下 */
 -(void)playerConsolePowerOff:(SYPlayerConsole *)console{
     [self dismissViewControllerAnimated:YES completion:^{
-        self.audioController = nil;
+//        self.audioController = nil;
     }];
 }
 /** 播放模式改变 */
@@ -848,11 +551,10 @@
 {
     SYSongCell *cell = [SYSongCell cellWithTableView:tableView];
     SYSongModel *model = self.songModelArrary[indexPath.row];
-    if (model.downloadProgress < 1){
-        if([model findPath:self.playListModel.lessonTitle]){
-            [self refreshSongModelArrary];
-        }
+    if([model findPath:self.playListModel.lessonTitle]){
+        [self refreshSongModelArrary];
     }
+
     cell.playListData = model;
     cell.delegate = self;
     
@@ -865,9 +567,6 @@
     self.downloadingIndexpath = indexPath;
     SYSongModel *model = self.songModelArrary[indexPath.row];
     [self playModel:model];
-//    if ([self playModel:model]) {
-//        self.selectedIndexpath = indexPath;
-//    }
 }
 
 #pragma mark UIAlertViewDelegate
