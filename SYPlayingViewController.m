@@ -128,6 +128,7 @@
     self.playListTable.delegate = self;
     self.playListTable.dataSource = self;
     
+    self.audioController = [SYAudioController sharedAudioController];
     self.audioController.delegate = self;
     
     [self.view bringSubviewToFront:self.menuBtn];
@@ -450,14 +451,14 @@
     return _songModelArrary;
 }
 /** 延迟加载audioController */
--(FSAudioController *)audioController
-{
-    if(_audioController == nil)
-    {
-        _audioController = [[SYAudioController alloc] init];
-    }
-    return _audioController;
-}
+//-(FSAudioController *)audioController
+//{
+//    if(_audioController == nil)
+//    {
+//        _audioController = [[SYAudioController alloc] init];
+//    }
+//    return _audioController;
+//}
 
 #pragma mark - SYPlayerConsoleDelegate
 

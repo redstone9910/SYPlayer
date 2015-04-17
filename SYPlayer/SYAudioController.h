@@ -9,5 +9,5 @@
 #import "FSAudioController.h"
 
 @interface SYAudioController : FSAudioController
-
++(instancetype)sharedAudioController;
 @end

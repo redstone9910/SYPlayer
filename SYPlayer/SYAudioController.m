@@ -20,4 +20,15 @@
     });
     return instance;
 }
+
++(instancetype)sharedAudioController
+{
+    static SYAudioController *instance;
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [[self alloc] init];
+    });
+    return instance;
+}
 @end
