@@ -47,25 +47,24 @@
     return _downloading;
 }
 /** 根据歌曲名查找文件 */
--(BOOL)findPath:(NSString *)rootPath
+-(BOOL)checkPathUpdate:(NSString *)rootPath
 {
     NSString *song = [self.songName stringByAppendingString:@".mp3"];
     NSBundle *bundle = [NSBundle mainBundle];
     NSString *path = [[[bundle resourcePath] stringByAppendingPathComponent:rootPath] stringByAppendingPathComponent:song];//查找resource目录
-    if([[NSFileManager defaultManager]fileExistsAtPath:path]){
+    if(![[NSFileManager defaultManager]fileExistsAtPath:path]){
+        path = [[catchePath stringByAppendingPathComponent:rootPath] stringByAppendingPathComponent:song];//查找沙盒Document目录
+        if(![[NSFileManager defaultManager] fileExistsAtPath:path])
+        {
+            path = @"";
+        }
+    }
+    
+    if(![self.mp3URL isEqualToString:path] && ![self.mp3URL hasPrefix:@"http://"]){
         self.mp3URL = path;
         return YES;
     }else{
-        path = [[catchePath stringByAppendingPathComponent:rootPath] stringByAppendingPathComponent:song];//查找沙盒Document目录
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path])
-        {
-            self.mp3URL = path;
-            return YES;
-        }
-        else
-        {
-            return NO;
-        }
+        return NO;
     }
 }
 /** 通过字典创建 */

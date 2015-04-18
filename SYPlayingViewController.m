@@ -368,7 +368,7 @@
 {
     if(model == nil) return NO;
     
-    if([model findPath:self.playListModel.lessonTitle]){
+    if([model checkPathUpdate:self.playListModel.lessonTitle]){
         [self refreshSongModelArrary];
     }
     if (model.downloadProgress < 1)
@@ -552,7 +552,7 @@
 {
     SYSongCell *cell = [SYSongCell cellWithTableView:tableView];
     SYSongModel *model = self.songModelArrary[indexPath.row];
-    if([model findPath:self.playListModel.lessonTitle]){
+    if([model checkPathUpdate:self.playListModel.lessonTitle]){
         [self refreshSongModelArrary];
     }
 
