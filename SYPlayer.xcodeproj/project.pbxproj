@@ -251,13 +251,13 @@
 		52B6CC4A1A9BF53D00E043C0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				522694C81AD79065003C2EFF /* song_list_第一册.plist */,
 				522694C51AD79065003C2EFF /* song_list_第二册.plist */,
-				52B8A7151ADF3870000270CB /* 第一册 */,
 				522694C61AD79065003C2EFF /* song_list_第三册.plist */,
 				522694C71AD79065003C2EFF /* song_list_第四册.plist */,
-				522694C81AD79065003C2EFF /* song_list_第一册.plist */,
-				522694C11AD54373003C2EFF /* root.plist */,
+				52B8A7151ADF3870000270CB /* 第一册 */,
 				522BB89E1ACD6A1100E834A4 /* 第二册 */,
+				522694C11AD54373003C2EFF /* root.plist */,
 				522BB7181ACD321A00E834A4 /* nec_mp3_file_list.txt */,
 				522ACD571ADA1D3100F12819 /* plan.txt */,
 				52B6CC571A9BF53D00E043C0 /* Images.xcassets */,

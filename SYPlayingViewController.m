@@ -25,17 +25,19 @@
 
 #import "Gloable.h"
 
+typedef void (^SYDownloadCompletion)();
+
 @interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate,UIAlertViewDelegate,SYSongCellDelegate>
-/** 菜单按钮 */
-@property (weak, nonatomic) IBOutlet UIButton *menuBtn;
+/** 全部下载按钮 */
+@property (weak, nonatomic) IBOutlet UIButton *downloadBtn;
 /** 收藏按钮 */
 @property (weak, nonatomic) IBOutlet UIButton *favoriteBtn;
-/** 菜单按钮按下 */
-- (IBAction)menuBtnClick;
-/** 收藏按钮按下 */
-- (IBAction)favoriteBtnClick;
+/** 全部下载按钮按下 */
+- (IBAction)downloadBtnClick;
+/** 后退按钮按下 */
+- (IBAction)backBtnClick;
 /** 是否已收藏 */
-@property (nonatomic,assign,getter=isFavoriteSong) BOOL favoriteSong;
+//@property (nonatomic,assign,getter=isFavoriteSong) BOOL favoriteSong;
 
 /** 播放下拉列表 */
 @property (weak, nonatomic) IBOutlet UITableView *playListTable;
@@ -73,9 +75,11 @@
 /** 下载提示窗口 */
 @property (nonatomic,strong) UIAlertView * downloadAlert;
 /** 下载 */
--(void)downloadToDir:(NSString *)dirPath OnModel:(SYSongModel *)model;
+-(void)downloadToDir:(NSString *)dirPath onModel:(SYSongModel *)model withCompletionBlock:(SYDownloadCompletion)completionBlock;
 /** 下载（带WIFI检测） */
--(void)downloadWithWifiCheckToDir:(NSString *)dirPath OnModel:(SYSongModel *)model;
+-(void)downloadWithWifiCheckToDir:(NSString *)dirPath onModel:(SYSongModel *)model withCompletionBlock:(SYDownloadCompletion)completionBlock;
+/** 正在下载队列中 */
+@property (nonatomic,assign) BOOL downloading;
 
 /** 播放model对应的歌曲 */
 -(BOOL)playModel:(SYSongModel *)model;
@@ -131,7 +135,7 @@
     self.audioController = [SYAudioController sharedAudioController];
     self.audioController.delegate = self;
     
-    [self.view bringSubviewToFront:self.menuBtn];
+    [self.view bringSubviewToFront:self.downloadBtn];
     [self.view bringSubviewToFront:self.favoriteBtn];
     
     __weak SYPlayingViewController *weakSelf = self;
@@ -270,21 +274,54 @@
     return _configuration;
 }
 
-/** 菜单按钮 */
-- (IBAction)menuBtnClick {
-#warning 增加"下载全部"菜单
-    self.titleBtn.Opened = !self.titleBtn.isOpened;
+/** 全部下载按钮按下 */
+- (IBAction)downloadBtnClick {
+    __weak SYPlayingViewController *weakSelf = self;
+    RIButtonItem *cancelButtonItem = [RIButtonItem itemWithLabel:@"取消" action:^{
+        weakSelf.downloading = NO;
+    }];
+    
+    SYSongModel *downloadModel = nil;
+    for (SYSongModel *model in self.songModelArrary) {
+        if (model.downloading == NO) {
+            downloadModel = model;
+            break;
+        }
+    }
+    if (downloadModel != nil) {
+        NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
+        RIButtonItem *okButtonItem = [RIButtonItem itemWithLabel:@"下载" action:^{
+            [weakSelf downloadWithWifiCheckToDir:dirPath onModel:downloadModel withCompletionBlock:^{
+                weakSelf.downloading = YES;
+                [weakSelf downloadBtnClick];
+            }];
+        }];
+        
+        if (!self.downloading) {
+            UIAlertView *downloadAlert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"全部下载本册吗？" cancelButtonItem:cancelButtonItem otherButtonItems:okButtonItem, nil];
+            [downloadAlert show];
+        }else{
+            [self downloadWithWifiCheckToDir:dirPath onModel:downloadModel withCompletionBlock:^{
+                weakSelf.downloading = YES;
+                [weakSelf downloadBtnClick];
+            }];
+        }
+    }else{
+        self.downloading = NO;
+    }
 }
-/** 收藏按钮按下 */
-- (IBAction)favoriteBtnClick {
-    self.favoriteSong = !self.isFavoriteSong;
-    if (self.isFavoriteSong) {
-        [self.favoriteBtn setImage:[UIImage imageNamed:@"star5_full"] forState:UIControlStateNormal];
-    }
-    else
-    {
-        [self.favoriteBtn setImage:[UIImage imageNamed:@"star5"] forState:UIControlStateNormal];
-    }
+/** 后退按钮按下 */
+- (IBAction)backBtnClick {
+    [self dismissViewControllerAnimated:YES completion:^{
+    }];
+//    self.favoriteSong = !self.isFavoriteSong;
+//    if (self.isFavoriteSong) {
+//        [self.favoriteBtn setImage:[UIImage imageNamed:@"star5_full"] forState:UIControlStateNormal];
+//    }
+//    else
+//    {
+//        [self.favoriteBtn setImage:[UIImage imageNamed:@"star5"] forState:UIControlStateNormal];
+//    }
 }
 /** 更新songModelArrary内容到plist文件 */
 -(BOOL)refreshSongModelArrary
@@ -329,16 +366,16 @@
 }
 
 /** 下载（带WIFI检测） */
--(void)downloadWithWifiCheckToDir:(NSString *)dirPath OnModel:(SYSongModel *)model
+-(void)downloadWithWifiCheckToDir:(NSString *)dirPath onModel:(SYSongModel *)model withCompletionBlock:(SYDownloadCompletion)completionBlock
 {
     Reachability *wifiChecker = [Reachability reachabilityForInternetConnection];
     if ([wifiChecker isReachableViaWiFi]) {
-        [self downloadToDir:dirPath OnModel:model];
+        [self downloadToDir:dirPath onModel:model withCompletionBlock:completionBlock];
     }else{
         RIButtonItem *cancelButtonItem = [RIButtonItem itemWithLabel:@"取消" action:^{
         }];
         RIButtonItem *okButtonItem = [RIButtonItem itemWithLabel:@"我是土豪继续下载" action:^{
-            [self downloadToDir:dirPath OnModel:model];
+            [self downloadToDir:dirPath onModel:model withCompletionBlock:completionBlock];
         }];
         
         UIAlertView *wifiAlert = [[UIAlertView alloc] initWithTitle:@"警告!木有WiFi!" message:@"继续下载可能会产生流量费用哦！" cancelButtonItem:cancelButtonItem otherButtonItems:okButtonItem, nil];
@@ -346,7 +383,7 @@
     }
 }
 /** 下载 */
--(void)downloadToDir:(NSString *)dirPath OnModel:(SYSongModel *)model
+-(void)downloadToDir:(NSString *)dirPath onModel:(SYSongModel *)model withCompletionBlock:(SYDownloadCompletion)completionBlock
 {
     long index = [self.songModelArrary indexOfObject:model];
     self.downloadingIndexpath = [NSIndexPath indexPathForRow:index inSection:0];
@@ -356,7 +393,7 @@
     } onComplete:^(BOOL complete) {
         [self.playListTable reloadRowsAtIndexPaths:@[self.downloadingIndexpath] withRowAnimation:NO];
         if (complete) {
-            [self refreshSongModelArrary];
+            completionBlock();
         } else {
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"下载失败" message:@"貌似网络不给力呀亲╭(╯3╰)╮" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [alert show];
@@ -450,15 +487,6 @@
     
     return _songModelArrary;
 }
-/** 延迟加载audioController */
-//-(FSAudioController *)audioController
-//{
-//    if(_audioController == nil)
-//    {
-//        _audioController = [[SYAudioController alloc] init];
-//    }
-//    return _audioController;
-//}
 
 #pragma mark - SYPlayerConsoleDelegate
 
@@ -502,7 +530,6 @@
 /** 退出键按下 */
 -(void)playerConsolePowerOff:(SYPlayerConsole *)console{
     [self dismissViewControllerAnimated:YES completion:^{
-//        self.audioController = nil;
     }];
 }
 /** 播放模式改变 */
@@ -577,7 +604,8 @@
         SYSongModel *model = self.songModelArrary[self.downloadingIndexpath.row];
         
         NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
-        [self downloadWithWifiCheckToDir:dirPath OnModel:model];
+        [self downloadWithWifiCheckToDir:dirPath onModel:model withCompletionBlock:^{
+        }];
     }
 }
 
@@ -589,7 +617,8 @@
     
     NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
     if (model.downloading == NO) {
-        [self downloadWithWifiCheckToDir:dirPath OnModel:model];
+        [self downloadWithWifiCheckToDir:dirPath onModel:model withCompletionBlock:^{
+        }];
     }
 }
 /*
