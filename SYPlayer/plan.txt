@@ -300,3 +300,162 @@ weakSelf.playerConsole.statusText = streamInfo;
 //        [playListItemArray addObject:item];
 //    }
 //    [self.audioController playFromPlaylist:[playListItemArray copy]];
+
+
+
+
+
+scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第1册）美音（MP3.LRC）/NCE1-美音-\(MP3+LRC\) root@139.129.13.56:/var/www/download
+scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第2册）美音（MP3+LRC）/NCE2-美音-\(MP3+LRC\) root@139.129.13.56:/var/www/download
+scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第3册）美音（MP3+LRC）/NCE3-美音-\(MP3+LRC\) root@139.129.13.56:/var/www/download
+scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第4册）美音（MP3+LRC）/NCE4-美音-\(MP3+LRC\) root@139.129.13.56:/var/www/download
+
+
+
+
+
+
+
+<?php
+class itcastUsers {
+private $db;
+
+// 构造函数-建立数据库链接
+function __construct() {
+$this->db = new mysqli('localhost', 'root', 'Guanli2011', 'itcast');
+
+if (mysqli_connect_errno()){
+printf("连接错误:%s\n", mysqli_connect_error());
+exit();
+}
+
+$this->db->autocommit(FALSE);
+}
+
+// 析构函数-关闭数据库连接
+function __destruct() {
+$this->db->close();
+}
+
+// 用户登录
+function userLogin() {
+if (isset($_GET['username']) && isset($_GET['password']) && isset($_GET['filename'])){
+// 获取GET请求参数
+$accessType = '[GET]';
+$userName = $_GET['username'];
+$userPassword = $_GET['password'];
+$filename = $_GET['filename'];
+} else if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['filename'])){
+// 获取POST请求参数
+$accessType = '[POST]';
+$userName = $_POST['username'];
+$userPassword = $_POST['password'];
+$filename = $_POST['filename'];
+} else {
+echo('非法请求!');
+return false;
+}
+
+// 设置数据库查询字符编码
+$this->db->query('set names utf8');
+// 查询请求
+$data = $this->db->query("SELECT id, userName FROM userInfo WHERE userName='$userName' AND userPwd='$userPassword'");
+// 绑定查询参数
+$this->db->real_escape_string($userName);
+$this->db->real_escape_string($userPassword);
+// 提交查询请求
+$this->db->commit();
+// 提取一条查询结果
+$row = $data->fetch_assoc();
+
+$filePath = "";
+if(isset($row['id']))
+{
+$targetdir = "./download";
+
+$dir=dir($targetdir);
+if ($dir) {
+//rename usage
+// $entry=$dir->read();
+// echo $entry;
+// while($entry=$dir->read())
+// {
+//     if($entry == "." || $entry == "..") continue;
+
+//     if(strstr($entry,$filename) && strstr($entry,"mp3"))
+//     {
+//         $filePath = $targetdir."/".$entry;
+//         break;
+//     }
+
+// }
+$filePath = $this->searchFileFromDir($targetdir,$filename);
+if ($filePath == "") {
+echo "file \"$filename\" not found... <br />";
+return FALSE;
+}
+}else{
+echo "dir not found...<br />";
+return FALSE;
+}
+}
+
+// echo "file \"$filename\" found in $filePath!<br />";
+// 将结果绑定到数据字典
+// $result = [
+// 'userId' => $row['id'],
+// 'userName' => $row['userName'],
+// 'filePath' => $filePath,
+// ];
+$result = array(
+'userId' => $row['id'],
+'userName' => $row['userName'],
+'filePath' => $filePath,
+);
+
+// 将数据字典使用JSON编码
+echo json_encode($result);
+return true;
+}
+
+function searchFileFromDir($dir,$fileName)
+{
+// echo "searching \"$fileName\" in \"$dir\"<br />";
+if (!is_dir($dir)) {
+// echo "Not dir<br />";
+return false;
+}
+//打开目录
+$handle = opendir($dir);
+while (($file = readdir($handle)) !== false) {
+//排除掉当前目录和上一个目录
+if ($file == "." || $file == "..") {
+continue;
+}
+$tempDir = $dir . DIRECTORY_SEPARATOR . $file;
+//如果是文件就打印出来，否则递归调用
+// if (is_file($file)) {
+// print $file . '<br />';
+if(strstr($file,$fileName) && strstr($file,"mp3")){
+// echo "File found in $tempDir!<br />";
+return $tempDir;
+} elseif (is_dir($tempDir)) {
+// echo "Next dir:$tempDir<br />";
+$nextDir =  $this->searchFileFromDir($tempDir,$fileName);
+if($nextDir) {
+return $nextDir;
+}
+}
+}
+// echo "Search failed in $dir<br />";
+
+return false;
+}
+}
+
+header('Content-Type:text/html;charset=utf-8');
+$itcast = new itcastUsers;
+$itcast->userLogin();
+
+//Guanli2011
+?>
