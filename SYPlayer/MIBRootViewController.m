@@ -9,8 +9,8 @@
 #import "MIBRootViewController.h"
 #import "SYPlayingViewController.h"
 #import "SYPlayListModel.h"
+#import "MobClick.h"
 
-#warning 屏幕适配
 #warning 广告
 #warning 统计
 @interface MIBRootViewController ()

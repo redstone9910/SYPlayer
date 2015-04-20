@@ -19,6 +19,8 @@
 		522BB7191ACD321A00E834A4 /* nec_mp3_file_list.txt in Resources */ = {isa = PBXBuildFile; fileRef = 522BB7181ACD321A00E834A4 /* nec_mp3_file_list.txt */; };
 		522BB71C1ACD393300E834A4 /* SYPlayListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 522BB71B1ACD393300E834A4 /* SYPlayListModel.m */; };
 		522BB89F1ACD6A1100E834A4 /* 第二册 in Resources */ = {isa = PBXBuildFile; fileRef = 522BB89E1ACD6A1100E834A4 /* 第二册 */; };
+		524037CF1AE539B800E12A96 /* libMobClickLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 524037CD1AE539B800E12A96 /* libMobClickLibrary.a */; };
+		524037D11AE539DE00E12A96 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 524037D01AE539DE00E12A96 /* libz.dylib */; };
 		524B019F1ABD072E00E183CB /* SYPlayingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 524B019E1ABD072E00E183CB /* SYPlayingViewController.m */; };
 		524B01A91ABD14E900E183CB /* SYPlayListButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 524B01A81ABD14E900E183CB /* SYPlayListButton.xib */; };
 		524B01AC1ABD194800E183CB /* SYPlayListButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 524B01AB1ABD194800E183CB /* SYPlayListButton.m */; };
@@ -69,6 +71,9 @@
 		522BB71A1ACD393300E834A4 /* SYPlayListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYPlayListModel.h; sourceTree = "<group>"; };
 		522BB71B1ACD393300E834A4 /* SYPlayListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYPlayListModel.m; sourceTree = "<group>"; };
 		522BB89E1ACD6A1100E834A4 /* 第二册 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "第二册"; sourceTree = "<group>"; };
+		524037CD1AE539B800E12A96 /* libMobClickLibrary.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libMobClickLibrary.a; sourceTree = "<group>"; };
+		524037CE1AE539B800E12A96 /* MobClick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobClick.h; sourceTree = "<group>"; };
+		524037D01AE539DE00E12A96 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		524B019D1ABD072E00E183CB /* SYPlayingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SYPlayingViewController.h; path = ../SYPlayingViewController.h; sourceTree = "<group>"; };
 		524B019E1ABD072E00E183CB /* SYPlayingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SYPlayingViewController.m; path = ../SYPlayingViewController.m; sourceTree = "<group>"; };
 		524B01A81ABD14E900E183CB /* SYPlayListButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SYPlayListButton.xib; sourceTree = "<group>"; };
@@ -111,7 +116,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				524037D11AE539DE00E12A96 /* libz.dylib in Frameworks */,
 				CA50C99333C41E2EBAF497B9 /* libPods.a in Frameworks */,
+				524037CF1AE539B800E12A96 /* libMobClickLibrary.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,6 +144,7 @@
 		4729069209311C9BC55374BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				524037D01AE539DE00E12A96 /* libz.dylib */,
 				6782EEA4628A06A5D583C063 /* libPods.a */,
 			);
 			name = Frameworks;
@@ -151,6 +159,15 @@
 				521F15341AD4042C0049E225 /* MIBServer.m */,
 			);
 			name = Other;
+			sourceTree = "<group>";
+		};
+		524037CC1AE5399D00E12A96 /* UMENG */ = {
+			isa = PBXGroup;
+			children = (
+				524037CD1AE539B800E12A96 /* libMobClickLibrary.a */,
+				524037CE1AE539B800E12A96 /* MobClick.h */,
+			);
+			name = UMENG;
 			sourceTree = "<group>";
 		};
 		524B01A01ABD0FCB00E183CB /* View */ = {
@@ -228,6 +245,7 @@
 		52B6CC491A9BF53D00E043C0 /* SYPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				524037CC1AE5399D00E12A96 /* UMENG */,
 				521F15321AD403EC0049E225 /* Other */,
 				524B01AD1ABD252F00E183CB /* Categorys */,
 				524B01A21ABD0FE300E183CB /* Model */,
@@ -568,6 +586,10 @@
 				INFOPLIST_FILE = SYPlayer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SYPlayer",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -580,6 +602,10 @@
 				INFOPLIST_FILE = SYPlayer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SYPlayer",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

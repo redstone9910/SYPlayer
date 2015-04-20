@@ -19,6 +19,7 @@
 #import "UIAlertView+Blocks.h"
 #import "FSPlaylistItem.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import "MobClick.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -86,6 +87,10 @@ typedef void (^SYDownloadCompletion)();
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    NSMutableString *t_evnt = [NSMutableString stringWithFormat:@"Volume:%@",self.playListModel.lessonTitle];
+    [MobClick event:@"Enter" label:t_evnt];
+    
     NSString *path = [catchePath stringByAppendingPathComponent:[NSString stringWithFormat:@"song_list_%@.plist",self.playListModel.lessonTitle]];
     if(![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         path = [SYSongModel songModelArrayWithFileNameArray:self.playListModel.songList withPlistFileName:[NSString stringWithFormat:@"song_list_%@.plist",self.playListModel.lessonTitle] atPath:self.playListModel.lessonTitle];
@@ -427,6 +432,10 @@ typedef void (^SYDownloadCompletion)();
         
         long index = [self.songModelArrary indexOfObject:model];
         self.selectedIndexpath = [NSIndexPath indexPathForRow:index inSection:0];
+        
+        NSMutableString *t_evnt = [NSMutableString stringWithFormat:@"Song:%@",model.songName];
+        [MobClick event:@"Playing" label:t_evnt];
+        
         return YES;
     }
     
