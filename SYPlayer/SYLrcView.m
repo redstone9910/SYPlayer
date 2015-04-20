@@ -44,26 +44,23 @@
 {
     NSBundle *bundle = [NSBundle mainBundle];
     NSArray *objs = [bundle loadNibNamed:NSStringFromClass(self) owner:nil options:nil];
-    
     SYLrcView *lrcview = [objs lastObject];
     
     lrcview.frame = frame;
-    lrcview.lrcFont = [UIFont systemFontOfSize:14.0f];
-    lrcview.lrcCurrentFont = [UIFont fontWithName:@"Helvetica-BoldObLique" size:15];
-    lrcview.lrcPasteFont = [UIFont fontWithName:@"Helvetica-ObLique" size:14];
-    
-    lrcview.lrcScroll.delegate = lrcview;
-    lrcview.lrcLableArray = [NSMutableArray array];
-    
-    lrcview.dragging = NO;
-    
     lrcview.lrcFile = file;
     return lrcview;
 }
 
 -(void)awakeFromNib
 {
+    self.lrcFont = [UIFont systemFontOfSize:14.0f];
+    self.lrcCurrentFont = [UIFont fontWithName:@"Helvetica-BoldObLique" size:15];
+    self.lrcPasteFont = [UIFont fontWithName:@"Helvetica-ObLique" size:14];
     
+    self.lrcScroll.delegate = self;
+    self.lrcLableArray = [NSMutableArray array];
+    
+    self.dragging = NO;
 }
 
 /** 设定播放进度并更新View */

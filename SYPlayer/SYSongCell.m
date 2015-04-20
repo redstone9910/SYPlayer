@@ -111,12 +111,4 @@
     }
 }
 
-//-(void)layoutSubviews
-//{
-//    [super layoutSubviews];
-//    self.downloadBtn.backgroundColor = [UIColor greenColor];
-//    self.playBtn.backgroundColor = [UIColor redColor];
-//    self.songNameLabel.backgroundColor = [UIColor yellowColor];
-//    self.contentView.backgroundColor = [UIColor blueColor];
-//}
 @end

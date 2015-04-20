@@ -101,7 +101,6 @@ typedef void (^SYDownloadCompletion)();
     float consolY = self.view.bounds.size.height - consoleView.bounds.size.height;
     CGRect frame = CGRectMake(0, consolY, self.view.bounds.size.width, consoleView.bounds.size.height);
     consoleView.frame = frame;
-    consoleView.timeTotalInSecond = 30;
     consoleView.delegate = self;
     self.playerConsole = consoleView;
     [self.view addSubview:self.playerConsole];
@@ -256,15 +255,6 @@ typedef void (^SYDownloadCompletion)();
                                                                       userInfo:nil
                                                                        repeats:YES];
     }
-}
-
--(FSStreamConfiguration *)configuration
-{
-    if (_configuration == nil) {
-        _configuration = [[FSStreamConfiguration alloc] init];
-        _configuration.usePrebufferSizeCalculationInSeconds = YES;
-    }
-    return _configuration;
 }
 
 /** 全部下载按钮按下 */
