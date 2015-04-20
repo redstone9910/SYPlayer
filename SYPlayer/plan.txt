@@ -310,6 +310,8 @@ scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（�
 scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第3册）美音（MP3+LRC）/NCE3-美音-\(MP3+LRC\) root@139.129.13.56:/var/www/download
 scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第4册）美音（MP3+LRC）/NCE4-美音-\(MP3+LRC\) root@139.129.13.56:/var/www/download
 
+scp /Library/WebServer/Documents/login1.php root@139.129.13.56:/var/www 
+
 
 
 

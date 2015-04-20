@@ -27,7 +27,7 @@
 
 typedef void (^SYDownloadCompletion)();
 
-@interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate,UIAlertViewDelegate,SYSongCellDelegate>
+@interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate,SYSongCellDelegate>
 /** 全部下载按钮 */
 @property (weak, nonatomic) IBOutlet UIButton *downloadBtn;
 /** 收藏按钮 */
@@ -70,10 +70,6 @@ typedef void (^SYDownloadCompletion)();
 @property (nonatomic,copy) NSString * plistPath;
 /** 当前被选中的行号 */
 @property (nonatomic,strong) NSIndexPath *selectedIndexpath;
-/** 正在下载的行 */
-@property (nonatomic,strong) NSIndexPath *downloadingIndexpath;
-/** 下载提示窗口 */
-@property (nonatomic,strong) UIAlertView * downloadAlert;
 /** 下载 */
 -(void)downloadToDir:(NSString *)dirPath onModel:(SYSongModel *)model withCompletionBlock:(SYDownloadCompletion)completionBlock;
 /** 下载（带WIFI检测） */
@@ -96,8 +92,8 @@ typedef void (^SYDownloadCompletion)();
     }
     self.plistPath = path;
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"本课未下载" message:@"是否下载？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"下载", nil];
-    self.downloadAlert = alert;
+//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"本课未下载" message:@"是否下载？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"下载", nil];
+//    self.downloadAlert = alert;
     
     self.titleBtn = [SYPlayListButton playListButtonWithString:self.playListModel.lessonTitle];
     self.titleBtn.delegate = self;
@@ -386,12 +382,13 @@ typedef void (^SYDownloadCompletion)();
 -(void)downloadToDir:(NSString *)dirPath onModel:(SYSongModel *)model withCompletionBlock:(SYDownloadCompletion)completionBlock
 {
     long index = [self.songModelArrary indexOfObject:model];
-    self.downloadingIndexpath = [NSIndexPath indexPathForRow:index inSection:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
     
     [model prepareDownloadToFile:dirPath onDownloading:^(float progress) {
-        [self.playListTable reloadRowsAtIndexPaths:@[self.downloadingIndexpath] withRowAnimation:NO];
+        SYSongCell *cell = (SYSongCell *)[self.playListTable cellForRowAtIndexPath:indexPath];
+        cell.playListData = model;
     } onComplete:^(BOOL complete) {
-        [self.playListTable reloadRowsAtIndexPaths:@[self.downloadingIndexpath] withRowAnimation:NO];
+        [self.playListTable reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:NO];
         if (complete) {
             completionBlock();
         } else {
@@ -447,9 +444,14 @@ typedef void (^SYDownloadCompletion)();
     }
     
     if (model.downloading == NO) {
-        long index = [self.songModelArrary indexOfObject:model];
-        self.downloadingIndexpath = [NSIndexPath indexPathForRow:index inSection:0];
-        [self.downloadAlert show];
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"取消"];
+        RIButtonItem *okItem = [RIButtonItem itemWithLabel:@"下载" action:^{
+            NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
+            [self downloadWithWifiCheckToDir:dirPath onModel:model withCompletionBlock:^{
+            }];
+        }];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"本课未下载" message:@"是否下载？" cancelButtonItem:cancelItem otherButtonItems:okItem, nil];
+        [alert show];
     }
     
     if (self.selectedIndexpath != nil) {
@@ -592,28 +594,15 @@ typedef void (^SYDownloadCompletion)();
 #pragma mark playListTableDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.downloadingIndexpath = indexPath;
     SYSongModel *model = self.songModelArrary[indexPath.row];
     [self playModel:model];
-}
-
-#pragma mark UIAlertViewDelegate
--(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 1) {
-        SYSongModel *model = self.songModelArrary[self.downloadingIndexpath.row];
-        
-        NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
-        [self downloadWithWifiCheckToDir:dirPath onModel:model withCompletionBlock:^{
-        }];
-    }
 }
 
 #pragma mark SYSongCellDelegate
 -(void)songCellDownloadBtnClick:(SYSongCell *)cell
 {
-    self.downloadingIndexpath = [self.playListTable indexPathForCell:cell];
-    SYSongModel *model = self.songModelArrary[self.downloadingIndexpath.row];
+    NSIndexPath *indexPath = [self.playListTable indexPathForCell:cell];
+    SYSongModel *model = self.songModelArrary[indexPath.row];
     
     NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
     if (model.downloading == NO) {
