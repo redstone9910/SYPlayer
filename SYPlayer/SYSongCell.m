@@ -38,10 +38,7 @@
     
     return cell;
 }
-/** 从XIB加载 */
-- (void)awakeFromNib {
-    // Initialization code
-}
+
 /** Cell被选中 */
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
@@ -113,4 +110,13 @@
         [self.downloadBtn setTitle:@"下载" forState:UIControlStateNormal];
     }
 }
+
+//-(void)layoutSubviews
+//{
+//    [super layoutSubviews];
+//    self.downloadBtn.backgroundColor = [UIColor greenColor];
+//    self.playBtn.backgroundColor = [UIColor redColor];
+//    self.songNameLabel.backgroundColor = [UIColor yellowColor];
+//    self.contentView.backgroundColor = [UIColor blueColor];
+//}
 @end

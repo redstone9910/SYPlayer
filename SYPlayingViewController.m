@@ -92,17 +92,14 @@ typedef void (^SYDownloadCompletion)();
     }
     self.plistPath = path;
     
-//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"本课未下载" message:@"是否下载？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"下载", nil];
-//    self.downloadAlert = alert;
-    
     self.titleBtn = [SYPlayListButton playListButtonWithString:self.playListModel.lessonTitle];
     self.titleBtn.delegate = self;
-    self.titleBtn.frame = CGRectMake(0, 20, self.view.frame.size.width, 44);
+    self.titleBtn.frame = CGRectMake(0, 20, self.view.bounds.size.width, 44);
     [self.view addSubview:self.titleBtn];
 
     SYPlayerConsole *consoleView = [SYPlayerConsole playerConsole];
     float consolY = self.view.bounds.size.height - consoleView.bounds.size.height;
-    CGRect frame = CGRectMake(0, consolY, consoleView.bounds.size.width, consoleView.bounds.size.height);
+    CGRect frame = CGRectMake(0, consolY, self.view.bounds.size.width, consoleView.bounds.size.height);
     consoleView.frame = frame;
     consoleView.timeTotalInSecond = 30;
     consoleView.delegate = self;
@@ -120,7 +117,7 @@ typedef void (^SYDownloadCompletion)();
     float tableX = self.playListTable.frame.origin.x;
     float tableY = self.playListTable.frame.origin.y;
     float tableH = self.playerConsole.frame.origin.y - tableY;
-    float tableW = self.playListTable.frame.size.width;
+    float tableW = self.view.bounds.size.width;
     self.playListFrame = CGRectMake(tableX, tableY, tableW, tableH);
     self.playListTable.frame = self.playListFrame;
     self.playListTable.rowHeight = 30;
@@ -573,10 +570,6 @@ typedef void (^SYDownloadCompletion)();
 {
     return [self.songModelArrary count];
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 30;
-}
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     SYSongCell *cell = [SYSongCell cellWithTableView:tableView];
@@ -610,33 +603,5 @@ typedef void (^SYDownloadCompletion)();
         }];
     }
 }
-/*
-#pragma - mark Private
 
-- (void)clearStatus
-{
-    [AJNotificationView hideCurrentNotificationViewAndClearQueue];
-}
-
-- (void)showStatus:(NSString *)status
-{
-    [self clearStatus];
-    
-    [AJNotificationView showNoticeInView:[[[UIApplication sharedApplication] delegate] window]
-                                    type:AJNotificationTypeDefault
-                                   title:status
-                         linedBackground:AJLinedBackgroundTypeAnimated
-                               hideAfter:0];
-}
-
-- (void)showErrorStatus:(NSString *)status
-{
-    [self clearStatus];
-    
-    [AJNotificationView showNoticeInView:[[[UIApplication sharedApplication] delegate] window]
-                                    type:AJNotificationTypeRed
-                                   title:status
-                               hideAfter:10];
-}
-*/
 @end
