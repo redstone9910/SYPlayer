@@ -11,7 +11,7 @@
 #import "SYPlayListModel.h"
 #import "MobClick.h"
 
-#warning 广告
+#warning 启动画面
 @interface MIBRootViewController ()
 - (IBAction)lesson1BtnClick;
 - (IBAction)lesson2BtnClick;

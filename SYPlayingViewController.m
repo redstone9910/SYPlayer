@@ -107,15 +107,9 @@ typedef void (^SYDownloadCompletion)();
     self.plistPath = path;
     
     /** 广点通 */
-    /*
-     * 创建Banner广告View
-     * "appkey" 指在 http://e.qq.com/dev/ 能看到的app唯⼀一字符串
-     * "placementId" 指在 http://e.qq.com/dev/ ⽣生成的数字串,⼲⼴广告位id *
-     * banner条的宽度开发者可以进⾏行⼿手动设置,⽤用以满⾜足开发场景需求或是适配最新版本的iphone
-     * banner条的⾼高度⼲⼴广点通侧强烈建议开发者采⽤用推荐的⾼高度,否则显⽰示效果会有影响
-     * ⼲⼴广点通提供3种尺⼨寸供开发者在不同设别上使⽤用,这⾥里以320*50为例 */
     CGRect gdtframe = CGRectMake(0, self.view.bounds.size.height - 50, self.view.bounds.size.width, 50);
     self.bannerView = [[GDTMobBannerView alloc] initWithFrame:gdtframe appkey:GDT_APPID placementId:GDT_BANNERID];
+    
     /** 标题栏 */
     self.titleBtn = [SYPlayListButton playListButtonWithString:self.playListModel.lessonTitle];
     self.titleBtn.delegate = self;
@@ -131,6 +125,7 @@ typedef void (^SYDownloadCompletion)();
     self.playerConsole = consoleView;
     [self.view addSubview:self.playerConsole];
     
+    /** 歌词 */
     CGRect rect = self.view.frame;
     rect.origin.y = self.titleBtn.frame.origin.y + self.titleBtn.frame.size.height;
     rect.size.height = self.playerConsole.frame.origin.y - rect.origin.y;
@@ -139,6 +134,7 @@ typedef void (^SYDownloadCompletion)();
     self.lrcView = lrcview;
     [self.view addSubview:self.lrcView];
     
+    /** 歌曲列表 */
     float tableX = self.playListTable.frame.origin.x;
     float tableY = self.playListTable.frame.origin.y;
     float tableH = self.playerConsole.frame.origin.y - tableY;
@@ -150,6 +146,7 @@ typedef void (^SYDownloadCompletion)();
     self.playListTable.delegate = self;
     self.playListTable.dataSource = self;
     
+    /** 播放器 */
     self.audioController = [SYAudioController sharedAudioController];
     self.audioController.delegate = self;
     
@@ -271,7 +268,7 @@ typedef void (^SYDownloadCompletion)();
 
     if(!self.audioController.isPlaying){
         SYSongModel *model = self.songModelArrary[0];
-//        [self playModel:model];
+        [self playModel:model];
     }
     
     if (!self.progressUpdateTimer) {
@@ -402,6 +399,7 @@ typedef void (^SYDownloadCompletion)();
         
         UIAlertView *wifiAlert = [[UIAlertView alloc] initWithTitle:@"警告!木有WiFi!" message:@"继续下载可能会产生流量费用哦！" cancelButtonItem:cancelButtonItem otherButtonItems:okButtonItem, nil];
         [wifiAlert show];
+        [NSTimer scheduledTimerWithTimeInterval:5 target:wifiAlert selector:@selector(dismissAnimated:) userInfo:nil repeats:NO];
     }
 }
 /** 下载 */
@@ -482,6 +480,7 @@ typedef void (^SYDownloadCompletion)();
         }];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"本课未下载" message:@"是否下载？" cancelButtonItem:cancelItem otherButtonItems:okItem, nil];
         [alert show];
+        [NSTimer scheduledTimerWithTimeInterval:5 target:alert selector:@selector(dismissAnimated:) userInfo:nil repeats:NO];
     }
     
     if (self.selectedIndexpath != nil) {
@@ -501,7 +500,7 @@ typedef void (^SYDownloadCompletion)();
     return NO;
 }
 
-#pragma - mark Property
+#pragma mark - Property
 /** 延迟加载播放列表数据 */
 -(NSArray *)songModelArrary
 {
@@ -598,7 +597,7 @@ typedef void (^SYDownloadCompletion)();
     }];
 }
 
-#pragma mark playListTable DataSource
+#pragma mark - playListTable DataSource
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return [self.songModelArrary count];
@@ -617,14 +616,14 @@ typedef void (^SYDownloadCompletion)();
     return cell;
 }
 
-#pragma mark playListTableDelegate
+#pragma mark - playListTableDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     SYSongModel *model = self.songModelArrary[indexPath.row];
     [self playModel:model];
 }
 
-#pragma mark SYSongCellDelegate
+#pragma mark - SYSongCellDelegate
 -(void)songCellDownloadBtnClick:(SYSongCell *)cell
 {
     NSIndexPath *indexPath = [self.playListTable indexPathForCell:cell];
@@ -635,6 +634,33 @@ typedef void (^SYDownloadCompletion)();
         [self downloadWithWifiCheckToDir:dirPath onModel:model withCompletionBlock:^{
         }];
     }
+}
+
+#pragma mark - GDTDelegate
+#warning 增加显示/隐藏广告条代码
+// 请求⼲⼴广告条数据成功后调⽤用
+- (void)bannerViewDidReceived{
+    
+}
+// 请求⼲⼴广告条数据失败后调⽤用
+- (void)bannerViewFailToReceived:(int)errCode{
+
+}
+// 应⽤用进⼊入后台时调⽤用
+- (void)bannerViewWillLeaveApplication{
+    
+}
+// 广告条曝光回调
+- (void)bannerViewWillExposure{
+    
+}
+// 广告条点击回调
+- (void)bannerViewClicked{
+    
+}
+// banner条被⽤用户关闭时调⽤用
+- (void)bannerViewWillClose{
+    
 }
 
 @end
