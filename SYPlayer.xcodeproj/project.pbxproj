@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		521F15351AD4042C0049E225 /* MIBServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 521F15341AD4042C0049E225 /* MIBServer.m */; };
+		522424021AE5B74800795868 /* libGDTMobSDK_v3.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 522423FF1AE5B74800795868 /* libGDTMobSDK_v3.3.a */; };
+		522424041AE5B91200795868 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424031AE5B91200795868 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		522424061AE5B92E00795868 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424051AE5B92E00795868 /* CoreLocation.framework */; };
+		522424081AE5B94000795868 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424071AE5B94000795868 /* QuartzCore.framework */; };
+		5224240A1AE5B94C00795868 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424091AE5B94C00795868 /* SystemConfiguration.framework */; };
+		5224240C1AE5B95500795868 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5224240B1AE5B95500795868 /* CoreTelephony.framework */; };
+		5224240E1AE5B96200795868 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5224240D1AE5B96200795868 /* Security.framework */; };
+		522424101AE5B96A00795868 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5224240F1AE5B96A00795868 /* StoreKit.framework */; };
 		522694C31AD54373003C2EFF /* root.plist in Resources */ = {isa = PBXBuildFile; fileRef = 522694C11AD54373003C2EFF /* root.plist */; };
 		522694C91AD79065003C2EFF /* song_list_第二册.plist in Resources */ = {isa = PBXBuildFile; fileRef = 522694C51AD79065003C2EFF /* song_list_第二册.plist */; };
 		522694CA1AD79065003C2EFF /* song_list_第三册.plist in Resources */ = {isa = PBXBuildFile; fileRef = 522694C61AD79065003C2EFF /* song_list_第三册.plist */; };
@@ -57,6 +65,17 @@
 		3E6801AC50639668D3115AA8 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		521F15331AD4042C0049E225 /* MIBServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIBServer.h; sourceTree = "<group>"; };
 		521F15341AD4042C0049E225 /* MIBServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIBServer.m; sourceTree = "<group>"; };
+		522423FE1AE5B74800795868 /* GDTNativeAd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDTNativeAd.h; sourceTree = "<group>"; };
+		522423FF1AE5B74800795868 /* libGDTMobSDK_v3.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGDTMobSDK_v3.3.a; sourceTree = "<group>"; };
+		522424001AE5B74800795868 /* GDTMobBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDTMobBannerView.h; sourceTree = "<group>"; };
+		522424011AE5B74800795868 /* GDTMobInterstitial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDTMobInterstitial.h; sourceTree = "<group>"; };
+		522424031AE5B91200795868 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		522424051AE5B92E00795868 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		522424071AE5B94000795868 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		522424091AE5B94C00795868 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		5224240B1AE5B95500795868 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		5224240D1AE5B96200795868 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		5224240F1AE5B96A00795868 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		522694C11AD54373003C2EFF /* root.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = root.plist; sourceTree = "<group>"; };
 		522694C51AD79065003C2EFF /* song_list_第二册.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "song_list_第二册.plist"; sourceTree = "<group>"; };
 		522694C61AD79065003C2EFF /* song_list_第三册.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "song_list_第三册.plist"; sourceTree = "<group>"; };
@@ -116,7 +135,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				522424101AE5B96A00795868 /* StoreKit.framework in Frameworks */,
+				5224240E1AE5B96200795868 /* Security.framework in Frameworks */,
+				5224240C1AE5B95500795868 /* CoreTelephony.framework in Frameworks */,
+				5224240A1AE5B94C00795868 /* SystemConfiguration.framework in Frameworks */,
+				522424081AE5B94000795868 /* QuartzCore.framework in Frameworks */,
+				522424061AE5B92E00795868 /* CoreLocation.framework in Frameworks */,
+				522424041AE5B91200795868 /* AdSupport.framework in Frameworks */,
 				524037D11AE539DE00E12A96 /* libz.dylib in Frameworks */,
+				522424021AE5B74800795868 /* libGDTMobSDK_v3.3.a in Frameworks */,
 				CA50C99333C41E2EBAF497B9 /* libPods.a in Frameworks */,
 				524037CF1AE539B800E12A96 /* libMobClickLibrary.a in Frameworks */,
 			);
@@ -144,6 +171,13 @@
 		4729069209311C9BC55374BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5224240F1AE5B96A00795868 /* StoreKit.framework */,
+				5224240D1AE5B96200795868 /* Security.framework */,
+				5224240B1AE5B95500795868 /* CoreTelephony.framework */,
+				522424091AE5B94C00795868 /* SystemConfiguration.framework */,
+				522424071AE5B94000795868 /* QuartzCore.framework */,
+				522424051AE5B92E00795868 /* CoreLocation.framework */,
+				522424031AE5B91200795868 /* AdSupport.framework */,
 				524037D01AE539DE00E12A96 /* libz.dylib */,
 				6782EEA4628A06A5D583C063 /* libPods.a */,
 			);
@@ -159,6 +193,17 @@
 				521F15341AD4042C0049E225 /* MIBServer.m */,
 			);
 			name = Other;
+			sourceTree = "<group>";
+		};
+		522423FD1AE5B73600795868 /* GDT */ = {
+			isa = PBXGroup;
+			children = (
+				522423FE1AE5B74800795868 /* GDTNativeAd.h */,
+				522423FF1AE5B74800795868 /* libGDTMobSDK_v3.3.a */,
+				522424001AE5B74800795868 /* GDTMobBannerView.h */,
+				522424011AE5B74800795868 /* GDTMobInterstitial.h */,
+			);
+			name = GDT;
 			sourceTree = "<group>";
 		};
 		524037CC1AE5399D00E12A96 /* UMENG */ = {
@@ -245,6 +290,7 @@
 		52B6CC491A9BF53D00E043C0 /* SYPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				522423FD1AE5B73600795868 /* GDT */,
 				524037CC1AE5399D00E12A96 /* UMENG */,
 				521F15321AD403EC0049E225 /* Other */,
 				524B01AD1ABD252F00E183CB /* Categorys */,

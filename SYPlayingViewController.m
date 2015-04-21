@@ -20,6 +20,7 @@
 #import "FSPlaylistItem.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "MobClick.h"
+#import "GDTMobBannerView.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -28,7 +29,12 @@
 
 typedef void (^SYDownloadCompletion)();
 
-@interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate,SYSongCellDelegate>
+//#define GDT_APPID @"1104489407"
+//#define GDT_BANNERID @"8030502229410206"
+#define GDT_APPID @"100720253"
+#define GDT_BANNERID @"9079537207574943610"
+
+@interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate,SYSongCellDelegate,GDTMobBannerViewDelegate>
 /** 全部下载按钮 */
 @property (weak, nonatomic) IBOutlet UIButton *downloadBtn;
 /** 收藏按钮 */
@@ -80,6 +86,9 @@ typedef void (^SYDownloadCompletion)();
 
 /** 播放model对应的歌曲 */
 -(BOOL)playModel:(SYSongModel *)model;
+
+/** 广点通 */
+@property (nonatomic,strong) GDTMobBannerView * bannerView;
 @end
 
 @implementation SYPlayingViewController
@@ -97,13 +106,25 @@ typedef void (^SYDownloadCompletion)();
     }
     self.plistPath = path;
     
+    /** 广点通 */
+    /*
+     * 创建Banner广告View
+     * "appkey" 指在 http://e.qq.com/dev/ 能看到的app唯⼀一字符串
+     * "placementId" 指在 http://e.qq.com/dev/ ⽣生成的数字串,⼲⼴广告位id *
+     * banner条的宽度开发者可以进⾏行⼿手动设置,⽤用以满⾜足开发场景需求或是适配最新版本的iphone
+     * banner条的⾼高度⼲⼴广点通侧强烈建议开发者采⽤用推荐的⾼高度,否则显⽰示效果会有影响
+     * ⼲⼴广点通提供3种尺⼨寸供开发者在不同设别上使⽤用,这⾥里以320*50为例 */
+    CGRect gdtframe = CGRectMake(0, self.view.bounds.size.height - 50, self.view.bounds.size.width, 50);
+    self.bannerView = [[GDTMobBannerView alloc] initWithFrame:gdtframe appkey:GDT_APPID placementId:GDT_BANNERID];
+    /** 标题栏 */
     self.titleBtn = [SYPlayListButton playListButtonWithString:self.playListModel.lessonTitle];
     self.titleBtn.delegate = self;
     self.titleBtn.frame = CGRectMake(0, 20, self.view.bounds.size.width, 44);
     [self.view addSubview:self.titleBtn];
 
+    /** 控制台 */
     SYPlayerConsole *consoleView = [SYPlayerConsole playerConsole];
-    float consolY = self.view.bounds.size.height - consoleView.bounds.size.height;
+    float consolY = self.view.bounds.size.height - consoleView.bounds.size.height - self.bannerView.bounds.size.height;
     CGRect frame = CGRectMake(0, consolY, self.view.bounds.size.width, consoleView.bounds.size.height);
     consoleView.frame = frame;
     consoleView.delegate = self;
@@ -250,18 +271,31 @@ typedef void (^SYDownloadCompletion)();
 
     if(!self.audioController.isPlaying){
         SYSongModel *model = self.songModelArrary[0];
-        [self playModel:model];
+//        [self playModel:model];
     }
     
     if (!self.progressUpdateTimer) {
-        self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.2
-                                                                        target:self
-                                                                      selector:@selector(updatePlaybackProgress)
-                                                                      userInfo:nil
-                                                                       repeats:YES];
+        self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(updatePlaybackProgress) userInfo:nil repeats:YES];
     }
+    
+    /** 广点通 */
+    self.bannerView.delegate = self; // 设置Delegate
+    self.bannerView.currentViewController = self; //设置当前的ViewController
+    self.bannerView.interval = 30; //【可选】设置刷新频率;默认30秒
+    self.bannerView.isGpsOn = NO; //【可选】开启GPS定位;默认关闭
+    self.bannerView.showCloseBtn = YES; //【可选】展⽰示关闭按钮;默认显⽰示
+    self.bannerView.isAnimationOn = YES; //【可选】开启banner轮播和展现时的动画效果;默认开启
+    [self.view addSubview:self.bannerView]; //添加到当前的view中
+    [self.bannerView loadAdAndShow]; //加载⼲⼴广告并展⽰示
 }
 
+-(void)dealloc
+{
+    /** 广点通 */
+    self.bannerView.delegate = nil;
+    self.bannerView.currentViewController = nil;
+    self.bannerView = nil;
+}
 /** 全部下载按钮按下 */
 - (IBAction)downloadBtnClick {
     __weak SYPlayingViewController *weakSelf = self;

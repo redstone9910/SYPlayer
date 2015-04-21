@@ -19,13 +19,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SYPlayer/SYPlayerConsole.m"
-            timestampString = "451225918.801081"
+            filePath = "SYPlayingViewController.m"
+            timestampString = "451268250.095414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "66"
-            endingLineNumber = "66"
-            landmarkName = "+playerConsole"
+            startingLineNumber = "429"
+            endingLineNumber = "429"
+            landmarkName = "-playModel:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
