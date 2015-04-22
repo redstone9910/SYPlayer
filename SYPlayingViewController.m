@@ -29,10 +29,17 @@
 
 typedef void (^SYDownloadCompletion)();
 
-//#define GDT_APPID @"1104489407"
-//#define GDT_BANNERID @"8030502229410206"
-#define GDT_APPID @"100720253"
-#define GDT_BANNERID @"9079537207574943610"
+#define __AD_PASSED__
+
+#ifdef __AD_PASSED__
+/** 广点通ID */
+#define GDT_APPID @"1104489407"
+#define GDT_BANNERID @"8030502229410206"
+#else
+/** 测试ID */
+//#define GDT_APPID @"100720253"
+//#define GDT_BANNERID @"9079537207574943610"
+#endif
 
 @interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate,SYSongCellDelegate,GDTMobBannerViewDelegate>
 /** 全部下载按钮 */
@@ -146,15 +153,16 @@ typedef void (^SYDownloadCompletion)();
     self.playListTable.delegate = self;
     self.playListTable.dataSource = self;
     
+    /** 按钮移到最前 */
+    [self.view bringSubviewToFront:self.downloadBtn];
+    [self.view bringSubviewToFront:self.favoriteBtn];
+    
     /** 播放器 */
     self.audioController = [SYAudioController sharedAudioController];
     self.audioController.delegate = self;
     
-    [self.view bringSubviewToFront:self.downloadBtn];
-    [self.view bringSubviewToFront:self.favoriteBtn];
-    
+    /** 设定audioPlayer若干代码块 */
     __weak SYPlayingViewController *weakSelf = self;
-    
     self.audioController.onStateChange = ^(FSAudioStreamState state) {
         switch (state) {
             case kFsAudioStreamRetrievingURL:
@@ -267,8 +275,9 @@ typedef void (^SYDownloadCompletion)();
     };
 
     if(!self.audioController.isPlaying){
-        SYSongModel *model = self.songModelArrary[0];
-        [self playModel:model];
+//        SYSongModel *model = self.songModelArrary[0];
+//        [self playModel:model];
+        weakSelf.playerConsole.stopped = YES;
     }
     
     if (!self.progressUpdateTimer) {
@@ -280,10 +289,11 @@ typedef void (^SYDownloadCompletion)();
     self.bannerView.currentViewController = self; //设置当前的ViewController
     self.bannerView.interval = 30; //【可选】设置刷新频率;默认30秒
     self.bannerView.isGpsOn = NO; //【可选】开启GPS定位;默认关闭
-    self.bannerView.showCloseBtn = YES; //【可选】展⽰示关闭按钮;默认显⽰示
+    self.bannerView.showCloseBtn = NO; //【可选】展⽰示关闭按钮;默认显⽰示
     self.bannerView.isAnimationOn = YES; //【可选】开启banner轮播和展现时的动画效果;默认开启
     [self.view addSubview:self.bannerView]; //添加到当前的view中
     [self.bannerView loadAdAndShow]; //加载⼲⼴广告并展⽰示
+//    [self reLayoutSubviewsWithAdHeight:0];//设定广告条高度为0并重新布局
 }
 
 -(void)dealloc
@@ -292,6 +302,35 @@ typedef void (^SYDownloadCompletion)();
     self.bannerView.delegate = nil;
     self.bannerView.currentViewController = nil;
     self.bannerView = nil;
+}
+
+-(void)reLayoutSubviewsWithAdHeight:(float)height
+{
+    /** 广点通 */
+    CGRect gdtframe = CGRectMake(0, self.view.bounds.size.height - height, self.view.bounds.size.width, height);
+    self.bannerView.frame = gdtframe;
+    
+    /** 标题栏 */
+    self.titleBtn.frame = CGRectMake(0, 20, self.view.bounds.size.width, 44);
+    
+    /** 控制台 */
+    float consolY = self.view.bounds.size.height - self.playerConsole.bounds.size.height - self.bannerView.bounds.size.height;
+    CGRect frame = CGRectMake(0, consolY, self.view.bounds.size.width, self.playerConsole.bounds.size.height);
+    self.playerConsole.frame = frame;
+    
+    /** 歌词 */
+    CGRect rect = self.view.frame;
+    rect.origin.y = self.titleBtn.frame.origin.y + self.titleBtn.frame.size.height;
+    rect.size.height = self.playerConsole.frame.origin.y - rect.origin.y;
+    self.lrcView.frame = rect;
+    
+    /** 歌曲列表 */
+    float tableX = self.playListTable.frame.origin.x;
+    float tableY = self.playListTable.frame.origin.y;
+    float tableH = self.playerConsole.frame.origin.y - tableY;
+    float tableW = self.view.bounds.size.width;
+    self.playListFrame = CGRectMake(tableX, tableY, tableW, tableH);
+    self.playListTable.frame = self.playListFrame;
 }
 /** 全部下载按钮按下 */
 - (IBAction)downloadBtnClick {
@@ -637,14 +676,12 @@ typedef void (^SYDownloadCompletion)();
 }
 
 #pragma mark - GDTDelegate
-#warning 增加显示/隐藏广告条代码
 // 请求⼲⼴广告条数据成功后调⽤用
 - (void)bannerViewDidReceived{
-    
 }
 // 请求⼲⼴广告条数据失败后调⽤用
 - (void)bannerViewFailToReceived:(int)errCode{
-
+    [self reLayoutSubviewsWithAdHeight:0];
 }
 // 应⽤用进⼊入后台时调⽤用
 - (void)bannerViewWillLeaveApplication{
@@ -652,7 +689,7 @@ typedef void (^SYDownloadCompletion)();
 }
 // 广告条曝光回调
 - (void)bannerViewWillExposure{
-    
+    [self reLayoutSubviewsWithAdHeight:50];
 }
 // 广告条点击回调
 - (void)bannerViewClicked{
@@ -660,7 +697,7 @@ typedef void (^SYDownloadCompletion)();
 }
 // banner条被⽤用户关闭时调⽤用
 - (void)bannerViewWillClose{
-    
+    [self reLayoutSubviewsWithAdHeight:0];
 }
 
 @end
