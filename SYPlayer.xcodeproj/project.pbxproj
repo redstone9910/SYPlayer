@@ -403,6 +403,7 @@
 				TargetAttributes = {
 					52B6CC461A9BF53D00E043C0 = {
 						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = P9E9N47422;
 					};
 					52B6CC5F1A9BF53D00E043C0 = {
 						CreatedOnToolsVersion = 6.0.1;
@@ -641,6 +642,7 @@
 			baseConfigurationReference = 3E6801AC50639668D3115AA8 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = SYPlayer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -649,6 +651,7 @@
 					"$(PROJECT_DIR)/SYPlayer",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -657,6 +660,7 @@
 			baseConfigurationReference = C1BA314FB55BFFFFDDB77F2E /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = SYPlayer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -665,6 +669,7 @@
 					"$(PROJECT_DIR)/SYPlayer",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
