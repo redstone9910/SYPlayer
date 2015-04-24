@@ -5,7 +5,7 @@
 //  Created by YinYanhui on 15-3-21.
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
-
+#warning 收藏页功能
 #import "SYPlayingViewController.h"
 #import "SYPlayListButton.h"
 #import "SYPlayerConsole.h"
@@ -66,6 +66,7 @@ typedef void (^SYDownloadCompletion)();
 @property (nonatomic,strong) NSArray * songModelArrary;
 /** 更新songModelArrary内容到plist文件 */
 -(BOOL)refreshSongModelArrary;
+#warning 增加在线播放功能
 /** 流媒体播放器 */
 @property (nonatomic,strong) SYAudioController * audioController;
 /** 更新播放进度定时器 */

@@ -6,6 +6,7 @@
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
 
+#warning 改用autolayout布局
 #import "MIBRootViewController.h"
 #import "SYPlayingViewController.h"
 #import "SYPlayListModel.h"

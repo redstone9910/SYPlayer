@@ -5,6 +5,7 @@
 //  Created by YinYanhui on 15-3-22.
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
+#warning 用Quartz2D重写单行进度
 #import "SYLrcView.h"
 #import "NSString+Tools.h"
 

@@ -8,7 +8,7 @@
 
 #import "SYPlayerConsole.h"
 #import "NSString+Tools.h"
-
+#warning 增加逐句录音功能
 @interface SYPlayerConsole ()
 /** 总时间 */
 @property (weak, nonatomic) IBOutlet UILabel *timeTotal;
