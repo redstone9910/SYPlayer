@@ -91,8 +91,8 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xgb-XI-HK1" userLabel="B">
                                 <rect key="frame" x="0.0" y="511" width="320" height="57"/>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="第一册" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hNE-Le-cmR">
-                                <rect key="frame" x="64" y="425" width="52" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="第一册" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hNE-Le-cmR">
+                                <rect key="frame" x="64" y="427" width="52" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="52" id="ea6-Za-DKM"/>
                                     <constraint firstAttribute="height" constant="21" id="hbV-ri-jTb"/>
@@ -185,16 +185,22 @@
                         <viewControllerLayoutGuide type="top" id="EUb-tg-hX0"/>
                         <viewControllerLayoutGuide type="bottom" id="ZDO-uy-uyn"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Lt5-Yw-fCd">
+                    <view key="view" contentMode="scaleToFill" id="Lt5-Yw-fCd" userLabel="MainView">
                         <rect key="frame" x="1" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="28" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Isy-O0-gFF" userLabel="PlaylistTable">
-                                <rect key="frame" x="0.0" y="64" width="320" height="374"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8DQ-ul-sep" userLabel="Back">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iCW-rf-jSI" userLabel="TitleBtnView">
+                                <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="dhv-sX-pze"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8DQ-ul-sep" userLabel="Back">
                                 <rect key="frame" x="0.0" y="20" width="40" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="YdJ-2j-lW3"/>
+                                    <constraint firstAttribute="width" constant="40" id="piq-U1-5fv"/>
+                                </constraints>
                                 <state key="normal" image="btn_back">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -202,8 +208,12 @@
                                     <action selector="backBtnClick" destination="8s3-f6-Jpv" eventType="touchUpInside" id="jfj-i2-ZPT"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M2p-mn-i0z" userLabel="Download">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M2p-mn-i0z" userLabel="Download">
                                 <rect key="frame" x="280" y="20" width="40" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="6fy-vP-VZo"/>
+                                    <constraint firstAttribute="height" constant="44" id="WLe-MU-JTQ"/>
+                                </constraints>
                                 <state key="normal" image="btn_downLoad">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -211,13 +221,61 @@
                                     <action selector="downloadBtnClick" destination="8s3-f6-Jpv" eventType="touchUpInside" id="TZz-1N-oY4"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9R3-QO-hGp" userLabel="GDTAdView">
+                                <rect key="frame" x="0.0" y="518" width="320" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="URO-qK-DBu"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DDY-LN-cYY" userLabel="LRCView">
+                                <rect key="frame" x="0.0" y="64" width="320" height="354"/>
+                            </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="28" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Isy-O0-gFF" userLabel="PlaylistTable">
+                                <rect key="frame" x="0.0" y="64" width="320" height="453"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="453" id="EYB-aU-pHL"/>
+                                </constraints>
+                            </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SvA-Mo-9Rm" userLabel="PlayerConsoleView">
+                                <rect key="frame" x="0.0" y="418" width="320" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="jRP-OT-H9f"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="M2p-mn-i0z" firstAttribute="trailing" secondItem="Lt5-Yw-fCd" secondAttribute="trailing" id="3R3-gD-qbU" userLabel="Download - MainView - H"/>
+                            <constraint firstItem="SvA-Mo-9Rm" firstAttribute="bottom" secondItem="9R3-QO-hGp" secondAttribute="top" id="DLK-ye-LsL" userLabel="PlayerConsoleView - GDTAdView - V"/>
+                            <constraint firstItem="DDY-LN-cYY" firstAttribute="leading" secondItem="Lt5-Yw-fCd" secondAttribute="leading" id="HLO-Nc-4BH" userLabel="LRCView - MainView - H"/>
+                            <constraint firstItem="iCW-rf-jSI" firstAttribute="top" secondItem="Lt5-Yw-fCd" secondAttribute="top" constant="20" id="K7A-za-PB6" userLabel="TitleBtnView - MainView - V"/>
+                            <constraint firstItem="9R3-QO-hGp" firstAttribute="trailing" secondItem="Lt5-Yw-fCd" secondAttribute="trailing" id="RpJ-np-wls" userLabel="GDTAdView - MainView - H"/>
+                            <constraint firstItem="DDY-LN-cYY" firstAttribute="trailing" secondItem="Lt5-Yw-fCd" secondAttribute="trailing" id="UCc-1Y-ZEL" userLabel="LRCView - MainView - H"/>
+                            <constraint firstItem="SvA-Mo-9Rm" firstAttribute="leading" secondItem="Lt5-Yw-fCd" secondAttribute="leading" id="UYf-vL-ycz" userLabel="PlayerConsoleView - MainView - H"/>
+                            <constraint firstItem="iCW-rf-jSI" firstAttribute="leading" secondItem="Lt5-Yw-fCd" secondAttribute="leading" id="Udh-IZ-XMo" userLabel="TitleBtnView - MainView - H"/>
+                            <constraint firstItem="Isy-O0-gFF" firstAttribute="trailing" secondItem="Lt5-Yw-fCd" secondAttribute="trailing" id="XEP-lj-yEj" userLabel="PlaylistTable - MainView - H"/>
+                            <constraint firstItem="DDY-LN-cYY" firstAttribute="top" secondItem="iCW-rf-jSI" secondAttribute="bottom" id="Xxn-2M-0dk" userLabel="LRCView - TitleBtnView - V"/>
+                            <constraint firstItem="Isy-O0-gFF" firstAttribute="leading" secondItem="Lt5-Yw-fCd" secondAttribute="leading" id="ZUj-On-prp" userLabel="PlaylistTable - MainView - H"/>
+                            <constraint firstItem="8DQ-ul-sep" firstAttribute="leading" secondItem="Lt5-Yw-fCd" secondAttribute="leading" id="eXS-pH-W5E" userLabel="Back - MainView - H"/>
+                            <constraint firstItem="8DQ-ul-sep" firstAttribute="top" secondItem="EUb-tg-hX0" secondAttribute="bottom" id="gCR-Rf-EJ3" userLabel="Back - Top Layout Guide - V"/>
+                            <constraint firstItem="9R3-QO-hGp" firstAttribute="bottom" secondItem="Lt5-Yw-fCd" secondAttribute="bottom" id="iLw-FT-iYu" userLabel="GDTAdView - MainView - V"/>
+                            <constraint firstItem="9R3-QO-hGp" firstAttribute="leading" secondItem="Lt5-Yw-fCd" secondAttribute="leading" id="jyG-pb-aZ2" userLabel="GDTAdView - MainView - H"/>
+                            <constraint firstItem="iCW-rf-jSI" firstAttribute="trailing" secondItem="Lt5-Yw-fCd" secondAttribute="trailing" id="lZ9-Yc-V2F" userLabel="TitleBtnView - MainView - H"/>
+                            <constraint firstItem="DDY-LN-cYY" firstAttribute="bottom" secondItem="SvA-Mo-9Rm" secondAttribute="top" id="oyU-fP-ocR" userLabel="LRCView - PlayerConsoleView - V"/>
+                            <constraint firstItem="M2p-mn-i0z" firstAttribute="top" secondItem="EUb-tg-hX0" secondAttribute="bottom" id="u2v-NX-MnE" userLabel="Download - Top Layout Guide - V"/>
+                            <constraint firstItem="SvA-Mo-9Rm" firstAttribute="trailing" secondItem="Lt5-Yw-fCd" secondAttribute="trailing" id="wVM-bJ-fdp" userLabel="PlayerConsoleView - MainView - H"/>
+                            <constraint firstItem="Isy-O0-gFF" firstAttribute="top" secondItem="iCW-rf-jSI" secondAttribute="bottom" id="xEW-3T-wW3" userLabel="PlaylistTable - TitleBtnView - V"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="downloadBtn" destination="M2p-mn-i0z" id="Brx-Wm-7ww"/>
                         <outlet property="favoriteBtn" destination="8DQ-ul-sep" id="iGC-g3-WQg"/>
+                        <outlet property="gdtAdView" destination="9R3-QO-hGp" id="aBi-ZG-V22"/>
+                        <outlet property="lrcUIView" destination="DDY-LN-cYY" id="MGE-te-G1W"/>
                         <outlet property="playListTable" destination="Isy-O0-gFF" id="tWw-cq-ZXG"/>
+                        <outlet property="playerConsoleView" destination="SvA-Mo-9Rm" id="B9b-O8-e4q"/>
+                        <outlet property="titleBtnView" destination="iCW-rf-jSI" id="Gfd-aq-FSr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8A6-Tq-RAo" userLabel="First Responder" sceneMemberID="firstResponder"/>

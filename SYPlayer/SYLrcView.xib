@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6751" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6751" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
@@ -8,37 +8,71 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="7eg-y1-y5u" customClass="SYLrcView">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
+            <rect key="frame" x="0.0" y="0.0" width="320" height="300"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="EP9-Ks-AO1" userLabel="BackgroundImg">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                </imageView>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="Clz-kU-MgZ" userLabel="LRCScroll">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jMW-4k-nfg" userLabel="BackGroundScroll">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="300"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="歌词未找到~" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="NjW-Lb-1Pz">
-                            <rect key="frame" x="8" y="60" width="304" height="21"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                        <imageView userInteractionEnabled="NO" alpha="0.29999999999999999" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="girl" translatesAutoresizingMaskIntoConstraints="NO" id="EP9-Ks-AO1" userLabel="BackgroundImg">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="569"/>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="EP9-Ks-AO1" firstAttribute="leading" secondItem="jMW-4k-nfg" secondAttribute="leading" id="1dk-zf-vam"/>
+                        <constraint firstItem="EP9-Ks-AO1" firstAttribute="top" secondItem="jMW-4k-nfg" secondAttribute="top" id="YZL-Lc-2kC"/>
+                        <constraint firstItem="EP9-Ks-AO1" firstAttribute="trailing" secondItem="jMW-4k-nfg" secondAttribute="trailing" id="akP-r9-7Os"/>
+                        <constraint firstItem="EP9-Ks-AO1" firstAttribute="bottom" secondItem="jMW-4k-nfg" secondAttribute="bottom" id="h88-Hb-uHK"/>
+                        <constraint firstItem="EP9-Ks-AO1" firstAttribute="centerX" secondItem="jMW-4k-nfg" secondAttribute="centerX" id="ynX-Kf-xk0"/>
+                    </constraints>
+                </scrollView>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Clz-kU-MgZ" userLabel="LRCScroll">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="300"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="歌词未找到~" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NjW-Lb-1Pz">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="299"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="NjW-Lb-1Pz" firstAttribute="centerY" secondItem="Clz-kU-MgZ" secondAttribute="centerY" id="HbF-4d-OSB"/>
+                        <constraint firstItem="NjW-Lb-1Pz" firstAttribute="centerX" secondItem="Clz-kU-MgZ" secondAttribute="centerX" id="JGp-qJ-7UV"/>
+                        <constraint firstItem="NjW-Lb-1Pz" firstAttribute="trailing" secondItem="Clz-kU-MgZ" secondAttribute="trailing" id="cvl-Q9-1pr"/>
+                        <constraint firstItem="NjW-Lb-1Pz" firstAttribute="top" secondItem="Clz-kU-MgZ" secondAttribute="top" id="enR-px-Bve"/>
+                        <constraint firstItem="NjW-Lb-1Pz" firstAttribute="leading" secondItem="Clz-kU-MgZ" secondAttribute="leading" id="nkF-Dh-HMu"/>
+                        <constraint firstItem="NjW-Lb-1Pz" firstAttribute="bottom" secondItem="Clz-kU-MgZ" secondAttribute="bottom" id="ssB-NX-hU2"/>
+                    </constraints>
                 </scrollView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="Clz-kU-MgZ" firstAttribute="top" secondItem="7eg-y1-y5u" secondAttribute="top" id="0jw-rf-1EJ"/>
+                <constraint firstItem="Clz-kU-MgZ" firstAttribute="bottom" secondItem="7eg-y1-y5u" secondAttribute="bottom" id="3cF-CO-44E"/>
+                <constraint firstItem="jMW-4k-nfg" firstAttribute="bottom" secondItem="7eg-y1-y5u" secondAttribute="bottom" id="D4s-fO-TbC"/>
+                <constraint firstItem="Clz-kU-MgZ" firstAttribute="trailing" secondItem="7eg-y1-y5u" secondAttribute="trailing" id="Z5q-RL-Oiy"/>
+                <constraint firstItem="jMW-4k-nfg" firstAttribute="leading" secondItem="7eg-y1-y5u" secondAttribute="leading" id="hco-PB-Qbx"/>
+                <constraint firstItem="Clz-kU-MgZ" firstAttribute="leading" secondItem="7eg-y1-y5u" secondAttribute="leading" id="mna-Oa-pPg"/>
+                <constraint firstItem="jMW-4k-nfg" firstAttribute="trailing" secondItem="7eg-y1-y5u" secondAttribute="trailing" id="oPS-SV-0ZC"/>
+                <constraint firstItem="jMW-4k-nfg" firstAttribute="top" secondItem="7eg-y1-y5u" secondAttribute="top" id="z7k-1x-VK8"/>
+            </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="backgroundImageView" destination="EP9-Ks-AO1" id="uDk-cU-G5t"/>
+                <outlet property="backgroundScroll" destination="jMW-4k-nfg" id="LoX-26-Bha"/>
                 <outlet property="lrcScroll" destination="Clz-kU-MgZ" id="WYM-ef-smS"/>
                 <outlet property="titleLabel" destination="NjW-Lb-1Pz" id="PtZ-dK-tQK"/>
             </connections>
             <point key="canvasLocation" x="378" y="287"/>
         </view>
     </objects>
+    <resources>
+        <image name="girl" width="320" height="569"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

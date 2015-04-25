@@ -14,12 +14,14 @@
 #define lineMargin 5
 
 @interface SYLrcView ()<UIScrollViewDelegate>
-
+/** 背景图片Scroll */
+@property (weak, nonatomic) IBOutlet UIScrollView *backgroundScroll;
 /** 用于显示歌词的Scroll */
 @property (weak, nonatomic) IBOutlet UIScrollView *lrcScroll;
 /** 歌词标题 */
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
-
+/** 背景图片 */
+@property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 -(NSString *) lrcWithFile:(NSString *)file;
 -(NSArray*) parseLrcLine:(NSString *)lrcLineText;
 -(float)timeWithString:(NSString *)string;
@@ -35,20 +37,19 @@
 @property (nonatomic,strong) UIFont * lrcCurrentFont;
 /** LRC已过字体 */
 @property (nonatomic,strong) UIFont * lrcPasteFont;
-
+/** 正在拖动 */
 @property (nonatomic,assign,getter = isDragging) BOOL dragging;
 @end
 
 @implementation SYLrcView
-/** 创建新LRC View并设定LRC文件 */
-+(instancetype) lrcViewWithFrame:(CGRect)frame withLrcFile:(NSString *)file
+
+/** 创建新LRC View */
++(instancetype) lrcView
 {
     NSBundle *bundle = [NSBundle mainBundle];
     NSArray *objs = [bundle loadNibNamed:NSStringFromClass(self) owner:nil options:nil];
     SYLrcView *lrcview = [objs lastObject];
     
-    lrcview.frame = frame;
-    lrcview.lrcFile = file;
     return lrcview;
 }
 
@@ -59,15 +60,25 @@
     self.lrcPasteFont = [UIFont fontWithName:@"Helvetica-ObLique" size:14];
     
     self.lrcScroll.delegate = self;
-    self.lrcLableArray = [NSMutableArray array];
+    self.lrcScroll.contentInset = UIEdgeInsetsMake(edgeInsets, edgeInsets, edgeInsets, edgeInsets);
     
+    self.lrcLableArray = [NSMutableArray array];
     self.dragging = NO;
+    
+    self.backgroundScroll.contentSize = self.backgroundImageView.image.size;
+}
+
+/** 重新布局时调用 */
+-(void)layoutSubviews
+{
+    [super layoutSubviews];
 }
 
 /** 设定播放进度并更新View */
 -(void)setTimeProgressInSecond:(float)timeProgressInSecond
 {
     _timeProgressInSecond = timeProgressInSecond;
+    
     if (!self.isDragging) {
         dispatch_async(dispatch_get_main_queue(), ^{
             for (long index = self.lrcLineArray.count - 1; index > -1; index --) {
@@ -105,6 +116,8 @@
 -(void)setBackgroundImage:(UIImage *)backgroundImage
 {
     _backgroundImage = backgroundImage;
+    
+    self.backgroundImageView.image = self.backgroundImage;
 }
 
 /** 设定LRC源文件 */
@@ -217,18 +230,7 @@
     NSString *sStr = array[1];
     return [mStr floatValue] * 60 + [sStr floatValue];
 }
-///** 设定并更新LRC字体 */
-//-(void)setLrcFont:(UIFont *)lrcFont
-//{
-//    _lrcFont = lrcFont;
-//}
-/** 重新布局时调用 */
--(void)layoutSubviews
-{
-    [super layoutSubviews];
-    self.lrcScroll.frame = self.bounds;
-    self.lrcScroll.contentInset = UIEdgeInsetsMake(edgeInsets, edgeInsets, edgeInsets, edgeInsets);
-}
+
 /** 文件转为lrc字符串 */
 -(NSString *)lrcWithFile:(NSString *)file
 {
@@ -247,12 +249,17 @@
 {
     static int last_index = 0;
     
+    dispatch_async(dispatch_get_main_queue(), ^{
+        float h1 = self.backgroundScroll.contentSize.height - self.backgroundScroll.frame.size.height * (1 - lrcOffset);
+        float h2 = self.lrcScroll.contentSize.height;
+        if (h2) {
+            float scrollScale = h1 / h2;
+            float offsetY = self.lrcScroll.contentOffset.y;
+            self.backgroundScroll.contentOffset = CGPointMake(0, offsetY * scrollScale);
+        }
+    });
+    
     if (self.isDragging) {
-//        float labelH = [NSString heightWithFont:self.lrcFont] + 10;
-        //取出对应位置的label并设定字体
-//        int index = self.lrcScroll.contentOffset.y / labelH;
-//        if(index > self.lrcLineArray.count - 1) index = (int)(self.lrcLineArray.count - 1);
-        
         int index = 0;
         float offset = self.lrcScroll.contentOffset.y + self.lrcScroll.frame.size.height * lrcOffset;
         for (int i = 0; i < self.lrcLableArray.count; i ++) {

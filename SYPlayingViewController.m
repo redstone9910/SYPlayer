@@ -50,18 +50,28 @@ typedef void (^SYDownloadCompletion)();
 - (IBAction)downloadBtnClick;
 /** 后退按钮按下 */
 - (IBAction)backBtnClick;
-/** 是否已收藏 */
-//@property (nonatomic,assign,getter=isFavoriteSong) BOOL favoriteSong;
 
-/** 播放下拉列表 */
-@property (weak, nonatomic) IBOutlet UITableView *playListTable;
+/** 标题按钮View */
+@property (weak, nonatomic) IBOutlet UIView *titleBtnView;
+/** 标题按钮 */
+@property (nonatomic,strong) SYPlayListButton *titleBtn;
+/** 控制台View */
+@property (weak, nonatomic) IBOutlet UIView *playerConsoleView;
 /** 控制台 */
 @property (nonatomic,strong) SYPlayerConsole * playerConsole;
+/** LRC View */
+@property (weak, nonatomic) IBOutlet UIView *lrcUIView;
 /** 歌词显示 */
 @property (nonatomic,strong) SYLrcView *lrcView;
+/** 播放下拉列表 */
+@property (weak, nonatomic) IBOutlet UITableView *playListTable;
+/** 广告条View */
+@property (weak, nonatomic) IBOutlet UIView *gdtAdView;
+/** 广点通 */
+@property (nonatomic,strong) GDTMobBannerView * bannerView;
 
 /** 用于保存playListTable原始Frame */
-@property (nonatomic,assign) CGRect playListFrame;
+//@property (nonatomic,assign) CGRect playListFrame;
 /** 播放列表数据数组 */
 @property (nonatomic,strong) NSArray * songModelArrary;
 /** 更新songModelArrary内容到plist文件 */
@@ -79,8 +89,6 @@ typedef void (^SYDownloadCompletion)();
 /** 正在更新播放进度 */
 @property (nonatomic,assign,getter=isSeeking) BOOL seeking;
 
-/** 标题按钮 */
-@property (nonatomic,strong) SYPlayListButton *titleBtn;
 /** 存储播放列表数据的plist文件路径 */
 @property (nonatomic,copy) NSString * plistPath;
 /** 当前被选中的行号 */
@@ -94,9 +102,6 @@ typedef void (^SYDownloadCompletion)();
 
 /** 播放model对应的歌曲 */
 -(BOOL)playModel:(SYSongModel *)model;
-
-/** 广点通 */
-@property (nonatomic,strong) GDTMobBannerView * bannerView;
 @end
 
 @implementation SYPlayingViewController
@@ -114,45 +119,47 @@ typedef void (^SYDownloadCompletion)();
     }
     self.plistPath = path;
     
-    /** 广点通 */
-    CGRect gdtframe = CGRectMake(0, self.view.bounds.size.height - 50, self.view.bounds.size.width, 50);
-    self.bannerView = [[GDTMobBannerView alloc] initWithFrame:gdtframe appkey:GDT_APPID placementId:GDT_BANNERID];
-    
     /** 标题栏 */
     self.titleBtn = [SYPlayListButton playListButtonWithString:self.playListModel.lessonTitle];
     self.titleBtn.delegate = self;
-    self.titleBtn.frame = CGRectMake(0, 20, self.view.bounds.size.width, 44);
-    [self.view addSubview:self.titleBtn];
+    [self.titleBtnView addSubview:self.titleBtn];
+    self.titleBtn.Opened = NO;
+    
+    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC);
+    dispatch_after(time, dispatch_get_main_queue(), ^{
+        self.titleBtn.Opened = YES;
+    });
 
     /** 控制台 */
-    SYPlayerConsole *consoleView = [SYPlayerConsole playerConsole];
-    float consolY = self.view.bounds.size.height - consoleView.bounds.size.height - self.bannerView.bounds.size.height;
-    CGRect frame = CGRectMake(0, consolY, self.view.bounds.size.width, consoleView.bounds.size.height);
-    consoleView.frame = frame;
-    consoleView.delegate = self;
-    self.playerConsole = consoleView;
-    [self.view addSubview:self.playerConsole];
+    self.playerConsole = [SYPlayerConsole playerConsole];
+    self.playerConsole.delegate = self;
+    [self.playerConsoleView addSubview:self.playerConsole];
     
     /** 歌词 */
-    CGRect rect = self.view.frame;
-    rect.origin.y = self.titleBtn.frame.origin.y + self.titleBtn.frame.size.height;
-    rect.size.height = self.playerConsole.frame.origin.y - rect.origin.y;
-    SYLrcView *lrcview = [SYLrcView lrcViewWithFrame:rect withLrcFile:nil];
-    lrcview.delegate = self;
-    self.lrcView = lrcview;
-    [self.view addSubview:self.lrcView];
+    self.lrcView = [SYLrcView lrcView];
+    self.lrcView.lrcFile = nil;
+    self.lrcView.delegate = self;
+    self.lrcView.frame = self.lrcUIView.bounds;
+    [self.lrcUIView addSubview:self.lrcView];
     
     /** 歌曲列表 */
-    float tableX = self.playListTable.frame.origin.x;
-    float tableY = self.playListTable.frame.origin.y;
-    float tableH = self.playerConsole.frame.origin.y - tableY;
-    float tableW = self.view.bounds.size.width;
-    self.playListFrame = CGRectMake(tableX, tableY, tableW, tableH);
-    self.playListTable.frame = self.playListFrame;
     self.playListTable.rowHeight = 30;
-    [self.view bringSubviewToFront:self.playListTable];
     self.playListTable.delegate = self;
     self.playListTable.dataSource = self;
+    
+    /** 广点通 */
+    CGRect gdtframe = CGRectMake(0, 0, self.view.bounds.size.width, self.gdtAdView.bounds.size.height);
+    self.bannerView = [[GDTMobBannerView alloc] initWithFrame:gdtframe appkey:GDT_APPID placementId:GDT_BANNERID];
+    [self.gdtAdView addSubview:self.bannerView];
+    self.bannerView.delegate = self; // 设置Delegate
+    self.bannerView.currentViewController = self; //设置当前的ViewController
+    self.bannerView.interval = 30; //【可选】设置刷新频率;默认30秒
+    self.bannerView.isGpsOn = NO; //【可选】开启GPS定位;默认关闭
+    self.bannerView.showCloseBtn = NO; //【可选】展⽰示关闭按钮;默认显⽰示
+    self.bannerView.isAnimationOn = YES; //【可选】开启banner轮播和展现时的动画效果;默认开启
+    [self.bannerView loadAdAndShow]; //加载⼲⼴广告并展⽰示
+    
+    [self reLayoutSubviewsWithAdHeight:50];//设定广告条高度为0并重新布局
     
     /** 按钮移到最前 */
     [self.view bringSubviewToFront:self.downloadBtn];
@@ -284,17 +291,6 @@ typedef void (^SYDownloadCompletion)();
     if (!self.progressUpdateTimer) {
         self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(updatePlaybackProgress) userInfo:nil repeats:YES];
     }
-    
-    /** 广点通 */
-    self.bannerView.delegate = self; // 设置Delegate
-    self.bannerView.currentViewController = self; //设置当前的ViewController
-    self.bannerView.interval = 30; //【可选】设置刷新频率;默认30秒
-    self.bannerView.isGpsOn = NO; //【可选】开启GPS定位;默认关闭
-    self.bannerView.showCloseBtn = NO; //【可选】展⽰示关闭按钮;默认显⽰示
-    self.bannerView.isAnimationOn = YES; //【可选】开启banner轮播和展现时的动画效果;默认开启
-    [self.view addSubview:self.bannerView]; //添加到当前的view中
-    [self.bannerView loadAdAndShow]; //加载⼲⼴广告并展⽰示
-//    [self reLayoutSubviewsWithAdHeight:0];//设定广告条高度为0并重新布局
 }
 
 -(void)dealloc
@@ -305,33 +301,18 @@ typedef void (^SYDownloadCompletion)();
     self.bannerView = nil;
 }
 
+//-(void)logOutFrame:(CGRect)frame
+//{
+//    NSLog(@"frame:%.1f,%.1f,%.1f,%.1f",frame.origin.x,frame.origin.y,frame.size.width,frame.size.height);
+//}
 -(void)reLayoutSubviewsWithAdHeight:(float)height
 {
-    /** 广点通 */
-    CGRect gdtframe = CGRectMake(0, self.view.bounds.size.height - height, self.view.bounds.size.width, height);
-    self.bannerView.frame = gdtframe;
-    
-    /** 标题栏 */
-    self.titleBtn.frame = CGRectMake(0, 20, self.view.bounds.size.width, 44);
-    
-    /** 控制台 */
-    float consolY = self.view.bounds.size.height - self.playerConsole.bounds.size.height - self.bannerView.bounds.size.height;
-    CGRect frame = CGRectMake(0, consolY, self.view.bounds.size.width, self.playerConsole.bounds.size.height);
-    self.playerConsole.frame = frame;
-    
-    /** 歌词 */
-    CGRect rect = self.view.frame;
-    rect.origin.y = self.titleBtn.frame.origin.y + self.titleBtn.frame.size.height;
-    rect.size.height = self.playerConsole.frame.origin.y - rect.origin.y;
-    self.lrcView.frame = rect;
-    
-    /** 歌曲列表 */
-    float tableX = self.playListTable.frame.origin.x;
-    float tableY = self.playListTable.frame.origin.y;
-    float tableH = self.playerConsole.frame.origin.y - tableY;
-    float tableW = self.view.bounds.size.width;
-    self.playListFrame = CGRectMake(tableX, tableY, tableW, tableH);
-    self.playListTable.frame = self.playListFrame;
+    for (NSLayoutConstraint *cst in self.gdtAdView.constraints) {
+        if (cst.firstAttribute == NSLayoutAttributeHeight) {
+            cst.constant = height;
+            break;
+        }
+    }
 }
 /** 全部下载按钮按下 */
 - (IBAction)downloadBtnClick {
@@ -626,15 +607,15 @@ typedef void (^SYDownloadCompletion)();
 /** 播放列表展开/关闭 */
 -(void)playListButtonBtnClicked:(SYPlayListButton *)playListBtn
 {
-    CGRect frame = self.playListFrame;
-    if(!playListBtn.isOpened){
-        frame.size.height = 0;
+    for (NSLayoutConstraint *cst in self.playListTable.constraints) {
+        if (cst.firstAttribute == NSLayoutAttributeHeight) {
+            cst.constant = playListBtn.isOpened ? self.lrcUIView.frame.size.height : 0;
+            [UIView animateWithDuration:0.3 animations:^{
+                [self.playListTable layoutIfNeeded];
+            }];
+            break;
+        }
     }
-    
-    [self.view bringSubviewToFront:self.playListTable];
-    [UIView animateWithDuration:0.3 animations:^{
-        self.playListTable.frame = frame;
-    }];
 }
 
 #pragma mark - playListTable DataSource

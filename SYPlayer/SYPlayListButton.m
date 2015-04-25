@@ -54,8 +54,6 @@
 {
     [super layoutSubviews];
     
-    self.titleBtn.frame = self.bounds;
-    self.titleBtn.titleLabel.frame = self.titleBtn.bounds;
     self.titleBtn.titleLabel.textAlignment = NSTextAlignmentLeft;
     
     float titleLength = [self.titleText sizeWithFont:self.titleBtn.titleLabel.font maxSize:CGSizeMake(1000, 1000)].width;
@@ -73,6 +71,5 @@
 -(void)awakeFromNib
 {
     self.backgroundColor = [UIColor clearColor];
-    self.Opened = YES;
 }
 @end

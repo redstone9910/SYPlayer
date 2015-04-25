@@ -24,8 +24,8 @@
 /** 背景图片 */
 @property (nonatomic,strong) UIImage * backgroundImage;
 
-/** 创建新LRC View并设定LRC文件 */
-+(instancetype) lrcViewWithFrame:(CGRect)frame withLrcFile:(NSString *)file;
+/** 创建新LRC View */
++(instancetype) lrcView;
 
 /** 代理 */
 @property (nonatomic,weak) id <SYLrcViewDelegate> delegate;
