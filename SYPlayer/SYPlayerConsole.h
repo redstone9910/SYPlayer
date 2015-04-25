@@ -10,12 +10,12 @@
 
 @class SYPlayerConsole;
 
-#define _PLAY_MODE_COUNT_ 3
 typedef enum playModeState
 {
     playModeStateRepeat = 0,
-    playModeStateShuttle = 1,
-    playModeStateSingleRepeat = 2,
+    playModeStateSingleSentenceRepeat = 1,
+    playModeStateShuttle = 2,
+    playModeStateSingleRepeat = 3,
 } playModeState;
 
 @protocol SYPlayerConsoleDelegate <NSObject>
@@ -54,6 +54,8 @@ typedef enum playModeState
 @property (nonatomic,assign) float bufferProgress;
 /** status字符串 */
 @property (nonatomic,copy) NSString * statusText;
+/** mode名 */
+@property (nonatomic,strong) NSArray * modeNames;
 
 /** 代理,传递按钮事件 */
 @property(weak,nonatomic) id <SYPlayerConsoleDelegate> delegate;

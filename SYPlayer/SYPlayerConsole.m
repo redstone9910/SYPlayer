@@ -33,7 +33,6 @@
 /** 状态 */
 @property (weak, nonatomic) IBOutlet UILabel *statusLabel;
 
-
 /** 改变播放模式 */
 - (IBAction)playModeClick;
 /** 退出 */
@@ -55,7 +54,8 @@
 @property (nonatomic,assign) BOOL playSliderDraging;
 
 /** 播放模式图片数组 */
-@property (nonatomic,strong) NSArray * playModesAndImages;
+@property (nonatomic,strong) NSArray *modeImageArray;
+@property (nonatomic,strong) NSArray *modeNameArray;
 @end
 
 @implementation SYPlayerConsole
@@ -69,45 +69,39 @@
     
     return console;
 }
-/** 设定buffer进度并更新View */
--(void)setBufferProgress:(float)bufferProgress
+/** 从XIB加载完毕 */
+-(void)awakeFromNib
 {
-    _bufferProgress = bufferProgress;
-    self.bufferProgressIndicator.progress = self.bufferProgress;
+    //设置进度条外观
+    [self.playSlider setThumbImage:[UIImage imageNamed:@"dot"] forState:UIControlStateNormal];
+    self.playSlider.maximumTrackTintColor = [UIColor blackColor];
+    self.playSlider.minimumTrackTintColor = [UIColor lightGrayColor];
+    self.playSliderDraging = NO;//没有正在拖动
 }
-/** 设定status并更新label */
--(void)setStatusText:(NSString *)statusText
-{
-    _statusText = statusText;
-    self.statusLabel.text = self.statusText;
-}
+#pragma mark - IBAction
 /** 改变播放模式按钮按下 */
 - (IBAction)playModeClick {
     switch (self.playMode) {
         case playModeStateRepeat:
-            self.playMode = playModeStateShuttle;
+            self.playMode = playModeStateSingleSentenceRepeat;
             break;
-        case playModeStateShuttle:
-            self.playMode = playModeStateSingleRepeat;
-            break;
-        case playModeStateSingleRepeat:
+        case playModeStateSingleSentenceRepeat:
             self.playMode = playModeStateRepeat;
             break;
+//        case playModeStateRepeat:
+//            self.playMode = playModeStateSingleSentenceRepeat;
+//            break;
+//        case playModeStateSingleSentenceRepeat:
+//            self.playMode = playModeStateShuttle;
+//            break;
+//        case playModeStateShuttle:
+//            self.playMode = playModeStateSingleRepeat;
+//            break;
+//        case playModeStateSingleRepeat:
+//            self.playMode = playModeStateRepeat;
+//            break;
         default:
             break;
-    }
-}
-/** 播放模式改变 */
--(void)setPlayMode:(playModeState)playMode
-{
-    _playMode = playMode;
-    NSArray *playModeAndImage = self.playModesAndImages[self.playMode];
-    NSString *imgNameStr = playModeAndImage[0];
-    NSString *modeNameStr = playModeAndImage[1];
-    [self.playModeBtn setImage:[UIImage imageNamed:imgNameStr] forState:UIControlStateNormal];
-    
-    if ([self.delegate respondsToSelector:@selector(playerConsolePlayModeStateChanged:withModeName:)]) {
-        [self.delegate playerConsolePlayModeStateChanged:self withModeName:modeNameStr];
     }
 }
 /** 退出键按下 */
@@ -121,24 +115,6 @@
     self.playing = !self.isPlaying;
     if ([self.delegate respondsToSelector:@selector(playerConsolePlayingStatusChanged:)]) {
         [self.delegate playerConsolePlayingStatusChanged:self];
-    }
-}
-/** 切换播放按钮图片 */
--(void)setPlaying:(BOOL)playing
-{
-    _playing = playing;
-    if(self.isPlaying) self.stopped = NO;
-    [self.playBtn setImage:[UIImage imageNamed:self.isPlaying ? @"btn_pause" : @"btn_play"] forState:UIControlStateNormal];
-}
-
--(void)setStopped:(BOOL)stopped
-{
-    _stopped = stopped;
-    if (self.isStopped) {
-        self.timeTotalInSecond = 0;
-        self.playBtn.enabled = NO;
-    }else{
-        self.playBtn.enabled = YES;
     }
 }
 /** 上一首 */
@@ -176,6 +152,85 @@
     self.playSliderDraging = NO;
 }
 
+#pragma mark - Property
+/** 存储modeName的数组 */
+-(NSArray *)modeImageArray
+{
+    if (_modeImageArray == nil) {
+        _modeImageArray = @[@"mode_repeat",@"mode_single_repeat",@"mode_shuffle",@"mode_single_repeat"];
+    }
+    return _modeImageArray;
+}
+/** 存储modeName的数组 */
+-(NSArray *)modeNameArray
+{
+    if (_modeNameArray == nil) {
+        _modeNameArray = @[@"顺序播放",@"单句播放",@"随机播放",@"单曲循环"];
+    }
+    return _modeNameArray;
+}
+/** 设定buffer进度并更新View */
+-(void)setBufferProgress:(float)bufferProgress
+{
+    _bufferProgress = bufferProgress;
+    self.bufferProgressIndicator.progress = self.bufferProgress;
+}
+/** 设定status并更新label */
+-(void)setStatusText:(NSString *)statusText
+{
+    NSString *str = [self.modeNameArray[self.playMode] copy];
+    
+    if (statusText != nil && [statusText length] > 0) {
+        NSString *secondStr = statusText;
+        NSArray *ary = [statusText componentsSeparatedByString:@" - "];
+        if ([ary count] >= 2) {
+            NSString *firstStr = ary[0];
+            long index = firstStr.length;
+            secondStr = [statusText substringFromIndex:index + 3];
+        }
+        str = [str stringByAppendingString:@" - "];
+        str = [str stringByAppendingString:secondStr];
+    }
+    _statusText = [str copy];
+    self.statusLabel.text = self.statusText;
+}
+/** 播放模式改变 */
+-(void)setPlayMode:(playModeState)playMode
+{
+    _playMode = playMode;
+    NSString *imgNameStr = self.modeImageArray[self.playMode];
+    NSString *modeNameStr = self.modeNameArray[self.playMode];
+    [self.playModeBtn setImage:[UIImage imageNamed:imgNameStr] forState:UIControlStateNormal];
+    
+    NSArray *ary = [self.statusText componentsSeparatedByString:@" - "];
+    if (ary.count <= 1) {
+        self.statusText = @"";
+    }else{
+        self.statusText = self.statusText;
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(playerConsolePlayModeStateChanged:withModeName:)]) {
+        [self.delegate playerConsolePlayModeStateChanged:self withModeName:modeNameStr];
+    }
+}
+/** 切换播放按钮图片 */
+-(void)setPlaying:(BOOL)playing
+{
+    _playing = playing;
+    if(self.isPlaying) self.stopped = NO;
+    [self.playBtn setImage:[UIImage imageNamed:self.isPlaying ? @"btn_pause" : @"btn_play"] forState:UIControlStateNormal];
+}
+/** 更新播放/停止状态并使能/禁止播放按钮 */
+-(void)setStopped:(BOOL)stopped
+{
+    _stopped = stopped;
+    if (self.isStopped) {
+        self.timeTotalInSecond = 0;
+        self.playBtn.enabled = NO;
+    }else{
+        self.playBtn.enabled = YES;
+    }
+}
 /** 设定总时长并设定标签 */
 -(void)setTimeTotalInSecond:(float)timeTotalInSecond
 {
@@ -183,7 +238,6 @@
     self.timeTotal.text = [NSString stringFromTime:self.timeTotalInSecond];
     self.timeProgressInSecond = 0;//已播放时长复位
 }
-
 /** 更新已播放时长 */
 -(void)setTimeProgressInSecond:(float)timeProgressInSecond
 {
@@ -198,26 +252,5 @@
 {
     _backgroundImage = backgroundImage;
     [self.backGroundImg setImage:self.backgroundImage];
-}
-
-/** 从XIB加载完毕 */
--(void)awakeFromNib
-{
-    //设置进度条外观
-    [self.playSlider setThumbImage:[UIImage imageNamed:@"dot"] forState:UIControlStateNormal];
-    self.playSlider.maximumTrackTintColor = [UIColor blackColor];
-    self.playSlider.minimumTrackTintColor = [UIColor lightGrayColor];
-    self.playSliderDraging = NO;//没有正在拖动
-    //初始化变量
-    if (self.playModesAndImages == nil) {
-        NSArray *imgNameArray = @[@"mode_repeat",@"mode_shuffle",@"mode_single_repeat"];
-        NSArray *modeNameArray = @[@"顺序播放",@"随机播放",@"单曲循环"];
-        NSMutableArray * temp = [NSMutableArray array];
-        for (int i = 0; i < _PLAY_MODE_COUNT_; i ++) {
-            NSArray *array = @[imgNameArray[i],modeNameArray[i]];
-            [temp addObject:array];
-        }
-        self.playModesAndImages = temp;
-    }
 }
 @end

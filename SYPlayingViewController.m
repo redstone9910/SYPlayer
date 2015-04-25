@@ -6,6 +6,7 @@
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
 #warning 收藏页功能
+#warning 重设字体，字号，颜色，重设皮肤颜色功能
 #import "SYPlayingViewController.h"
 #import "SYPlayListButton.h"
 #import "SYPlayerConsole.h"
@@ -125,7 +126,7 @@ typedef void (^SYDownloadCompletion)();
     [self.titleBtnView addSubview:self.titleBtn];
     self.titleBtn.Opened = NO;
     
-    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC);
+    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 1.5 * NSEC_PER_SEC);
     dispatch_after(time, dispatch_get_main_queue(), ^{
         self.titleBtn.Opened = YES;
     });
@@ -271,8 +272,8 @@ typedef void (^SYDownloadCompletion)();
         
         if (metaData[@"MPMediaItemPropertyArtist"] &&
             metaData[@"MPMediaItemPropertyTitle"]) {
-            [streamInfo appendString:metaData[@"MPMediaItemPropertyArtist"]];
-            [streamInfo appendString:@" - "];
+//            [streamInfo appendString:metaData[@"MPMediaItemPropertyArtist"]];
+//            [streamInfo appendString:@" - "];
             [streamInfo appendString:metaData[@"MPMediaItemPropertyTitle"]];
         } else if (metaData[@"StreamTitle"]) {
             [streamInfo appendString:metaData[@"StreamTitle"]];
