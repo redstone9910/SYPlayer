@@ -30,8 +30,9 @@
 
 typedef void (^SYDownloadCompletion)();
 
-#define __AD_PASSED__
+#define updateInterval 0.1
 
+#define __AD_PASSED__
 #ifdef __AD_PASSED__
 /** 广点通ID */
 #define GDT_APPID @"1104489407"
@@ -290,7 +291,7 @@ typedef void (^SYDownloadCompletion)();
     }
     
     if (!self.progressUpdateTimer) {
-        self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(updatePlaybackProgress) userInfo:nil repeats:YES];
+        self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval target:self selector:@selector(updatePlaybackProgress) userInfo:nil repeats:YES];
     }
 }
 
@@ -587,10 +588,11 @@ typedef void (^SYDownloadCompletion)();
 }
 /** 播放模式改变 */
 -(void)playerConsolePlayModeStateChanged:(SYPlayerConsole *)console withModeName:(NSString *)name{
-//    MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
-//    [hud setLabelText:name];
-//    [hud setMode:MBProgressHUDModeText];
-//    [hud show:YES];
+    if (console.playMode == playModeStateSingleSentenceRepeat) {
+        self.lrcView.playMode = lrcPlayModeSingleSentence;
+    }else{
+        self.lrcView.playMode = lrcPlayModeWhole;
+    }
 }
 #pragma mark - SYLrcViewDelegate
 /** 拖动LRC视图改变播放进度 */
@@ -603,7 +605,12 @@ typedef void (^SYDownloadCompletion)();
     }
     else [self seekToNewTime:lrcView.timeProgressInSecond];
 }
-
+/** 一句播完 */
+-(void)lrcView:(SYLrcView *)lrcView SentenceInterval:(float)inteval
+{
+    self.playerConsole.playing = NO;
+    [self playerConsolePlayingStatusChanged:self.playerConsole];
+}
 #pragma mark - SYPlayListButtonDelegate
 /** 播放列表展开/关闭 */
 -(void)playListButtonBtnClicked:(SYPlayListButton *)playListBtn

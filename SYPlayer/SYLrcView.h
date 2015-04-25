@@ -9,11 +9,17 @@
 #import <UIKit/UIKit.h>
 @class SYLrcView;
 
-@protocol SYLrcViewDelegate <NSObject>
+typedef enum lrcPlayMode
+{
+    lrcPlayModeWhole = 0,
+    lrcPlayModeSingleSentence = 1,
+} lrcPlayMode;
 
+@protocol SYLrcViewDelegate <NSObject>
 /** 拖动进度条 */
 -(void)lrcViewProgressChanged:(SYLrcView *)lrcView;
-
+/** 单句模式暂停 */
+-(void)lrcView:(SYLrcView *)lrcView SentenceInterval:(float)inteval;
 @end
 
 @interface SYLrcView : UIView
@@ -23,10 +29,11 @@
 @property (nonatomic,assign) float timeProgressInSecond;
 /** 背景图片 */
 @property (nonatomic,strong) UIImage * backgroundImage;
+/** 单曲/单句模式 */
+@property (nonatomic,assign) lrcPlayMode playMode;
 
 /** 创建新LRC View */
 +(instancetype) lrcView;
-
 /** 代理 */
 @property (nonatomic,weak) id <SYLrcViewDelegate> delegate;
 @end
