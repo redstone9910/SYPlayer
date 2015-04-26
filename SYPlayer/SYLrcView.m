@@ -139,9 +139,10 @@
 }
 -(void)sendTimerDelegate:(NSTimer *)timer
 {
-    NSNumber *num = timer.userInfo;
+    NSNumber *num = timer.userInfo[0];
+    NSString *sentence = timer.userInfo[1];
     float interval = [num floatValue];
-    [self.delegate lrcView:self SentenceInterval:interval];
+    [self.delegate lrcView:self sentenceInterval:interval sentence:sentence];
 }
 #pragma mark - Property
 /** 设定播放模式 */
@@ -182,19 +183,27 @@
                     if (lastTime != time1) {
                         lastTime = time1;
                         
-                        self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, label.frame.origin.y - label0.frame.origin.y);
+                        [UIView animateWithDuration:0.3 animations:^{
+                            self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, label.frame.origin.y - label0.frame.origin.y);
+                        }];
+                        
                         if (self.playMode == lrcPlayModeSingleSentence) {
-                            if ([self.delegate respondsToSelector:@selector(lrcView:SentenceInterval:)]) {
-                                float interval;
-                                if (index > 0) {
-                                    interval = time1 - [self timeWithString:self.lrcTimeArray[index - 1]];
-                                } else {
-                                    interval = defaultInterval;
-                                }
-                                
-                                [self.delegate lrcView:self SentenceInterval:interval];
-                                if (index == self.lrcTimeArray.count - 1) {
-                                    [NSTimer scheduledTimerWithTimeInterval:defaultInterval target:self selector:@selector(sendTimerDelegate:) userInfo:[NSNumber numberWithFloat:defaultInterval] repeats:NO];
+                            if (index > 0) {
+                                if ([self.delegate respondsToSelector:@selector(lrcView:sentenceInterval:sentence:)]) {
+                                    float interval;
+                                    if (index > 0) {
+                                        interval = time1 - [self timeWithString:self.lrcTimeArray[index - 1]];
+                                    } else {
+                                        interval = defaultInterval;
+                                    }
+                                    
+                                    NSString *sentence = self.lrcLineArray[index - 1];
+                                    [self.delegate lrcView:self sentenceInterval:interval sentence:sentence];
+                                    
+                                    NSArray *userInfo = @[[NSNumber numberWithFloat:defaultInterval],sentence];
+                                    if (index == self.lrcTimeArray.count - 1) {
+                                        [NSTimer scheduledTimerWithTimeInterval:defaultInterval target:self selector:@selector(sendTimerDelegate:) userInfo:userInfo repeats:NO];
+                                    }
                                 }
                             }
                         }

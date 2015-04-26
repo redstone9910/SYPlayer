@@ -19,7 +19,7 @@ typedef enum lrcPlayMode
 /** 拖动进度条 */
 -(void)lrcViewProgressChanged:(SYLrcView *)lrcView;
 /** 单句模式暂停 */
--(void)lrcView:(SYLrcView *)lrcView SentenceInterval:(float)inteval;
+-(void)lrcView:(SYLrcView *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence;
 @end
 
 @interface SYLrcView : UIView

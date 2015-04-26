@@ -39,6 +39,8 @@
 		52B1B4021AE71AD70044C796 /* 第三册 in Resources */ = {isa = PBXBuildFile; fileRef = 52B1B3FF1AE71AD70044C796 /* 第三册 */; };
 		52B1B4031AE71AD70044C796 /* 第四册 in Resources */ = {isa = PBXBuildFile; fileRef = 52B1B4001AE71AD70044C796 /* 第四册 */; };
 		52B1B4041AE71AD70044C796 /* 第一册 in Resources */ = {isa = PBXBuildFile; fileRef = 52B1B4011AE71AD70044C796 /* 第一册 */; };
+		52B39E9A1AEC74F7000437B4 /* SYRecordView.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B39E991AEC74F7000437B4 /* SYRecordView.m */; };
+		52B39E9C1AEC7513000437B4 /* SYRecordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 52B39E9B1AEC7513000437B4 /* SYRecordView.xib */; };
 		52B3B3671ABE3CBD00C574A8 /* SYLrcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B3B3661ABE3CBD00C574A8 /* SYLrcView.m */; };
 		52B3B3691ABE4DC800C574A8 /* SYLrcView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 52B3B3681ABE4DC800C574A8 /* SYLrcView.xib */; };
 		52B3B36F1ABF881B00C574A8 /* SYSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B3B36D1ABF881B00C574A8 /* SYSongCell.m */; };
@@ -112,6 +114,9 @@
 		52B1B3FF1AE71AD70044C796 /* 第三册 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "第三册"; sourceTree = "<group>"; };
 		52B1B4001AE71AD70044C796 /* 第四册 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "第四册"; sourceTree = "<group>"; };
 		52B1B4011AE71AD70044C796 /* 第一册 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "第一册"; sourceTree = "<group>"; };
+		52B39E981AEC74F7000437B4 /* SYRecordView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYRecordView.h; sourceTree = "<group>"; };
+		52B39E991AEC74F7000437B4 /* SYRecordView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYRecordView.m; sourceTree = "<group>"; };
+		52B39E9B1AEC7513000437B4 /* SYRecordView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SYRecordView.xib; sourceTree = "<group>"; };
 		52B3B3651ABE3CBD00C574A8 /* SYLrcView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYLrcView.h; sourceTree = "<group>"; };
 		52B3B3661ABE3CBD00C574A8 /* SYLrcView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcView.m; sourceTree = "<group>"; };
 		52B3B3681ABE4DC800C574A8 /* SYLrcView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SYLrcView.xib; sourceTree = "<group>"; };
@@ -241,6 +246,9 @@
 				52B3B36C1ABF881B00C574A8 /* SYSongCell.h */,
 				52B3B36D1ABF881B00C574A8 /* SYSongCell.m */,
 				52B3B36E1ABF881B00C574A8 /* SYSongCell.xib */,
+				52B39E981AEC74F7000437B4 /* SYRecordView.h */,
+				52B39E991AEC74F7000437B4 /* SYRecordView.m */,
+				52B39E9B1AEC7513000437B4 /* SYRecordView.xib */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -449,6 +457,7 @@
 				522694CB1AD79065003C2EFF /* song_list_第四册.plist in Resources */,
 				522BB89F1ACD6A1100E834A4 /* 第二册 in Resources */,
 				52B6CC561A9BF53D00E043C0 /* Main.storyboard in Resources */,
+				52B39E9C1AEC7513000437B4 /* SYRecordView.xib in Resources */,
 				52B1B4041AE71AD70044C796 /* 第一册 in Resources */,
 				522694CC1AD79065003C2EFF /* song_list_第一册.plist in Resources */,
 				52B6CC5B1A9BF53D00E043C0 /* LaunchScreen.xib in Resources */,
@@ -514,6 +523,7 @@
 				52BA15661AEA0529004D5B55 /* EVCircularProgressView.m in Sources */,
 				524B01B31ABD299700E183CB /* NSString+Tools.m in Sources */,
 				52B6CC501A9BF53D00E043C0 /* AppDelegate.m in Sources */,
+				52B39E9A1AEC74F7000437B4 /* SYRecordView.m in Sources */,
 				524B01AC1ABD194800E183CB /* SYPlayListButton.m in Sources */,
 				52B6CC4D1A9BF53D00E043C0 /* main.m in Sources */,
 				52B3B3731ABFB79D00C574A8 /* SYSongModel.m in Sources */,

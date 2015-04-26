@@ -22,6 +22,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "MobClick.h"
 #import "GDTMobBannerView.h"
+#import "SYRecordView.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -71,6 +72,8 @@ typedef void (^SYDownloadCompletion)();
 @property (weak, nonatomic) IBOutlet UIView *gdtAdView;
 /** 广点通 */
 @property (nonatomic,strong) GDTMobBannerView * bannerView;
+/** 录音面板 */
+@property (nonatomic,strong) SYRecordView * recordView;
 
 /** 用于保存playListTable原始Frame */
 //@property (nonatomic,assign) CGRect playListFrame;
@@ -541,6 +544,24 @@ typedef void (^SYDownloadCompletion)();
     
     return _songModelArrary;
 }
+-(SYRecordView *)recordView
+{
+    if (_recordView == nil) {
+        _recordView = [SYRecordView recordView];
+        
+        [self.view addSubview:_recordView];
+        
+        _recordView.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.gdtAdView attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+        
+        [_recordView addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:_recordView.bounds.size.height]];
+        
+    }
+    return _recordView;
+}
 
 #pragma mark - SYPlayerConsoleDelegate
 
@@ -606,10 +627,20 @@ typedef void (^SYDownloadCompletion)();
     else [self seekToNewTime:lrcView.timeProgressInSecond];
 }
 /** 一句播完 */
--(void)lrcView:(SYLrcView *)lrcView SentenceInterval:(float)inteval
+-(void)lrcView:(SYLrcView *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence
 {
     self.playerConsole.playing = NO;
     [self playerConsolePlayingStatusChanged:self.playerConsole];
+    
+    SYSongModel *model = self.songModelArrary[self.selectedIndexpath.row];
+    NSString *title = model.songName;
+    [self.recordView loadSentence:sentence lessonTitle:title duration:inteval completion:^{
+        self.playerConsole.playing = YES;
+        [self playerConsolePlayingStatusChanged:self.playerConsole];
+        [self.view bringSubviewToFront:self.playerConsoleView];
+    }];
+    
+    [self.view bringSubviewToFront:self.recordView];
 }
 #pragma mark - SYPlayListButtonDelegate
 /** 播放列表展开/关闭 */
