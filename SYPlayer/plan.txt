@@ -461,3 +461,35 @@ $itcast->userLogin();
 
 //Guanli2011
 ?>
+
+
+
+发件人 Apple
+
+2.2 - Apps that exhibit bugs will be rejected
+
+2.2 Details
+
+We discovered one or more bugs in your app when reviewed on both Wi-Fi and cellular networks.
+
+Specifically, we noticed that a 下载失败 message is displayed when users tap on any 下载 buttons.
+
+Please see the attached screenshot for more information.
+
+Next Steps
+
+Please run your app on a device to identify the issue(s), then revise and resubmit your app for review.
+
+If we misunderstood the intended behavior of your app, please reply to this message in the Resolution Center to provide information on how these features were intended to work.
+
+For new apps, uninstall all previous versions of your app from a device, then install and follow the steps to reproduce the issue(s). For updates, install the new version as an update to the previous version, then follow the steps to reproduce the issue(s).
+
+Resources
+If you have difficulty reproducing a reported issue, please try testing the workflow described in Technical Q&A QA1764: How to reproduce bugs reported against App Store submissions.
+
+If you have code-level questions after utilizing the above resources, you may wish to consult with Apple Developer Technical Support. When the DTS engineer follows up with you, please be ready to provide:
+- complete details of your rejection issue(s)
+- screenshots
+- steps to reproduce the issue(s)
+- symbolicated crash logs - if your issue results in a crash log
+

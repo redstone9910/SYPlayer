@@ -19,7 +19,9 @@ typedef enum lrcPlayMode
 /** 拖动进度条 */
 -(void)lrcViewProgressChanged:(SYLrcView *)lrcView;
 /** 单句模式暂停 */
--(void)lrcView:(SYLrcView *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence;
+-(void)lrcView:(SYLrcView *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence time:(float)time;
+/** 单句模式播放完 */
+//-(void)lrcView:(SYLrcView *)lrcView finishPlaying:
 @end
 
 @interface SYLrcView : UIView
@@ -31,6 +33,8 @@ typedef enum lrcPlayMode
 @property (nonatomic,strong) UIImage * backgroundImage;
 /** 单曲/单句模式 */
 @property (nonatomic,assign) lrcPlayMode playMode;
+/** 跳转到下一句(单句模式需要手动调用) */
+-(NSString *)nextSentence:(float)time;
 
 /** 创建新LRC View */
 +(instancetype) lrcView;

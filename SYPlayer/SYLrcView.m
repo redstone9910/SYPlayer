@@ -8,11 +8,12 @@
 #warning 用Quartz2D重写单行进度
 #import "SYLrcView.h"
 #import "NSString+Tools.h"
+#import "Gloable.h"
 
 #define lrcOffset 0.3
 #define edgeInsets 10
 #define lineMargin 5
-#define defaultInterval 5//默认每句5秒
+#define timeOffset -0.1
 
 @interface SYLrcView ()<UIScrollViewDelegate>
 /** 背景图片Scroll */
@@ -36,13 +37,13 @@
 /** 时间标签 */
 @property (nonatomic,strong) NSArray * lrcTimeArray;
 /** LRC Lable */
-@property (nonatomic,strong) NSMutableArray * lrcLableArray;
+@property (nonatomic,strong) NSMutableArray * lrcLabelArray;
 /** LRC字体 */
 @property (nonatomic,strong) UIFont * lrcFont;
 /** LRC当前字体 */
 @property (nonatomic,strong) UIFont * lrcCurrentFont;
 /** LRC已过字体 */
-@property (nonatomic,strong) UIFont * lrcPasteFont;
+@property (nonatomic,strong) UIFont * lrcPastFont;
 /** 正在拖动 */
 @property (nonatomic,assign,getter = isDragging) BOOL dragging;
 @end
@@ -63,12 +64,12 @@
 {
     self.lrcFont = [UIFont systemFontOfSize:14.0f];
     self.lrcCurrentFont = [UIFont fontWithName:@"Helvetica-BoldObLique" size:15];
-    self.lrcPasteFont = [UIFont fontWithName:@"Helvetica-ObLique" size:14];
+    self.lrcPastFont = [UIFont fontWithName:@"Helvetica-ObLique" size:13];
     
     self.lrcScroll.delegate = self;
     self.lrcScroll.contentInset = UIEdgeInsetsMake(edgeInsets, edgeInsets, edgeInsets, edgeInsets);
     
-    self.lrcLableArray = [NSMutableArray array];
+    self.lrcLabelArray = [NSMutableArray array];
     self.dragging = NO;
     self.backgroundScroll.contentSize = self.backgroundImageView.image.size;
 }
@@ -90,12 +91,17 @@
     NSString *timeStr1 = obj[0];
     NSArray *timeObj2 = [timeStr1 componentsSeparatedByString:@"["];
     NSString *timeStr2 = timeObj2[1];
+    float time = [self timeWithString:timeStr2] + timeOffset;
+    int minute = (int)time / 60;
+    float second = time - minute * 60;
+    minute %= 60;
+    NSString *timeStr = [NSString stringWithFormat:@"%02d:%02d.%02d",minute,(int)second,(int)((second - (int)second) * 100)];
     
     NSString *pStr1 = [timeStr2 substringWithRange:NSMakeRange(2, 1)];
     NSString *pStr2 = [timeStr2 substringWithRange:NSMakeRange(5, 1)];
     if (!((timeStr2.length == 8) && ([pStr1 isEqualToString:@":"]) && ([pStr2 isEqualToString:@"."]))) return nil;
     
-    NSArray *retArray = @[timeStr2,obj[1]];
+    NSArray *retArray = @[timeStr,obj[1]];
     return retArray;
 }
 /** 歌词排序 */
@@ -137,13 +143,13 @@
     
     return lrcString;
 }
--(void)sendTimerDelegate:(NSTimer *)timer
-{
-    NSNumber *num = timer.userInfo[0];
-    NSString *sentence = timer.userInfo[1];
-    float interval = [num floatValue];
-    [self.delegate lrcView:self sentenceInterval:interval sentence:sentence];
-}
+//-(void)sendTimerDelegate:(NSTimer *)timer
+//{
+//    NSNumber *num = timer.userInfo[0];
+//    NSString *sentence = timer.userInfo[1];
+//    float interval = [num floatValue];
+//    [self.delegate lrcView:self sentenceInterval:interval sentence:sentence];
+//}
 #pragma mark - Property
 /** 设定播放模式 */
 -(void)setPlayMode:(lrcPlayMode)playMode
@@ -154,67 +160,98 @@
 -(void)setTimeProgressInSecond:(float)timeProgressInSecond
 {
     _timeProgressInSecond = timeProgressInSecond;
-    static float lastTime = 0;
+    static float lastSelectTime = 0;
     
     if (!self.isDragging) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            for (long index = self.lrcTimeArray.count - 1; index > -1; index --) {
+            for (long index = 0; index < self.lrcTimeArray.count; index ++) {
                 NSString *str1 = self.lrcTimeArray[index];
-                float time1 = [self timeWithString:str1];
+                float currentTime = [self timeWithString:str1];
+                UILabel *currentLabel =  self.lrcLabelArray[index];
                 
-                if (timeProgressInSecond >= time1) {
-                    UILabel *label0 =  [self.lrcLableArray firstObject];
-                    UILabel *label =  self.lrcLableArray[index];
-                    label.font = self.lrcCurrentFont;
-                    
-                    if (index > 0) {
-                        for (long i = index; i > 0; i --) {
-                            UILabel *label =  self.lrcLableArray[i - 1];
-                            label.font = self.lrcPasteFont;
-                        }
-                    }
-                    if (index < self.lrcTimeArray.count - 1) {
-                        for (long i = index; i < self.lrcTimeArray.count - 1; i ++) {
-                            UILabel *label =  self.lrcLableArray[i + 1];
-                            label.font = self.lrcFont;
-                        }
-                    }
-                    
-                    if (lastTime != time1) {
-                        lastTime = time1;
+                float lastTime = currentTime;
+                if(index > 0){
+                    NSString *str2 = self.lrcTimeArray[index - 1];
+                    lastTime = [self timeWithString:str2];
+                }
+                
+                NSString *str3 = self.lrcTimeArray.lastObject;
+                float nextTime = [self timeWithString:str3] + defaultInterval;
+                UILabel *nextLabel = self.lrcLabelArray.lastObject;
+                if (index < self.lrcLabelArray.count - 1) {
+                    str3 = self.lrcTimeArray[index + 1];
+                    nextTime = [self timeWithString:str3];
+                    nextLabel = self.lrcLabelArray[index + 1];
+                }
+                
+                if (self.timeProgressInSecond >= currentTime && self.timeProgressInSecond < nextTime) {//时间在currentTime和nextTime之间
+                    if (lastSelectTime != currentTime) {
+                        lastSelectTime = currentTime;
                         
-                        [UIView animateWithDuration:0.3 animations:^{
-                            self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, label.frame.origin.y - label0.frame.origin.y);
-                        }];
+                        if (self.playMode == lrcPlayModeWhole) {
+                            [self nextSentence:currentTime];
+                        }
                         
-                        if (self.playMode == lrcPlayModeSingleSentence) {
-                            if (index > 0) {
-                                if ([self.delegate respondsToSelector:@selector(lrcView:sentenceInterval:sentence:)]) {
-                                    float interval;
-                                    if (index > 0) {
-                                        interval = time1 - [self timeWithString:self.lrcTimeArray[index - 1]];
-                                    } else {
-                                        interval = defaultInterval;
-                                    }
-                                    
-                                    NSString *sentence = self.lrcLineArray[index - 1];
-                                    [self.delegate lrcView:self sentenceInterval:interval sentence:sentence];
-                                    
-                                    NSArray *userInfo = @[[NSNumber numberWithFloat:defaultInterval],sentence];
-                                    if (index == self.lrcTimeArray.count - 1) {
-                                        [NSTimer scheduledTimerWithTimeInterval:defaultInterval target:self selector:@selector(sendTimerDelegate:) userInfo:userInfo repeats:NO];
-                                    }
-                                }
+                        if ((self.playMode == lrcPlayModeSingleSentence) && [self.delegate respondsToSelector:@selector(lrcView:sentenceInterval:sentence:time:)]) {
+                            [self nextSentence:lastTime];
+                            
+                            NSString *sentence = self.lrcLineArray[index];
+                            if (index == self.lrcTimeArray.count - 1){
+                                nextTime = currentTime;
+//                                NSDictionary *userInfo = @{@"interval":[NSNumber numberWithFloat:0],@"sentence":@"",@"currentTime":[NSNumber numberWithFloat:0]};
+//                                [NSTimer scheduledTimerWithTimeInterval:defaultInterval target:self selector:@selector(finishProcess:) userInfo: userInfo repeats:NO];
                             }
+                            float interval = nextTime - currentTime;
+                            [self.delegate lrcView:self sentenceInterval:interval sentence:sentence time:currentTime];
                         }
                     }
-                    break;
+                }
+                if (self.timeProgressInSecond < currentTime){//时间未到currentTime
+                    currentLabel.font = self.lrcFont;
+                }
+                if (self.timeProgressInSecond > nextTime){//时间已过nextTime
+                    currentLabel.font = self.lrcPastFont;
                 }
             }
         });
     }
 }
 
+-(void)finishProcess:(NSTimer *)timer
+{
+    NSDictionary *userInfo = timer.userInfo;
+    
+    NSNumber *nInterval = userInfo[@"interval"];
+    float interval = [nInterval floatValue];
+    NSString *sentence = userInfo[@"sentence"];
+    NSNumber *nCurrentTime = userInfo[@"currentTime"];
+    float currentTime = [nCurrentTime floatValue];
+    
+    [self.delegate lrcView:self sentenceInterval:interval sentence:sentence time:currentTime];
+}
+
+/** 跳转到下一句(单句模式需要手动调用) */
+-(NSString *)nextSentence:(float)time
+{
+    UILabel *firstLabel = self.lrcLabelArray[0];
+    UILabel *currentLabel;
+    NSString *currentLine;
+    for (long index = 0; index < self.lrcTimeArray.count; index ++) {
+        NSString *str1 = self.lrcTimeArray[index];
+        float currentTime = [self timeWithString:str1];
+        if (currentTime == time) {
+            currentLabel =  self.lrcLabelArray[index];
+            currentLine = self.lrcLineArray[index];
+        }
+    }
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        currentLabel.font = self.lrcCurrentFont;
+        self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, currentLabel.frame.origin.y - firstLabel.frame.origin.y);
+    }];
+    
+    return currentLine;
+}
 /** 设定并更新背景图片 */
 -(void)setBackgroundImage:(UIImage *)backgroundImage
 {
@@ -228,7 +265,7 @@
 {
     _lrcFile = lrcFile;
     
-    if(self.lrcLableArray.count > 0)[self.lrcLableArray removeAllObjects];
+    if(self.lrcLabelArray.count > 0)[self.lrcLabelArray removeAllObjects];
     for (UIView *label in self.lrcScroll.subviews) {
         if ([label isKindOfClass:[UILabel class]]) {
             [label removeFromSuperview];
@@ -263,7 +300,7 @@
             float labelH = lineMargin + labelTextH;
             float labelY = self.lrcScroll.bounds.size.height * lrcOffset;
             if (index > 0) {
-                UILabel *lastLabel = self.lrcLableArray[index - 1];
+                UILabel *lastLabel = self.lrcLabelArray[index - 1];
                 labelY = lastLabel.frame.origin.y + lastLabel.frame.size.height;
             }
             
@@ -274,11 +311,11 @@
             label.font = self.lrcFont;
             
             [self.lrcScroll addSubview:label];
-            [self.lrcLableArray addObject:label];
+            [self.lrcLabelArray addObject:label];
         }
         
         self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, 0);
-        UILabel *lastLabel = self.lrcLableArray[self.lrcLineArray.count - 1];
+        UILabel *lastLabel = self.lrcLabelArray[self.lrcLineArray.count - 1];
         float labelY = lastLabel.frame.origin.y + lastLabel.frame.size.height;
         self.lrcScroll.contentSize = CGSizeMake(0, labelY + self.lrcScroll.bounds.size.height * (1 - lrcOffset));
     }
@@ -299,18 +336,20 @@
         if (h2) {
             float scrollScale = h1 / h2;
             float offsetY = self.lrcScroll.contentOffset.y;
-            self.backgroundScroll.contentOffset = CGPointMake(0, offsetY * scrollScale);
+            [UIView animateWithDuration:0.3 animations:^{
+                self.backgroundScroll.contentOffset = CGPointMake(0, offsetY * scrollScale);
+            }];
         }
     });
     
     if (self.isDragging) {
         int index = 0;
         float offset = self.lrcScroll.contentOffset.y + self.lrcScroll.frame.size.height * lrcOffset;
-        for (int i = 0; i < self.lrcLableArray.count; i ++) {
-            UILabel *label = self.lrcLableArray[i];
+        for (int i = 0; i < self.lrcLabelArray.count; i ++) {
+            UILabel *label = self.lrcLabelArray[i];
             UILabel *nextLabel = label;
-            if (i < self.lrcLableArray.count - 1) {
-                nextLabel = self.lrcLableArray[i + 1];
+            if (i < self.lrcLabelArray.count - 1) {
+                nextLabel = self.lrcLabelArray[i + 1];
             }
             
             if ((offset >= label.frame.origin.y) && (offset <= nextLabel.frame.origin.y)) {
@@ -322,15 +361,15 @@
         if (last_index != index) {
             last_index = index;
             
-            UILabel *label =  self.lrcLableArray[index];
+            UILabel *label =  self.lrcLabelArray[index];
             label.font = self.lrcCurrentFont;
             if (index > 0) {
-                UILabel *label =  self.lrcLableArray[index - 1];
-                label.font = self.lrcPasteFont;
+                UILabel *label =  self.lrcLabelArray[index - 1];
+                label.font = self.lrcFont;
             }
             if (index < self.lrcTimeArray.count - 1) {
-                UILabel *label =  self.lrcLableArray[index + 1];
-                label.font = self.lrcFont;
+                UILabel *label =  self.lrcLabelArray[index + 1];
+                label.font = self.lrcPastFont;
             }
             //取出label的time
             NSString *str1 = self.lrcTimeArray[index];

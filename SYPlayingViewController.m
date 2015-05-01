@@ -115,6 +115,8 @@ typedef void (^SYDownloadCompletion)();
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    __weak typeof(self) weakSelf = self;
+    
     NSMutableString *t_evnt = [NSMutableString stringWithFormat:@"Volume:%@",self.playListModel.lessonTitle];
     [MobClick event:@"Enter" label:t_evnt];
     
@@ -132,7 +134,7 @@ typedef void (^SYDownloadCompletion)();
     
     dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 1.5 * NSEC_PER_SEC);
     dispatch_after(time, dispatch_get_main_queue(), ^{
-        self.titleBtn.Opened = YES;
+        weakSelf.titleBtn.Opened = YES;
     });
 
     /** 控制台 */
@@ -175,25 +177,33 @@ typedef void (^SYDownloadCompletion)();
     self.audioController.delegate = self;
     
     /** 设定audioPlayer若干代码块 */
-    __weak SYPlayingViewController *weakSelf = self;
     self.audioController.onStateChange = ^(FSAudioStreamState state) {
         switch (state) {
             case kFsAudioStreamRetrievingURL:
                 NSLog(@"kFsAudioStreamRetrievingURL");
                 break;
-            case kFsAudioStreamStopped:
-                NSLog(@"kFsAudioStreamStopped");
+            case kFsAudioStreamPaused:
                 weakSelf.playerConsole.playing = NO;
+                [weakSelf.progressUpdateTimer invalidate];
+                weakSelf.progressUpdateTimer = nil;
+                break;
+            case kFsAudioStreamStopped:
+                weakSelf.playerConsole.playing = NO;
+                
+                [weakSelf.progressUpdateTimer invalidate];
+                weakSelf.progressUpdateTimer = nil;
                 break;
             case kFsAudioStreamBuffering:
-//                NSLog(@"kFsAudioStreamBuffering");
                 break;
             case kFsAudioStreamSeeking:
-//                NSLog(@"kFsAudioStreamSeeking");
                 break;
             case kFsAudioStreamPlaying:
-                NSLog(@"kFsAudioStreamPlaying");
                 weakSelf.playerConsole.playing = YES;
+                
+                if (!weakSelf.progressUpdateTimer) {
+                    weakSelf.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval target:weakSelf selector:@selector(updatePlaybackProgress) userInfo:nil repeats:YES];
+                }
+                
                 break;
             case kFsAudioStreamFailed:
                 NSLog(@"kFsAudioStreamFailed");
@@ -293,9 +303,9 @@ typedef void (^SYDownloadCompletion)();
         weakSelf.playerConsole.stopped = YES;
     }
     
-    if (!self.progressUpdateTimer) {
-        self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval target:self selector:@selector(updatePlaybackProgress) userInfo:nil repeats:YES];
-    }
+//    if (!self.progressUpdateTimer) {
+//        self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval target:self selector:@selector(updatePlaybackProgress) userInfo:nil repeats:YES];
+//    }
 }
 
 -(void)dealloc
@@ -321,7 +331,7 @@ typedef void (^SYDownloadCompletion)();
 }
 /** 全部下载按钮按下 */
 - (IBAction)downloadBtnClick {
-    __weak SYPlayingViewController *weakSelf = self;
+    __weak typeof(self) weakSelf = self;
     RIButtonItem *cancelButtonItem = [RIButtonItem itemWithLabel:@"取消" action:^{
         weakSelf.downloading = NO;
     }];
@@ -359,14 +369,6 @@ typedef void (^SYDownloadCompletion)();
 - (IBAction)backBtnClick {
     [self dismissViewControllerAnimated:YES completion:^{
     }];
-//    self.favoriteSong = !self.isFavoriteSong;
-//    if (self.isFavoriteSong) {
-//        [self.favoriteBtn setImage:[UIImage imageNamed:@"star5_full"] forState:UIControlStateNormal];
-//    }
-//    else
-//    {
-//        [self.favoriteBtn setImage:[UIImage imageNamed:@"star5"] forState:UIControlStateNormal];
-//    }
 }
 /** 更新songModelArrary内容到plist文件 */
 -(BOOL)refreshSongModelArrary
@@ -413,6 +415,7 @@ typedef void (^SYDownloadCompletion)();
 /** 下载（带WIFI检测） */
 -(void)downloadWithWifiCheckToDir:(NSString *)dirPath onModel:(SYSongModel *)model withCompletionBlock:(SYDownloadCompletion)completionBlock
 {
+    __weak typeof(self) weakSelf = self;
     Reachability *wifiChecker = [Reachability reachabilityForInternetConnection];
     if ([wifiChecker isReachableViaWiFi]) {
         [self downloadToDir:dirPath onModel:model withCompletionBlock:completionBlock];
@@ -420,7 +423,7 @@ typedef void (^SYDownloadCompletion)();
         RIButtonItem *cancelButtonItem = [RIButtonItem itemWithLabel:@"取消" action:^{
         }];
         RIButtonItem *okButtonItem = [RIButtonItem itemWithLabel:@"我是土豪继续下载" action:^{
-            [self downloadToDir:dirPath onModel:model withCompletionBlock:completionBlock];
+            [weakSelf downloadToDir:dirPath onModel:model withCompletionBlock:completionBlock];
         }];
         
         UIAlertView *wifiAlert = [[UIAlertView alloc] initWithTitle:@"警告!木有WiFi!" message:@"继续下载可能会产生流量费用哦！" cancelButtonItem:cancelButtonItem otherButtonItems:okButtonItem, nil];
@@ -434,11 +437,12 @@ typedef void (^SYDownloadCompletion)();
     long index = [self.songModelArrary indexOfObject:model];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
     
+    __weak typeof(self) weakSelf = self;
     [model prepareDownloadToFile:dirPath onDownloading:^(float progress) {
-        SYSongCell *cell = (SYSongCell *)[self.playListTable cellForRowAtIndexPath:indexPath];
+        SYSongCell *cell = (SYSongCell *)[weakSelf.playListTable cellForRowAtIndexPath:indexPath];
         cell.playListData = model;
     } onComplete:^(BOOL complete) {
-        [self.playListTable reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:NO];
+        [weakSelf.playListTable reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:NO];
         if (complete) {
             completionBlock();
         } else {
@@ -497,11 +501,12 @@ typedef void (^SYDownloadCompletion)();
         return YES;
     }
     
+    __weak typeof(self) weakSelf = self;
     if (model.downloading == NO) {
         RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"取消"];
         RIButtonItem *okItem = [RIButtonItem itemWithLabel:@"下载" action:^{
-            NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
-            [self downloadWithWifiCheckToDir:dirPath onModel:model withCompletionBlock:^{
+            NSString *dirPath = [catchePath stringByAppendingPathComponent:weakSelf.playListModel.lessonTitle];
+            [weakSelf downloadWithWifiCheckToDir:dirPath onModel:model withCompletionBlock:^{
             }];
         }];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"本课未下载" message:@"是否下载？" cancelButtonItem:cancelItem otherButtonItems:okItem, nil];
@@ -548,6 +553,7 @@ typedef void (^SYDownloadCompletion)();
 {
     if (_recordView == nil) {
         _recordView = [SYRecordView recordView];
+        [_recordView stop];
         
         [self.view addSubview:_recordView];
         
@@ -627,17 +633,45 @@ typedef void (^SYDownloadCompletion)();
     else [self seekToNewTime:lrcView.timeProgressInSecond];
 }
 /** 一句播完 */
--(void)lrcView:(SYLrcView *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence
+-(void)lrcView:(SYLrcView *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence time:(float)time
 {
+    NSLog(@"%@",sentence);
+    SYSongModel *model = self.songModelArrary[self.selectedIndexpath.row];
+    NSString *title = model.songName;
+    
+    self.playerConsole.playing = NO;
+    [self.progressUpdateTimer invalidate];
+    self.progressUpdateTimer = nil;
     self.playerConsole.playing = NO;
     [self playerConsolePlayingStatusChanged:self.playerConsole];
     
-    SYSongModel *model = self.songModelArrary[self.selectedIndexpath.row];
-    NSString *title = model.songName;
-    [self.recordView loadSentence:sentence lessonTitle:title duration:inteval completion:^{
-        self.playerConsole.playing = YES;
-        [self playerConsolePlayingStatusChanged:self.playerConsole];
-        [self.view bringSubviewToFront:self.playerConsoleView];
+    __weak typeof(self) weakSelf = self;
+    
+    [self.recordView startRecordCompletion:^{
+        weakSelf.playerConsole.playing = YES;
+        [weakSelf playerConsolePlayingStatusChanged:self.playerConsole];
+        [self.recordView loadSentence:sentence lessonTitle:title duration:inteval];
+        
+        NSString *line = [lrcView nextSentence:time];
+        NSLog(@"Higntlighted:%@",line);
+        
+        [weakSelf.recordView startPlayCompletion:^{
+            if (inteval == 0) {
+                weakSelf.playerConsole.playing = NO;
+                [weakSelf.progressUpdateTimer invalidate];
+                weakSelf.progressUpdateTimer = nil;
+                weakSelf.playerConsole.playing = NO;
+                [weakSelf playerConsolePlayingStatusChanged:weakSelf.playerConsole];
+                
+                [weakSelf.recordView startRecordCompletion:^{
+                    [weakSelf.recordView stop];
+                    
+                    weakSelf.playerConsole.playing = YES;
+                    [weakSelf playerConsolePlayingStatusChanged:self.playerConsole];
+                    [weakSelf.view bringSubviewToFront:weakSelf.playerConsoleView];
+                }];
+            }
+        }];
     }];
     
     [self.view bringSubviewToFront:self.recordView];
@@ -646,11 +680,12 @@ typedef void (^SYDownloadCompletion)();
 /** 播放列表展开/关闭 */
 -(void)playListButtonBtnClicked:(SYPlayListButton *)playListBtn
 {
+    __weak typeof(self) weakSelf = self;
     for (NSLayoutConstraint *cst in self.playListTable.constraints) {
         if (cst.firstAttribute == NSLayoutAttributeHeight) {
             cst.constant = playListBtn.isOpened ? self.lrcUIView.frame.size.height : 0;
             [UIView animateWithDuration:0.3 animations:^{
-                [self.playListTable layoutIfNeeded];
+                [weakSelf.playListTable layoutIfNeeded];
             }];
             break;
         }

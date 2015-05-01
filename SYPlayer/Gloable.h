@@ -12,4 +12,8 @@
 #include <stdio.h>
 
 #define catchePath [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches"]
+#define SYLog(...) NSLog(...)
+
+#define defaultInterval 5
+
 #endif /* defined(__SYPlayer__Gloable__) */
