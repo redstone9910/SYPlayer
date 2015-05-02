@@ -132,7 +132,7 @@ typedef void (^SYDownloadCompletion)();
     [self.titleBtnView addSubview:self.titleBtn];
     self.titleBtn.Opened = NO;
     
-    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 1.5 * NSEC_PER_SEC);
+    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC);
     dispatch_after(time, dispatch_get_main_queue(), ^{
         weakSelf.titleBtn.Opened = YES;
     });
@@ -647,7 +647,7 @@ typedef void (^SYDownloadCompletion)();
     
     __weak typeof(self) weakSelf = self;
     
-    [self.recordView startRecordCompletion:^{
+    [self.recordView startRecordCompletion:^(NSString *recordPath) {
         weakSelf.playerConsole.playing = YES;
         [weakSelf playerConsolePlayingStatusChanged:self.playerConsole];
         [self.recordView loadSentence:sentence lessonTitle:title duration:inteval];
@@ -663,7 +663,7 @@ typedef void (^SYDownloadCompletion)();
                 weakSelf.playerConsole.playing = NO;
                 [weakSelf playerConsolePlayingStatusChanged:weakSelf.playerConsole];
                 
-                [weakSelf.recordView startRecordCompletion:^{
+                [weakSelf.recordView startRecordCompletion:^(NSString *recordPath){
                     [weakSelf.recordView stop];
                     
                     weakSelf.playerConsole.playing = YES;

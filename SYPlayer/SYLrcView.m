@@ -12,7 +12,7 @@
 
 #define lrcOffset 0.3
 #define edgeInsets 10
-#define lineMargin 5
+#define lineMargin 0.5
 #define timeOffset -0.1
 
 @interface SYLrcView ()<UIScrollViewDelegate>
@@ -85,8 +85,10 @@
     if ((0 == lrcLineText.length)||(nil == lrcLineText)) {
         return nil;
     }
-//    NSArray *obj1 = [lrcLineText componentsSeparatedByString:@"\n"];
     NSArray *obj = [lrcLineText componentsSeparatedByString:@"]"];
+    NSString *lineStr = obj[1];
+    lineStr = [lineStr stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    lineStr = [lineStr stringByReplacingOccurrencesOfString:@"\r" withString:@""];
     
     NSString *timeStr1 = obj[0];
     NSArray *timeObj2 = [timeStr1 componentsSeparatedByString:@"["];
@@ -101,7 +103,7 @@
     NSString *pStr2 = [timeStr2 substringWithRange:NSMakeRange(5, 1)];
     if (!((timeStr2.length == 8) && ([pStr1 isEqualToString:@":"]) && ([pStr2 isEqualToString:@"."]))) return nil;
     
-    NSArray *retArray = @[timeStr,obj[1]];
+    NSArray *retArray = @[timeStr,lineStr];
     return retArray;
 }
 /** 歌词排序 */
@@ -296,8 +298,8 @@
         
         for (int index = 0; index < self.lrcLineArray.count; index ++) {
             NSString *labelText = self.lrcLineArray[index];
-            float labelTextH = [labelText sizeWithFont:self.lrcFont maxSize:CGSizeMake(self.frame.size.width - edgeInsets * 2, 0)].height;
-            float labelH = lineMargin + labelTextH;
+            float labelTextH = [labelText sizeWithFont:self.lrcCurrentFont maxSize:CGSizeMake(self.frame.size.width - edgeInsets * 2, 0)].height;
+            float labelH = (lineMargin + 1) * labelTextH;
             float labelY = self.lrcScroll.bounds.size.height * lrcOffset;
             if (index > 0) {
                 UILabel *lastLabel = self.lrcLabelArray[index - 1];

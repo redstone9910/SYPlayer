@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 typedef void(^playCompletion)();
-typedef void(^recordCompletion)();
+typedef void(^recordCompletion)(NSString *recordPath);
 
 @interface SYRecordView : UIView
 /** 创建新对象 */
