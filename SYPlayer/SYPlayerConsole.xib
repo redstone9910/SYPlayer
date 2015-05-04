@@ -15,7 +15,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 </imageView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="OZi-E0-tgq" userLabel="PlayMode">
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="OZi-E0-tgq" userLabel="PlayMode">
                     <rect key="frame" x="12" y="52" width="32" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                     <state key="normal" image="btn_refresh">
@@ -23,6 +23,20 @@
                     </state>
                     <connections>
                         <action selector="playModeClick" destination="8Ux-rI-zbv" eventType="touchUpInside" id="WLg-Gl-LtD"/>
+                    </connections>
+                </button>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mic0" id="E52-tY-i9N" userLabel="MicImage">
+                    <rect key="frame" x="-5" y="48" width="66" height="40"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </imageView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Uu6-0x-IeD" userLabel="Mic">
+                    <rect key="frame" x="12" y="52" width="32" height="32"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
+                    <state key="normal">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="micBtnClick" destination="8Ux-rI-zbv" eventType="touchUpInside" id="k8W-Qd-OZn"/>
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="HVn-Qr-pT6" userLabel="Prev">
@@ -95,7 +109,7 @@
                         <action selector="playBtnClick" destination="8Ux-rI-zbv" eventType="touchUpInside" id="k1F-mj-udp"/>
                     </connections>
                 </button>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="q5s-NH-rIX" userLabel="StatusLabel">
+                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="q5s-NH-rIX" userLabel="StatusLabel">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="21"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
@@ -109,6 +123,8 @@
             <connections>
                 <outlet property="backGroundImg" destination="7it-Vk-TR3" id="b29-gi-6uT"/>
                 <outlet property="bufferProgressIndicator" destination="qBf-wR-gAs" id="C7T-Wg-P3s"/>
+                <outlet property="micBtn" destination="Uu6-0x-IeD" id="qnF-C3-O1A"/>
+                <outlet property="micImage" destination="E52-tY-i9N" id="Q9v-w7-H8W"/>
                 <outlet property="nextBtn" destination="9Zg-q7-12g" id="F9v-qr-v8H"/>
                 <outlet property="playBtn" destination="0zW-ss-quj" id="gMt-bQ-dVb"/>
                 <outlet property="playModeBtn" destination="OZi-E0-tgq" id="Yxa-hb-auR"/>
@@ -129,6 +145,7 @@
         <image name="btn_power" width="15" height="16"/>
         <image name="btn_prev" width="12" height="13"/>
         <image name="btn_refresh" width="16" height="15"/>
+        <image name="mic0" width="132" height="81"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

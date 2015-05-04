@@ -33,6 +33,11 @@
 /** 状态 */
 @property (weak, nonatomic) IBOutlet UILabel *statusLabel;
 
+/** 录音按钮 */
+@property (weak, nonatomic) IBOutlet UIButton *micBtn;
+/** mic图片 */
+@property (weak, nonatomic) IBOutlet UIImageView *micImage;
+
 /** 改变播放模式 */
 - (IBAction)playModeClick;
 /** 退出 */
@@ -49,6 +54,8 @@
 - (IBAction)progressTouchDown;
 /** 进度条抬起 */
 - (IBAction)progressTouchUp;
+/** 录音按钮按下 */
+- (IBAction)micBtnClick;
 
 /** 正在滑动进度条 */
 @property (nonatomic,assign) BOOL playSliderDraging;
@@ -72,11 +79,33 @@
 /** 从XIB加载完毕 */
 -(void)awakeFromNib
 {
+}
+/** 从代码初始化 */
+-(instancetype)initWithFrame:(CGRect)frame
+{
+    if (self = [super initWithFrame:frame]) {
+        [self constumInit];
+    }
+    return self;
+}
+/** 从文件初始化 */
+-(instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    if (self = [super initWithCoder:aDecoder]) {
+        [self constumInit];
+    }
+    return self;
+}
+/** 初始化代码 */
+-(void)constumInit
+{
     //设置进度条外观
     [self.playSlider setThumbImage:[UIImage imageNamed:@"dot"] forState:UIControlStateNormal];
     self.playSlider.maximumTrackTintColor = [UIColor blackColor];
     self.playSlider.minimumTrackTintColor = [UIColor lightGrayColor];
     self.playSliderDraging = NO;//没有正在拖动
+    
+    self.recording = NO;
 }
 #pragma mark - IBAction
 /** 改变播放模式按钮按下 */
@@ -150,6 +179,14 @@
 /** 拖动进度条结束，允许更改value */
 - (IBAction)progressTouchUp {
     self.playSliderDraging = NO;
+}
+
+/** 录音按钮按下 */
+- (IBAction)micBtnClick {
+    self.recording = !self.recording;
+    if ([self.delegate respondsToSelector:@selector(playerConsoleRecordingStatusChanged:)]) {
+        [self.delegate playerConsoleRecordingStatusChanged:self];
+    }
 }
 
 #pragma mark - Property
@@ -252,5 +289,26 @@
 {
     _backgroundImage = backgroundImage;
     [self.backGroundImg setImage:self.backgroundImage];
+}
+/** 设定录音状态并更新图片 */
+-(void)setRecording:(BOOL)recording
+{
+    _recording = recording;
+    if (_recording) {
+        NSString *scale = [NSString stringWithFormat:@"@%dx",(int)[UIScreen mainScreen].scale];
+        NSMutableArray *ary = [NSMutableArray array];
+        for (int i = 0; i < 6; i ++) {
+            NSString *name = [NSString stringWithFormat:@"mic/mic%d%@.png",i + 1,scale];
+            NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:nil];
+            UIImage *image = [UIImage imageWithContentsOfFile:path];
+            [ary addObject:image];
+        }
+        self.micImage.animationImages = [ary copy];
+        self.micImage.animationDuration = 4.0 / 6;
+        [self.micImage startAnimating];
+    }else{
+        self.micImage.animationImages = nil;
+        self.micImage.image = [UIImage imageNamed:@"mic0"];
+    }
 }
 @end

@@ -621,6 +621,15 @@ typedef void (^SYDownloadCompletion)();
         self.lrcView.playMode = lrcPlayModeWhole;
     }
 }
+/** 录音模式改变 */
+-(void)playerConsoleRecordingStatusChanged:(SYPlayerConsole *)console
+{
+    if (console.recording) {
+        self.lrcView.playMode = lrcPlayModeSingleSentence;
+    }else{
+        self.lrcView.playMode = lrcPlayModeWhole;
+    }
+}
 #pragma mark - SYLrcViewDelegate
 /** 拖动LRC视图改变播放进度 */
 -(void)lrcViewProgressChanged:(SYLrcView *)lrcView

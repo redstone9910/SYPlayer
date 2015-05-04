@@ -32,6 +32,8 @@ typedef enum playModeState
 -(void)playerConsolePowerOff:(SYPlayerConsole *)console;
 /** 播放模式改变 */
 -(void)playerConsolePlayModeStateChanged:(SYPlayerConsole *)console withModeName:(NSString *)name;
+/** 录音模式更新 */
+-(void)playerConsoleRecordingStatusChanged:(SYPlayerConsole *)console;
 @end
 
 @interface SYPlayerConsole : UIView
@@ -56,6 +58,8 @@ typedef enum playModeState
 @property (nonatomic,copy) NSString * statusText;
 /** mode名 */
 @property (nonatomic,strong) NSArray * modeNames;
+/** 是否正在录音模式 */
+@property (nonatomic,assign) BOOL recording;
 
 /** 代理,传递按钮事件 */
 @property(weak,nonatomic) id <SYPlayerConsoleDelegate> delegate;

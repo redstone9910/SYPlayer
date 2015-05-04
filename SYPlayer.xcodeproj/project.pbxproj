@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		521F15351AD4042C0049E225 /* MIBServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 521F15341AD4042C0049E225 /* MIBServer.m */; };
+		521F73261AF4F16100700BBC /* sound in Resources */ = {isa = PBXBuildFile; fileRef = 521F73251AF4F16100700BBC /* sound */; };
+		521F73281AF7091600700BBC /* mic in Resources */ = {isa = PBXBuildFile; fileRef = 521F73271AF7091600700BBC /* mic */; };
 		522424021AE5B74800795868 /* libGDTMobSDK_v3.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 522423FF1AE5B74800795868 /* libGDTMobSDK_v3.3.a */; };
 		522424041AE5B91200795868 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424031AE5B91200795868 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		522424061AE5B92E00795868 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424051AE5B92E00795868 /* CoreLocation.framework */; };
@@ -71,6 +73,8 @@
 		3E6801AC50639668D3115AA8 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		521F15331AD4042C0049E225 /* MIBServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIBServer.h; sourceTree = "<group>"; };
 		521F15341AD4042C0049E225 /* MIBServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIBServer.m; sourceTree = "<group>"; };
+		521F73251AF4F16100700BBC /* sound */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sound; sourceTree = "<group>"; };
+		521F73271AF7091600700BBC /* mic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mic; path = icon/mic; sourceTree = "<group>"; };
 		522423FE1AE5B74800795868 /* GDTNativeAd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDTNativeAd.h; sourceTree = "<group>"; };
 		522423FF1AE5B74800795868 /* libGDTMobSDK_v3.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGDTMobSDK_v3.3.a; sourceTree = "<group>"; };
 		522424001AE5B74800795868 /* GDTMobBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDTMobBannerView.h; sourceTree = "<group>"; };
@@ -324,6 +328,9 @@
 		52B6CC4A1A9BF53D00E043C0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				52B6CC571A9BF53D00E043C0 /* Images.xcassets */,
+				521F73271AF7091600700BBC /* mic */,
+				521F73251AF4F16100700BBC /* sound */,
 				522694C81AD79065003C2EFF /* song_list_第一册.plist */,
 				522694C51AD79065003C2EFF /* song_list_第二册.plist */,
 				522694C61AD79065003C2EFF /* song_list_第三册.plist */,
@@ -335,7 +342,6 @@
 				522694C11AD54373003C2EFF /* root.plist */,
 				522BB7181ACD321A00E834A4 /* nec_mp3_file_list.txt */,
 				522ACD571ADA1D3100F12819 /* plan.txt */,
-				52B6CC571A9BF53D00E043C0 /* Images.xcassets */,
 				52B6CC4E1A9BF53D00E043C0 /* AppDelegate.h */,
 				52B6CC4F1A9BF53D00E043C0 /* AppDelegate.m */,
 				52B6CC541A9BF53D00E043C0 /* Main.storyboard */,
@@ -448,6 +454,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				521F73281AF7091600700BBC /* mic in Resources */,
 				52B3B3691ABE4DC800C574A8 /* SYLrcView.xib in Resources */,
 				522ACD581ADA1D3100F12819 /* plan.txt in Resources */,
 				52B3B3701ABF881B00C574A8 /* SYSongCell.xib in Resources */,
@@ -466,6 +473,7 @@
 				522694C31AD54373003C2EFF /* root.plist in Resources */,
 				524B01A91ABD14E900E183CB /* SYPlayListButton.xib in Resources */,
 				522694C91AD79065003C2EFF /* song_list_第二册.plist in Resources */,
+				521F73261AF4F16100700BBC /* sound in Resources */,
 				522694CA1AD79065003C2EFF /* song_list_第三册.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
