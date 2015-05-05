@@ -302,15 +302,21 @@ weakSelf.playerConsole.statusText = streamInfo;
 //    [self.audioController playFromPlaylist:[playListItemArray copy]];
 
 
-
-
+139.129.13.56
 
 scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第1册）美音（MP3.LRC）/NCE1-美音-\(MP3+LRC\) root@139.129.13.56:/var/www/download
 scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第2册）美音（MP3+LRC）/NCE2-美音-\(MP3+LRC\) root@139.129.13.56:/var/www/download
 scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第3册）美音（MP3+LRC）/NCE3-美音-\(MP3+LRC\) root@139.129.13.56:/var/www/download
 scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第4册）美音（MP3+LRC）/NCE4-美音-\(MP3+LRC\) root@139.129.13.56:/var/www/download
+scp /Library/WebServer/Documents/login1.php root@139.129.13.56:/var/www
 
-scp /Library/WebServer/Documents/login1.php root@139.129.13.56:/var/www 
+104.247.221.116
+scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第1册）美音（MP3.LRC）/NCE1-美音-\(MP3+LRC\) root@104.247.221.116:/www/web/default/download
+scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第2册）美音（MP3+LRC）/NCE2-美音-\(MP3+LRC\) root@104.247.221.116:/www/web/default/download
+scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第3册）美音（MP3+LRC）/NCE3-美音-\(MP3+LRC\) root@104.247.221.116:/www/web/default/download
+scp -r /Volumes/DATA/Download/新概念英语mp3+lrc+4册全/新概念英语（第4册）美音（MP3+LRC）/NCE4-美音-\(MP3+LRC\) root@104.247.221.116:/www/web/default/download
+scp /Library/WebServer/Documents/login1.php root@104.247.221.116:/www/web/default
+Guanli2011
 
 
 
