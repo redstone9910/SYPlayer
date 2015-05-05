@@ -8,7 +8,6 @@
 
 #import "SYPlayerConsole.h"
 #import "NSString+Tools.h"
-#warning 增加逐句录音功能
 @interface SYPlayerConsole ()
 /** 总时间 */
 @property (weak, nonatomic) IBOutlet UILabel *timeTotal;
@@ -84,7 +83,7 @@
 -(instancetype)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame]) {
-        [self constumInit];
+        [self customInit];
     }
     return self;
 }
@@ -92,12 +91,12 @@
 -(instancetype)initWithCoder:(NSCoder *)aDecoder
 {
     if (self = [super initWithCoder:aDecoder]) {
-        [self constumInit];
+        [self customInit];
     }
     return self;
 }
 /** 初始化代码 */
--(void)constumInit
+-(void)customInit
 {
     //设置进度条外观
     [self.playSlider setThumbImage:[UIImage imageNamed:@"dot"] forState:UIControlStateNormal];
@@ -255,7 +254,14 @@
 {
     _playing = playing;
     if(self.isPlaying) self.stopped = NO;
-    [self.playBtn setImage:[UIImage imageNamed:self.isPlaying ? @"btn_pause" : @"btn_play"] forState:UIControlStateNormal];
+    
+    NSString *currentImage;
+    if (self.isPlaying) {
+        currentImage = @"btn_pause";
+    }else{
+        currentImage = @"btn_play";
+    }
+    [self.playBtn setImage:[UIImage imageNamed:currentImage] forState:UIControlStateNormal];
 }
 /** 更新播放/停止状态并使能/禁止播放按钮 */
 -(void)setStopped:(BOOL)stopped
@@ -264,7 +270,7 @@
     if (self.isStopped) {
         self.timeTotalInSecond = 0;
         self.playBtn.enabled = NO;
-    }else{
+    }else if(!self.recording){
         self.playBtn.enabled = YES;
     }
 }
@@ -295,6 +301,11 @@
 {
     _recording = recording;
     if (_recording) {
+        self.playBtn.enabled = NO;
+        self.nextBtn.enabled = NO;
+        self.prevBtn.enabled = NO;
+        self.playSlider.enabled = NO;
+        
         NSString *scale = [NSString stringWithFormat:@"@%dx",(int)[UIScreen mainScreen].scale];
         NSMutableArray *ary = [NSMutableArray array];
         for (int i = 0; i < 6; i ++) {
@@ -307,8 +318,17 @@
         self.micImage.animationDuration = 4.0 / 6;
         [self.micImage startAnimating];
     }else{
+        self.playBtn.enabled = YES;
+        self.nextBtn.enabled = YES;
+        self.prevBtn.enabled = YES;
+        self.playSlider.enabled = YES;
+        
         self.micImage.animationImages = nil;
         self.micImage.image = [UIImage imageNamed:@"mic0"];
     }
+}
+-(CGRect)recordFrame
+{
+    return self.micImage.frame;
 }
 @end

@@ -60,6 +60,8 @@ typedef enum playModeState
 @property (nonatomic,strong) NSArray * modeNames;
 /** 是否正在录音模式 */
 @property (nonatomic,assign) BOOL recording;
+/** 获取录音按钮frame */
+@property (nonatomic,assign,readonly) CGRect recordFrame;
 
 /** 代理,传递按钮事件 */
 @property(weak,nonatomic) id <SYPlayerConsoleDelegate> delegate;

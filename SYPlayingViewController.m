@@ -22,7 +22,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "MobClick.h"
 #import "GDTMobBannerView.h"
-#import "SYRecordView.h"
+#import "SYRecordViewE.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -73,7 +73,8 @@ typedef void (^SYDownloadCompletion)();
 /** 广点通 */
 @property (nonatomic,strong) GDTMobBannerView * bannerView;
 /** 录音面板 */
-@property (nonatomic,strong) SYRecordView * recordView;
+@property (nonatomic,strong) SYRecordViewE * recordView;
+@property (nonatomic,strong) NSLayoutConstraint * recordWConstraint;
 
 /** 用于保存playListTable原始Frame */
 //@property (nonatomic,assign) CGRect playListFrame;
@@ -308,14 +309,6 @@ typedef void (^SYDownloadCompletion)();
 //    }
 }
 
--(void)dealloc
-{
-    /** 广点通 */
-    self.bannerView.delegate = nil;
-    self.bannerView.currentViewController = nil;
-    self.bannerView = nil;
-}
-
 //-(void)logOutFrame:(CGRect)frame
 //{
 //    NSLog(@"frame:%.1f,%.1f,%.1f,%.1f",frame.origin.x,frame.origin.y,frame.size.width,frame.size.height);
@@ -328,47 +321,6 @@ typedef void (^SYDownloadCompletion)();
             break;
         }
     }
-}
-/** 全部下载按钮按下 */
-- (IBAction)downloadBtnClick {
-    __weak typeof(self) weakSelf = self;
-    RIButtonItem *cancelButtonItem = [RIButtonItem itemWithLabel:@"取消" action:^{
-        weakSelf.downloading = NO;
-    }];
-    
-    SYSongModel *downloadModel = nil;
-    for (SYSongModel *model in self.songModelArrary) {
-        if (model.downloading == NO) {
-            downloadModel = model;
-            break;
-        }
-    }
-    if (downloadModel != nil) {
-        NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
-        RIButtonItem *okButtonItem = [RIButtonItem itemWithLabel:@"下载" action:^{
-            [weakSelf downloadWithWifiCheckToDir:dirPath onModel:downloadModel withCompletionBlock:^{
-                weakSelf.downloading = YES;
-                [weakSelf downloadBtnClick];
-            }];
-        }];
-        
-        if (!self.downloading) {
-            UIAlertView *downloadAlert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"全部下载本册吗？" cancelButtonItem:cancelButtonItem otherButtonItems:okButtonItem, nil];
-            [downloadAlert show];
-        }else{
-            [self downloadWithWifiCheckToDir:dirPath onModel:downloadModel withCompletionBlock:^{
-                weakSelf.downloading = YES;
-                [weakSelf downloadBtnClick];
-            }];
-        }
-    }else{
-        self.downloading = NO;
-    }
-}
-/** 后退按钮按下 */
-- (IBAction)backBtnClick {
-    [self dismissViewControllerAnimated:YES completion:^{
-    }];
 }
 /** 更新songModelArrary内容到plist文件 */
 -(BOOL)refreshSongModelArrary
@@ -530,7 +482,82 @@ typedef void (^SYDownloadCompletion)();
     
     return NO;
 }
+/** 重设recordView Frame */
+-(void)popOutRecorder:(BOOL)isPopOut
+{
+    self.recordView.animating = YES;
+    
+    float x = 0;
+    float y = 0;
+    float w = 0;
+    if (!isPopOut) {
+        CGRect pFrame = self.playerConsoleView.frame;
+        CGRect bFrame = self.playerConsole.recordFrame;
+        CGRect cFrame = self.recordView.frame;
+        
+        x = CGRectGetMidX(bFrame) + pFrame.origin.x - CGRectGetMidX(cFrame);
+        y = CGRectGetMidY(bFrame) + pFrame.origin.y - CGRectGetMidY(cFrame);
+        w = bFrame.size.width / self.recordView.micScale - cFrame.size.width;
+    }
+    for (NSLayoutConstraint *cns in self.view.constraints) {
+        if (cns.firstItem == self.recordView) {
+            if (cns.firstAttribute == NSLayoutAttributeCenterX) {
+                cns.constant = x;
+            }
+            if (cns.firstAttribute == NSLayoutAttributeCenterY) {
+                cns.constant = y;
+            }
+            if (cns.firstAttribute == NSLayoutAttributeWidth) {
+                cns.constant = w;
+            }
+        }
+    }
+}
+#pragma mark - IBAction
 
+/** 全部下载按钮按下 */
+- (IBAction)downloadBtnClick {
+    __weak typeof(self) weakSelf = self;
+    RIButtonItem *cancelButtonItem = [RIButtonItem itemWithLabel:@"取消" action:^{
+        weakSelf.downloading = NO;
+    }];
+    
+    SYSongModel *downloadModel = nil;
+    for (SYSongModel *model in self.songModelArrary) {
+        if (model.downloading == NO) {
+            downloadModel = model;
+            break;
+        }
+    }
+    if (downloadModel != nil) {
+        NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
+        RIButtonItem *okButtonItem = [RIButtonItem itemWithLabel:@"下载" action:^{
+            [weakSelf downloadWithWifiCheckToDir:dirPath onModel:downloadModel withCompletionBlock:^{
+                weakSelf.downloading = YES;
+                [weakSelf downloadBtnClick];
+            }];
+        }];
+        
+        if (!self.downloading) {
+            UIAlertView *downloadAlert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"全部下载本册吗？" cancelButtonItem:cancelButtonItem otherButtonItems:okButtonItem, nil];
+            [downloadAlert show];
+        }else{
+            [self downloadWithWifiCheckToDir:dirPath onModel:downloadModel withCompletionBlock:^{
+                weakSelf.downloading = YES;
+                [weakSelf downloadBtnClick];
+            }];
+        }
+    }else{
+        self.downloading = NO;
+    }
+}
+/** 后退按钮按下 */
+- (IBAction)backBtnClick {
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self.audioController stop];
+        [self.recordView stop];
+    }];
+}
 #pragma mark - Property
 /** 延迟加载播放列表数据 */
 -(NSArray *)songModelArrary
@@ -549,21 +576,22 @@ typedef void (^SYDownloadCompletion)();
     
     return _songModelArrary;
 }
--(SYRecordView *)recordView
+-(SYRecordViewE *)recordView
 {
     if (_recordView == nil) {
-        _recordView = [SYRecordView recordView];
+        _recordView = [SYRecordViewE recordView];
         [_recordView stop];
         
         [self.view addSubview:_recordView];
         
         _recordView.translatesAutoresizingMaskIntoConstraints = NO;
         
-        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.gdtAdView attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
-        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeWidth multiplier:0.6 constant:0]];
         
-        [_recordView addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:_recordView.bounds.size.height]];
+        NSLayoutConstraint *cns = [NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:_recordView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0];
+        [_recordView addConstraint:cns];
         
     }
     return _recordView;
@@ -610,8 +638,7 @@ typedef void (^SYDownloadCompletion)();
 }
 /** 退出键按下 */
 -(void)playerConsolePowerOff:(SYPlayerConsole *)console{
-    [self dismissViewControllerAnimated:YES completion:^{
-    }];
+    [self backBtnClick];
 }
 /** 播放模式改变 */
 -(void)playerConsolePlayModeStateChanged:(SYPlayerConsole *)console withModeName:(NSString *)name{
@@ -626,8 +653,17 @@ typedef void (^SYDownloadCompletion)();
 {
     if (console.recording) {
         self.lrcView.playMode = lrcPlayModeSingleSentence;
+        [self popOutRecorder:YES];
+        self.recordView.animating = NO;
     }else{
         self.lrcView.playMode = lrcPlayModeWhole;
+        [self popOutRecorder:NO];
+        [UIView animateWithDuration:0.5 animations:^{
+            [self.view layoutIfNeeded];
+        } completion:^(BOOL finished) {
+            self.recordView.animating = NO;
+            [self.recordView stop];
+        }];
     }
 }
 #pragma mark - SYLrcViewDelegate
@@ -644,7 +680,6 @@ typedef void (^SYDownloadCompletion)();
 /** 一句播完 */
 -(void)lrcView:(SYLrcView *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence time:(float)time
 {
-    NSLog(@"%@",sentence);
     SYSongModel *model = self.songModelArrary[self.selectedIndexpath.row];
     NSString *title = model.songName;
     
@@ -656,31 +691,44 @@ typedef void (^SYDownloadCompletion)();
     
     __weak typeof(self) weakSelf = self;
     
+//    NSLog(@"%@",NSStringFromCGRect(self.recordView.frame));
+    
+    [self popOutRecorder:YES];
     [self.recordView startRecordCompletion:^(NSString *recordPath) {
         weakSelf.playerConsole.playing = YES;
         [weakSelf playerConsolePlayingStatusChanged:self.playerConsole];
-        [self.recordView loadSentence:sentence lessonTitle:title duration:inteval];
+        [weakSelf.recordView loadSentence:sentence lessonTitle:title duration:inteval];
         
-        NSString *line = [lrcView nextSentence:time];
-        NSLog(@"Higntlighted:%@",line);
+        [lrcView nextSentence:time];
         
-        [weakSelf.recordView startPlayCompletion:^{
-            if (inteval == 0) {
-                weakSelf.playerConsole.playing = NO;
-                [weakSelf.progressUpdateTimer invalidate];
-                weakSelf.progressUpdateTimer = nil;
-                weakSelf.playerConsole.playing = NO;
-                [weakSelf playerConsolePlayingStatusChanged:weakSelf.playerConsole];
-                
-                [weakSelf.recordView startRecordCompletion:^(NSString *recordPath){
-                    [weakSelf.recordView stop];
+        [weakSelf popOutRecorder:NO];
+        [UIView animateWithDuration:0.5 animations:^{
+            [weakSelf.view layoutIfNeeded];
+        } completion:^(BOOL finished) {
+            weakSelf.recordView.animating = NO;
+            [weakSelf.recordView startPlayCompletion:^{
+                if (inteval == 0) {
+                    weakSelf.playerConsole.playing = NO;
+                    [weakSelf.progressUpdateTimer invalidate];
+                    weakSelf.progressUpdateTimer = nil;
+                    weakSelf.playerConsole.playing = NO;
+                    [weakSelf playerConsolePlayingStatusChanged:weakSelf.playerConsole];
                     
-                    weakSelf.playerConsole.playing = YES;
-                    [weakSelf playerConsolePlayingStatusChanged:self.playerConsole];
-                    [weakSelf.view bringSubviewToFront:weakSelf.playerConsoleView];
-                }];
-            }
+                    [weakSelf.recordView startRecordCompletion:^(NSString *recordPath){
+                        [weakSelf.recordView stop];
+                        
+                        weakSelf.playerConsole.playing = YES;
+                        [weakSelf playerConsolePlayingStatusChanged:self.playerConsole];
+                        [weakSelf.view bringSubviewToFront:weakSelf.playerConsoleView];
+                    }];
+                }
+            }];
         }];
+    }];
+    [UIView animateWithDuration:0.5 animations:^{
+        [self.view layoutIfNeeded];
+    } completion:^(BOOL finished) {
+        self.recordView.animating = NO;
     }];
     
     [self.view bringSubviewToFront:self.recordView];
@@ -765,4 +813,13 @@ typedef void (^SYDownloadCompletion)();
     [self reLayoutSubviewsWithAdHeight:0];
 }
 
+#pragma mark - dealloc
+-(void)dealloc
+{
+    /** 广点通 */
+    self.bannerView.delegate = nil;
+    self.bannerView.currentViewController = nil;
+    self.bannerView = nil;
+    NSLog(@"%@ dealloc!",NSStringFromClass(self.class));
+}
 @end

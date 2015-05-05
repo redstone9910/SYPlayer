@@ -7,9 +7,12 @@
 //
 
 #import "EVCircularProgressView.h"
+#import "Gloable.h"
 
 #define DEGREES_TO_RADIANS(x) (x)/180.0*M_PI
 #define RADIANS_TO_DEGREES(x) (x)/M_PI*180.0
+
+#define arcWRate 0.08
 
 @interface EVCircularProgressViewBackgroundLayer : CALayer
 
@@ -39,12 +42,15 @@
 
 - (void)drawInContext:(CGContextRef)ctx
 {
-    CGContextSetFillColorWithColor(ctx, self.tintColor.CGColor);
-    CGContextSetStrokeColorWithColor(ctx, self.tintColor.CGColor);
-    
-    CGContextStrokeEllipseInRect(ctx, CGRectInset(self.bounds, 1, 1));
-    
-    CGContextFillRect(ctx, CGRectMake(CGRectGetMidX(self.bounds) - 4, CGRectGetMidY(self.bounds) - 4, 8, 8));
+//    CGContextSetFillColorWithColor(ctx, self.tintColor.CGColor);
+//    CGContextSetStrokeColorWithColor(ctx, self.tintColor.CGColor);
+//    
+//    float arcW = self.bounds.size.width * arcWRate * 0.25;
+//    CGContextSetLineWidth(ctx, arcW);
+//    CGContextStrokeEllipseInRect(ctx, CGRectInset(self.bounds, arcW, arcW));
+//    
+//    float rectW = self.bounds.size.width * 0.2;
+//    CGContextFillRect(ctx, CGRectMake(CGRectGetMidX(self.bounds) - rectW, CGRectGetMidY(self.bounds) - rectW, rectW * 2, rectW * 2));
 }
 
 @end
@@ -62,9 +68,10 @@
     UIColor *_progressTintColor;
 }
 
-- (instancetype)init
+-(instancetype)initWithFrame:(CGRect)frame
 {
-    self = [super initWithFrame:CGRectMake(0, 0, 28, 28)];
+//    self = [super initWithFrame:CGRectMake(0, 0, 28, 28)];
+    self = [super initWithFrame:frame];
     
     if (self) {
         [self commonInit];
@@ -86,7 +93,7 @@
 
 - (void)commonInit
 {
-    _progressTintColor = [UIColor blackColor];
+    _progressTintColor = [UIColor clearColor];
     
     // Set up the background layer
     
@@ -101,7 +108,7 @@
     CAShapeLayer *shapeLayer = [[CAShapeLayer alloc] init];
     shapeLayer.frame = self.bounds;
     shapeLayer.fillColor = nil;
-    shapeLayer.strokeColor = self.progressTintColor.CGColor;
+    shapeLayer.strokeColor = self.progressColor.CGColor;
     
     [self.layer addSublayer:shapeLayer];
     self.shapeLayer = shapeLayer;
@@ -109,21 +116,27 @@
     [self startIndeterminateAnimation];
 }
 
+-(void)layoutSubviews
+{
+    self.backgroundLayer.frame = self.bounds;
+    self.shapeLayer.frame = self.bounds;
+}
 #pragma mark - Accessors
 
 - (void)setProgress:(float)progress animated:(BOOL)animated
 {
     _progress = progress;
     
-    if (progress > 0) {
+    if (progress >= 0) {
         BOOL startingFromIndeterminateState = [self.shapeLayer animationForKey:@"indeterminateAnimation"] != nil;
         
         [self stopIndeterminateAnimation];
         
-        self.shapeLayer.lineWidth = 3;
+        float arcW = self.bounds.size.width * arcWRate;
+        self.shapeLayer.lineWidth = arcW;
         
         self.shapeLayer.path = [UIBezierPath bezierPathWithArcCenter:CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds))
-                                                              radius:self.bounds.size.width/2 - 2
+                                                              radius:self.bounds.size.width/2 - arcW / 2
                                                           startAngle:3*M_PI_2
                                                             endAngle:3*M_PI_2 + 2*M_PI
                                                            clockwise:YES].CGPath;
@@ -229,4 +242,16 @@
     [CATransaction commit];
 }
 
+//-(void)setProgressColor:(UIColor *)progressColor
+//{
+//    _progressColor = progressColor;
+//    //[UIColor colorWithRed:79.0 / 255 green: 214.0 / 255 blue: 36.0 / 255 alpha:1].CGColor;//
+//}
+-(UIColor *)progressColor
+{
+    if (_progressColor == nil) {
+        _progressColor = lightGreenColor;
+    }
+    return _progressColor;
+}
 @end

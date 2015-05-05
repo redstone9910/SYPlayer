@@ -33,6 +33,7 @@
 // On iOS 6, defaults to [UIColor blackColor]
 
 @property (nonatomic, strong) UIColor *progressTintColor;
+@property (nonatomic, strong) UIColor *progressColor;
 
 // Set the value of the progress property, optionally animating the change
 

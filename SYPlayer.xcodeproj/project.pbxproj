@@ -10,6 +10,7 @@
 		521F15351AD4042C0049E225 /* MIBServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 521F15341AD4042C0049E225 /* MIBServer.m */; };
 		521F73261AF4F16100700BBC /* sound in Resources */ = {isa = PBXBuildFile; fileRef = 521F73251AF4F16100700BBC /* sound */; };
 		521F73281AF7091600700BBC /* mic in Resources */ = {isa = PBXBuildFile; fileRef = 521F73271AF7091600700BBC /* mic */; };
+		521F73311AF7130E00700BBC /* SYRecordViewE.m in Sources */ = {isa = PBXBuildFile; fileRef = 521F73301AF7130E00700BBC /* SYRecordViewE.m */; };
 		522424021AE5B74800795868 /* libGDTMobSDK_v3.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 522423FF1AE5B74800795868 /* libGDTMobSDK_v3.3.a */; };
 		522424041AE5B91200795868 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424031AE5B91200795868 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		522424061AE5B92E00795868 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424051AE5B92E00795868 /* CoreLocation.framework */; };
@@ -75,6 +76,8 @@
 		521F15341AD4042C0049E225 /* MIBServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIBServer.m; sourceTree = "<group>"; };
 		521F73251AF4F16100700BBC /* sound */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sound; sourceTree = "<group>"; };
 		521F73271AF7091600700BBC /* mic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mic; path = icon/mic; sourceTree = "<group>"; };
+		521F732F1AF7130E00700BBC /* SYRecordViewE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYRecordViewE.h; sourceTree = "<group>"; };
+		521F73301AF7130E00700BBC /* SYRecordViewE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYRecordViewE.m; sourceTree = "<group>"; };
 		522423FE1AE5B74800795868 /* GDTNativeAd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDTNativeAd.h; sourceTree = "<group>"; };
 		522423FF1AE5B74800795868 /* libGDTMobSDK_v3.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGDTMobSDK_v3.3.a; sourceTree = "<group>"; };
 		522424001AE5B74800795868 /* GDTMobBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDTMobBannerView.h; sourceTree = "<group>"; };
@@ -250,6 +253,8 @@
 				52B3B36C1ABF881B00C574A8 /* SYSongCell.h */,
 				52B3B36D1ABF881B00C574A8 /* SYSongCell.m */,
 				52B3B36E1ABF881B00C574A8 /* SYSongCell.xib */,
+				521F732F1AF7130E00700BBC /* SYRecordViewE.h */,
+				521F73301AF7130E00700BBC /* SYRecordViewE.m */,
 				52B39E981AEC74F7000437B4 /* SYRecordView.h */,
 				52B39E991AEC74F7000437B4 /* SYRecordView.m */,
 				52B39E9B1AEC7513000437B4 /* SYRecordView.xib */,
@@ -541,6 +546,7 @@
 				521F15351AD4042C0049E225 /* MIBServer.m in Sources */,
 				522ACD5B1ADAA45700F12819 /* Gloable.c in Sources */,
 				52B3B36F1ABF881B00C574A8 /* SYSongCell.m in Sources */,
+				521F73311AF7130E00700BBC /* SYRecordViewE.m in Sources */,
 				522BB71C1ACD393300E834A4 /* SYPlayListModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
