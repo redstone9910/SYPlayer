@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>dir</key>
+		<string>NCE1-美音-(MP3+LRC) </string>
+		<key>bottomTitle</key>
+		<string>第一册</string>
+		<key>buttonTitle</key>
+		<string>1</string>
+	</dict>
+	<dict>
+		<key>dir</key>
+		<string>NCE2-美音-(MP3+LRC) </string>
+		<key>bottomTitle</key>
+		<string>第二册</string>
+		<key>buttonTitle</key>
+		<string>2</string>
+	</dict>
+	<dict>
+		<key>dir</key>
+		<string>NCE3-美音-(MP3+LRC) </string>
+		<key>bottomTitle</key>
+		<string>第三册</string>
+		<key>buttonTitle</key>
+		<string>3</string>
+	</dict>
+	<dict>
+		<key>dir</key>
+		<string>NCE4-美音-(MP3+LRC) </string>
+		<key>bottomTitle</key>
+		<string>第四册</string>
+		<key>buttonTitle</key>
+		<string>4</string>
+	</dict>
+</array>
+</plist>

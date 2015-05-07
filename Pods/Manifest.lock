@@ -1,5 +1,6 @@
 PODS:
-  - FreeStreamer (2.12.9):
+  - DKCircleButton (1.1)
+  - FreeStreamer (2.12.11):
     - Reachability (~> 3.0)
   - MBProgressHUD (0.9.1)
   - MKNetworkKit (0.87):
@@ -11,6 +12,7 @@ PODS:
   - UIAlertView-Blocks (1.0)
 
 DEPENDENCIES:
+  - DKCircleButton
   - FreeStreamer (~> 2.12.5)
   - MBProgressHUD (~> 0.9.1)
   - MKNetworkKit
@@ -18,7 +20,8 @@ DEPENDENCIES:
   - UIAlertView-Blocks
 
 SPEC CHECKSUMS:
-  FreeStreamer: ed90a09e6a9db752a469722c5bfa549b81f0b539
+  DKCircleButton: 62564c9debae08ad77dabb8d9658dfeb5520f2c4
+  FreeStreamer: 37e0c8fe1e9fa6ced7349a9b01aaac81b013a814
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   MKNetworkKit: 60ad3c83b62183e40ba75ce772c9427c25b520de
   Reachability: dd9aa4fb6667b9f787690a74f53cb7634ce99893

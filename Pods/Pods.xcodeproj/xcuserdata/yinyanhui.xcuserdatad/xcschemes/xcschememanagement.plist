@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Pods-DKCircleButton.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-FreeStreamer.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -42,37 +47,42 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>1BCE8113E023C0438CF185A6</key>
+		<key>289B125A9A51BE25156284E9</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>5B9F535961C4B693971EB3B5</key>
+		<key>47AA3C819AE71D2B8D80B981</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>7D1993ABEDD127EC31F4B892</key>
+		<key>83AEFA20D2768ADEB3D01F3D</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B0BC8E84040A72BC0E7AD9C8</key>
+		<key>9FF295F55AD07A646249ACDB</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>BB45C971F6A090E2A30609A4</key>
+		<key>C8492C418ACD7EE79C86611F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>CCC5879AE6673CC6A48B5230</key>
+		<key>CDE3E3F24ADAC0D9E073BC9F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>FB6D596925A33A3536026C3F</key>
+		<key>E69274800E8AA892257DEF12</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E6B4166C052D343AC3D87D2F</key>
 		<dict>
 			<key>primary</key>
 			<true/>

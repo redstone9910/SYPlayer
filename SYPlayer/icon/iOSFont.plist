@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<string>Avenir Next</string>
+	<string>American Typewriter</string>
+	<string>Al Nile</string>
+	<string>Arial</string>
+	<string>Arial Hebrew</string>
+	<string>Academy Engraved LET</string>
+	<string>Avenir</string>
+	<string>Arial Rounded MT Bold</string>
+	<string>Apple Color Emoji</string>
+	<string>Avenir Next Condensed</string>
+	<string>Apple SD Gothic Neo</string>
+	<string>Bodoni 72 Oldstyle</string>
+	<string>Bangla Sangam MN</string>
+	<string>Bodoni 72 Smallcaps</string>
+	<string>Bodoni Ornaments</string>
+	<string>Baskerville</string>
+	<string>Bodoni 72</string>
+	<string>Bradley Hand</string>
+	<string>Cochin</string>
+	<string>Courier</string>
+	<string>Chalkduster</string>
+	<string>Chalkboard SE</string>
+	<string>Courier New</string>
+	<string>Copperplate</string>
+	<string>DIN Condensed</string>
+	<string>DIN Alternate</string>
+	<string>Didot</string>
+	<string>Devanagari Sangam MN</string>
+	<string>Damascus</string>
+	<string>Euphemia UCAS</string>
+	<string>Farah</string>
+	<string>Futura</string>
+	<string>Geeza Pro</string>
+	<string>Gujarati Sangam MN</string>
+	<string>Georgia</string>
+	<string>Gurmukhi MN</string>
+	<string>Gill Sans</string>
+	<string>Helvetica</string>
+	<string>Hiragino Mincho ProN</string>
+	<string>Hoefler Text</string>
+	<string>Hiragino Kaku Gothic ProN</string>
+	<string>Helvetica Neue</string>
+	<string>Heiti TC</string>
+	<string>Heiti SC</string>
+	<string>Iowan Old Style</string>
+	<string>Khmer Sangam MN</string>
+	<string>Kannada Sangam MN</string>
+	<string>Kohinoor Devanagari</string>
+	<string>Kailasa</string>
+	<string>Lao Sangam MN</string>
+	<string>Menlo</string>
+	<string>Malayalam Sangam MN</string>
+	<string>Mishafi</string>
+	<string>Marker Felt</string>
+	<string>Marion</string>
+	<string>Noteworthy</string>
+	<string>Oriya Sangam MN</string>
+	<string>Optima</string>
+	<string>Papyrus</string>
+	<string>Palatino</string>
+	<string>Party LET</string>
+	<string>Symbol</string>
+	<string>Savoye LET</string>
+	<string>Snell Roundhand</string>
+	<string>Superclarendon</string>
+	<string>Sinhala Sangam MN</string>
+	<string>Telugu Sangam MN</string>
+	<string>Trebuchet MS</string>
+	<string>Times New Roman</string>
+	<string>Tamil Sangam MN</string>
+	<string>Thonburi</string>
+	<string>Verdana</string>
+	<string>Zapfino</string>
+	<string>Zapf Dingbats</string>
+</array>
+</plist>

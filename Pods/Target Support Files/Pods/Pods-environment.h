@@ -6,11 +6,17 @@
 // project.
 
 
+// DKCircleButton
+#define COCOAPODS_POD_AVAILABLE_DKCircleButton
+#define COCOAPODS_VERSION_MAJOR_DKCircleButton 1
+#define COCOAPODS_VERSION_MINOR_DKCircleButton 1
+#define COCOAPODS_VERSION_PATCH_DKCircleButton 0
+
 // FreeStreamer
 #define COCOAPODS_POD_AVAILABLE_FreeStreamer
 #define COCOAPODS_VERSION_MAJOR_FreeStreamer 2
 #define COCOAPODS_VERSION_MINOR_FreeStreamer 12
-#define COCOAPODS_VERSION_PATCH_FreeStreamer 9
+#define COCOAPODS_VERSION_PATCH_FreeStreamer 11
 
 // MBProgressHUD
 #define COCOAPODS_POD_AVAILABLE_MBProgressHUD

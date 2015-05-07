@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "MobClick.h"
+#import "MIBRootViewController.h"
 
 @interface AppDelegate ()
 
@@ -19,6 +20,12 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [MobClick startWithAppkey:@"553501df67e58e0eec0012ca" reportPolicy:BATCH   channelId:@""];
+    
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    MIBRootViewController *rootController = [[MIBRootViewController alloc] init];
+    self.window.rootViewController = rootController;
+    [self.window makeKeyAndVisible];
+    
     return YES;
 }
 

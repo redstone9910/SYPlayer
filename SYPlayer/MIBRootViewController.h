@@ -9,5 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface MIBRootViewController : UIViewController
-
+/** 按钮面板数据 */
+@property (nonatomic,strong) NSArray *circles;
+/** 顶部背景图 */
+@property (nonatomic,strong) UIImageView * backBg;
 @end
