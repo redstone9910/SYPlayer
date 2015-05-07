@@ -129,6 +129,13 @@
     NSIndexPath *indexPath = [self.volumePage indexPathForCell:cell];
     SYCircleModel *p = self.circles[indexPath.item];
     NSLog(@"点击按钮-%@", p.bottomTitle);
+    
+    SYPlayingViewController *sVc = [[SYPlayingViewController alloc] init];
+    SYPlayListModel *model = self.lessonArray[[p.buttonTitle integerValue] - 1];
+    sVc.playListModel = model;
+    
+    [self presentViewController:sVc animated:YES completion:^{
+    }];
 }
 #pragma mark - property
 -(NSArray *)circles{

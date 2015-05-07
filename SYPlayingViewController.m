@@ -46,30 +46,33 @@ typedef void (^SYDownloadCompletion)();
 
 @interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate,SYSongCellDelegate,GDTMobBannerViewDelegate>
 /** 全部下载按钮 */
-@property (weak, nonatomic) IBOutlet UIButton *downloadBtn;
+@property (strong, nonatomic) IBOutlet UIButton *downloadBtn;
 /** 收藏按钮 */
-@property (weak, nonatomic) IBOutlet UIButton *favoriteBtn;
+//@property (strong, nonatomic) IBOutlet UIButton *favoriteBtn;
+/** 后退按钮 */
+@property (strong, nonatomic) UIButton *backBtn;
 /** 全部下载按钮按下 */
 - (IBAction)downloadBtnClick;
 /** 后退按钮按下 */
 - (IBAction)backBtnClick;
 
 /** 标题按钮View */
-@property (weak, nonatomic) IBOutlet UIView *titleBtnView;
+//@property (weak, nonatomic) IBOutlet UIView *titleBtnView;
 /** 标题按钮 */
-@property (nonatomic,strong) SYPlayListButton *titleBtn;
+@property (nonatomic,strong) SYPlayListButton *titleListBtn;
 /** 控制台View */
-@property (weak, nonatomic) IBOutlet UIView *playerConsoleView;
+//@property (weak, nonatomic) IBOutlet UIView *playerConsoleView;
 /** 控制台 */
 @property (nonatomic,strong) SYPlayerConsole * playerConsole;
 /** LRC View */
-@property (weak, nonatomic) IBOutlet UIView *lrcUIView;
+//@property (weak, nonatomic) IBOutlet UIView *lrcUIView;
 /** 歌词显示 */
 @property (nonatomic,strong) SYLrcView *lrcView;
 /** 播放下拉列表 */
-@property (weak, nonatomic) IBOutlet UITableView *playListTable;
+//@property (weak, nonatomic) IBOutlet UITableView *playListTable;
+@property (strong, nonatomic) UITableView *playListTable;
 /** 广告条View */
-@property (weak, nonatomic) IBOutlet UIView *gdtAdView;
+//@property (weak, nonatomic) IBOutlet UIView *gdtAdView;
 /** 广点通 */
 @property (nonatomic,strong) GDTMobBannerView * bannerView;
 /** 录音面板 */
@@ -111,10 +114,10 @@ typedef void (^SYDownloadCompletion)();
 @end
 
 @implementation SYPlayingViewController
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
+-(void)loadView{
+    [super loadView];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
     
     __weak typeof(self) weakSelf = self;
     
@@ -128,37 +131,59 @@ typedef void (^SYDownloadCompletion)();
     self.plistPath = path;
     
     /** 标题栏 */
-    self.titleBtn = [SYPlayListButton playListButtonWithString:self.playListModel.lessonTitle];
-    self.titleBtn.delegate = self;
-    [self.titleBtnView addSubview:self.titleBtn];
-    self.titleBtn.Opened = NO;
+    self.titleListBtn = [SYPlayListButton playListButtonWithString:self.playListModel.lessonTitle];
+    [self.view addSubview:self.titleListBtn];
+    self.titleListBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    NSLayoutConstraint *cnsT1 = [NSLayoutConstraint constraintWithItem:self.titleListBtn attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:20];
+    NSLayoutConstraint *cnsL1 = [NSLayoutConstraint constraintWithItem:self.titleListBtn attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    NSLayoutConstraint *cnsR1 = [NSLayoutConstraint constraintWithItem:self.titleListBtn attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+    [self.view addConstraints:@[cnsT1,cnsL1,cnsR1]];
+    
+    NSLayoutConstraint *cnsH1 = [NSLayoutConstraint constraintWithItem:self.titleListBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:44];
+    [self.titleListBtn addConstraints:@[cnsH1]];
+    
+    self.titleListBtn.delegate = self;
+    self.titleListBtn.Opened = NO;
     
     dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC);
     dispatch_after(time, dispatch_get_main_queue(), ^{
-        weakSelf.titleBtn.Opened = YES;
+        weakSelf.titleListBtn.Opened = YES;
     });
-
-    /** 控制台 */
-    self.playerConsole = [SYPlayerConsole playerConsole];
-    self.playerConsole.delegate = self;
-    [self.playerConsoleView addSubview:self.playerConsole];
     
-    /** 歌词 */
-    self.lrcView = [SYLrcView lrcView];
-    self.lrcView.lrcFile = nil;
-    self.lrcView.delegate = self;
-    self.lrcView.frame = self.lrcUIView.bounds;
-    [self.lrcUIView addSubview:self.lrcView];
+    /** 后退按钮 */
+    self.backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.backBtn setImage:[UIImage imageNamed:@"btn_back"] forState:UIControlStateNormal];
+    [self.backBtn addTarget:self action:@selector(backBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.titleListBtn addSubview:self.backBtn];
+    {
+        self.backBtn.translatesAutoresizingMaskIntoConstraints = NO;
+        NSLayoutConstraint *cnsB5 = [NSLayoutConstraint constraintWithItem:self.backBtn attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        NSLayoutConstraint *cnsL5 = [NSLayoutConstraint constraintWithItem:self.backBtn attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+        NSLayoutConstraint *cnsT5 = [NSLayoutConstraint constraintWithItem:self.backBtn attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        [self.titleListBtn addConstraints:@[cnsB5,cnsL5,cnsT5]];
+        NSLayoutConstraint *cnsW5 = [NSLayoutConstraint constraintWithItem:self.backBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:44];
+        [self.backBtn addConstraints:@[cnsW5]];
+    }
     
-    /** 歌曲列表 */
-    self.playListTable.rowHeight = 30;
-    self.playListTable.delegate = self;
-    self.playListTable.dataSource = self;
+    /** 全部下载按钮 */
+    self.downloadBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.downloadBtn setImage:[UIImage imageNamed:@"btn_downLoad"] forState:UIControlStateNormal];
+    [self.downloadBtn addTarget:self action:@selector(downloadBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.titleListBtn addSubview:self.downloadBtn];
+    {
+        self.downloadBtn.translatesAutoresizingMaskIntoConstraints = NO;
+        NSLayoutConstraint *cnsB5 = [NSLayoutConstraint constraintWithItem:self.downloadBtn attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        NSLayoutConstraint *cnsR5 = [NSLayoutConstraint constraintWithItem:self.downloadBtn attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+        NSLayoutConstraint *cnsT5 = [NSLayoutConstraint constraintWithItem:self.downloadBtn attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        [self.titleListBtn addConstraints:@[cnsB5,cnsR5,cnsT5]];
+        NSLayoutConstraint *cnsW5 = [NSLayoutConstraint constraintWithItem:self.downloadBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:44];
+        [self.downloadBtn addConstraints:@[cnsW5]];
+    }
     
     /** 广点通 */
-    CGRect gdtframe = CGRectMake(0, 0, self.view.bounds.size.width, self.gdtAdView.bounds.size.height);
+    CGRect gdtframe = CGRectMake(0, self.view.bounds.size.height - 50, self.view.bounds.size.width, 50);
     self.bannerView = [[GDTMobBannerView alloc] initWithFrame:gdtframe appkey:GDT_APPID placementId:GDT_BANNERID];
-    [self.gdtAdView addSubview:self.bannerView];
     self.bannerView.delegate = self; // 设置Delegate
     self.bannerView.currentViewController = self; //设置当前的ViewController
     self.bannerView.interval = 30; //【可选】设置刷新频率;默认30秒
@@ -167,16 +192,64 @@ typedef void (^SYDownloadCompletion)();
     self.bannerView.isAnimationOn = YES; //【可选】开启banner轮播和展现时的动画效果;默认开启
     [self.bannerView loadAdAndShow]; //加载⼲⼴广告并展⽰示
     
-    [self reLayoutSubviewsWithAdHeight:50];//设定广告条高度为0并重新布局
+    [self.view addSubview:self.bannerView];
+    self.bannerView.translatesAutoresizingMaskIntoConstraints = NO;
+    NSLayoutConstraint *cnsB5 = [NSLayoutConstraint constraintWithItem:self.bannerView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    NSLayoutConstraint *cnsL5 = [NSLayoutConstraint constraintWithItem:self.bannerView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    NSLayoutConstraint *cnsR5 = [NSLayoutConstraint constraintWithItem:self.bannerView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+    [self.view addConstraints:@[cnsB5,cnsL5,cnsR5]];
+    NSLayoutConstraint *cnsH5 = [NSLayoutConstraint constraintWithItem:self.bannerView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:50];
+    [self.bannerView addConstraints:@[cnsH5]];
+//    [self reLayoutSubviewsWithAdHeight:50];//设定广告条高度为0并重新布局
+    
+    /** 控制台 */
+    self.playerConsole = [SYPlayerConsole playerConsole];
+    self.playerConsole.delegate = self;
+    [self.view addSubview:self.playerConsole];
+    self.playerConsole.translatesAutoresizingMaskIntoConstraints = NO;
+    NSLayoutConstraint *cnsB2 = [NSLayoutConstraint constraintWithItem:self.playerConsole attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bannerView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    NSLayoutConstraint *cnsL2 = [NSLayoutConstraint constraintWithItem:self.playerConsole attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    NSLayoutConstraint *cnsR2 = [NSLayoutConstraint constraintWithItem:self.playerConsole attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+    [self.view addConstraints:@[cnsB2,cnsL2,cnsR2]];
+    
+    NSLayoutConstraint *cnsH2 = [NSLayoutConstraint constraintWithItem:self.playerConsole attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:100];
+    [self.playerConsole addConstraints:@[cnsH2]];
+    
+    /** 歌词 */
+    self.lrcView = [SYLrcView lrcView];
+    self.lrcView.lrcFile = nil;
+    self.lrcView.delegate = self;
+    
+    [self.view addSubview:self.lrcView];
+    self.lrcView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    NSLayoutConstraint *cnsT3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    NSLayoutConstraint *cnsB3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.playerConsole attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    NSLayoutConstraint *cnsL3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    NSLayoutConstraint *cnsR3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+    [self.view addConstraints:@[cnsT3,cnsB3,cnsL3,cnsR3]];
+    
+    /** 歌曲列表 */
+    self.playListTable = [[UITableView alloc] init];
+    self.playListTable.rowHeight = 30;
+    self.playListTable.delegate = self;
+    self.playListTable.dataSource = self;
+    [self.view addSubview:self.playListTable];
+    self.playListTable.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    NSLayoutConstraint *cnsT4 = [NSLayoutConstraint constraintWithItem:self.playListTable attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    NSLayoutConstraint *cnsB4 = [NSLayoutConstraint constraintWithItem:self.playListTable attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.playerConsole attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    NSLayoutConstraint *cnsL4 = [NSLayoutConstraint constraintWithItem:self.playListTable attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    NSLayoutConstraint *cnsR4 = [NSLayoutConstraint constraintWithItem:self.playListTable attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+    [self.view addConstraints:@[cnsT4,cnsB4,cnsL4,cnsR4]];
     
     /** 按钮移到最前 */
     [self.view bringSubviewToFront:self.downloadBtn];
-    [self.view bringSubviewToFront:self.favoriteBtn];
+    [self.view bringSubviewToFront:self.backBtn];
     
     /** 播放器 */
     self.audioController = [SYAudioController sharedAudioController];
     self.audioController.delegate = self;
-    
     /** 设定audioPlayer若干代码块 */
     self.audioController.onStateChange = ^(FSAudioStreamState state) {
         switch (state) {
@@ -216,7 +289,7 @@ typedef void (^SYDownloadCompletion)();
                 }else{
                     weakSelf.playerConsole.playing = NO;
                     weakSelf.playerConsole.stopped = YES;
-//                    weakSelf.playerConsole.timeTotalInSecond = 0;
+                    //                    weakSelf.playerConsole.timeTotalInSecond = 0;
                 }
                 break;
             case kFsAudioStreamRetryingStarted:
@@ -265,7 +338,7 @@ typedef void (^SYDownloadCompletion)();
     self.audioController.onMetaDataAvailable = ^(NSDictionary *metaData) {
         NSMutableString *streamInfo = [[NSMutableString alloc] init];
         
-//        [weakSelf determineStationNameWithMetaData:metaData];
+        //        [weakSelf determineStationNameWithMetaData:metaData];
         
         Class playingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
         
@@ -287,35 +360,35 @@ typedef void (^SYDownloadCompletion)();
         
         if (metaData[@"MPMediaItemPropertyArtist"] &&
             metaData[@"MPMediaItemPropertyTitle"]) {
-//            [streamInfo appendString:metaData[@"MPMediaItemPropertyArtist"]];
-//            [streamInfo appendString:@" - "];
+            //            [streamInfo appendString:metaData[@"MPMediaItemPropertyArtist"]];
+            //            [streamInfo appendString:@" - "];
             [streamInfo appendString:metaData[@"MPMediaItemPropertyTitle"]];
         } else if (metaData[@"StreamTitle"]) {
             [streamInfo appendString:metaData[@"StreamTitle"]];
         }
-
+        
         weakSelf.playerConsole.statusText = streamInfo;
         
     };
-
+    
     if(!self.audioController.isPlaying){
-//        SYSongModel *model = self.songModelArrary[0];
-//        [self playModel:model];
+        //        SYSongModel *model = self.songModelArrary[0];
+        //        [self playModel:model];
         weakSelf.playerConsole.stopped = YES;
     }
     
-//    if (!self.progressUpdateTimer) {
-//        self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval target:self selector:@selector(updatePlaybackProgress) userInfo:nil repeats:YES];
-//    }
+    //    if (!self.progressUpdateTimer) {
+    //        self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval target:self selector:@selector(updatePlaybackProgress) userInfo:nil repeats:YES];
+    //    }
+}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
 }
 
-//-(void)logOutFrame:(CGRect)frame
-//{
-//    NSLog(@"frame:%.1f,%.1f,%.1f,%.1f",frame.origin.x,frame.origin.y,frame.size.width,frame.size.height);
-//}
 -(void)reLayoutSubviewsWithAdHeight:(float)height
 {
-    for (NSLayoutConstraint *cst in self.gdtAdView.constraints) {
+    for (NSLayoutConstraint *cst in self.bannerView.constraints) {
         if (cst.firstAttribute == NSLayoutAttributeHeight) {
             cst.constant = height;
             break;
@@ -432,9 +505,9 @@ typedef void (^SYDownloadCompletion)();
         
         NSArray *ary = [model.songName componentsSeparatedByString:@"－"];
         NSString *str = [ary firstObject];
-        self.titleBtn.titleText = [NSString stringWithFormat:@"%@-%@",self.playListModel.lessonTitle,str];
+        self.titleListBtn.titleText = [NSString stringWithFormat:@"%@-%@",self.playListModel.lessonTitle,str];
         
-        self.titleBtn.Opened = NO;
+        self.titleListBtn.Opened = NO;
         
 //        MPMediaItemArtwork *albumArt = [ [MPMediaItemArtwork alloc] initWithImage: [UIImage imageNamed:@"main_bg"]];
 //        NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
@@ -471,13 +544,13 @@ typedef void (^SYDownloadCompletion)();
         if(lastModel != model){
             [self playModel:lastModel];
         }
-        self.titleBtn.Opened = YES;
+        self.titleListBtn.Opened = YES;
     }else{
         //停止
         self.playerConsole.stopped = YES;
         [self.audioController stop];
         self.lrcView.lrcFile = nil;
-        self.titleBtn.Opened = YES;
+        self.titleListBtn.Opened = YES;
     }
     
     return NO;
@@ -491,7 +564,7 @@ typedef void (^SYDownloadCompletion)();
     float y = 0;
     float w = 0;
     if (!isPopOut) {
-        CGRect pFrame = self.playerConsoleView.frame;
+        CGRect pFrame = self.playerConsole.frame;
         CGRect bFrame = self.playerConsole.recordFrame;
         CGRect cFrame = self.recordView.frame;
         
@@ -607,7 +680,7 @@ typedef void (^SYDownloadCompletion)();
         [self.playListTable selectRowAtIndexPath:newIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         SYSongModel *model = self.songModelArrary[newIndexPath.row];
         [self playModel:model];
-        self.titleBtn.Opened = NO;
+        self.titleListBtn.Opened = NO;
     }
 }
 /** 上一首 */
@@ -618,7 +691,7 @@ typedef void (^SYDownloadCompletion)();
         [self.playListTable selectRowAtIndexPath:newIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         SYSongModel *model = self.songModelArrary[newIndexPath.row];
         [self playModel:model];
-        self.titleBtn.Opened = NO;
+        self.titleListBtn.Opened = NO;
     }
 }
 /** 拖动进度条 */
@@ -719,7 +792,7 @@ typedef void (^SYDownloadCompletion)();
                         
                         weakSelf.playerConsole.playing = YES;
                         [weakSelf playerConsolePlayingStatusChanged:self.playerConsole];
-                        [weakSelf.view bringSubviewToFront:weakSelf.playerConsoleView];
+                        [weakSelf.view bringSubviewToFront:weakSelf.playerConsole];
                     }];
                 }
             }];
@@ -738,11 +811,11 @@ typedef void (^SYDownloadCompletion)();
 -(void)playListButtonBtnClicked:(SYPlayListButton *)playListBtn
 {
     __weak typeof(self) weakSelf = self;
-    for (NSLayoutConstraint *cst in self.playListTable.constraints) {
-        if (cst.firstAttribute == NSLayoutAttributeHeight) {
-            cst.constant = playListBtn.isOpened ? self.lrcUIView.frame.size.height : 0;
+    for (NSLayoutConstraint *cst in self.view.constraints) {
+        if ((cst.firstItem == self.playListTable) && (cst.firstAttribute == NSLayoutAttributeBottom)) {
+            cst.constant = playListBtn.isOpened ? 0 : -self.lrcView.frame.size.height;
             [UIView animateWithDuration:0.3 animations:^{
-                [weakSelf.playListTable layoutIfNeeded];
+                [weakSelf.view layoutIfNeeded];
             }];
             break;
         }
