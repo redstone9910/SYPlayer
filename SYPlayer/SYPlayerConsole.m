@@ -8,34 +8,40 @@
 
 #import "SYPlayerConsole.h"
 #import "NSString+Tools.h"
+#import "Gloable.h"
+
+#define timeLablePos 0.15
+#define pnButtonPos 0.4
+#define micButtonPos 0.175
+
 @interface SYPlayerConsole ()
 /** 总时间 */
-@property (weak, nonatomic) IBOutlet UILabel *timeTotal;
+@property (strong, nonatomic) IBOutlet UILabel *timeTotal;
 /** 已播放时间 */
-@property (weak, nonatomic) IBOutlet UILabel *timeProgress;
+@property (strong, nonatomic) IBOutlet UILabel *timeProgress;
 /** 播放进度 */
-@property (weak, nonatomic) IBOutlet UISlider *playSlider;
+@property (strong, nonatomic) IBOutlet UISlider *playSlider;
 /** 缓冲进度 */
-@property (weak, nonatomic) IBOutlet UIProgressView *bufferProgressIndicator;
+@property (strong, nonatomic) IBOutlet UIProgressView *bufferProgressIndicator;
 /** 背景图片 */
-@property (weak, nonatomic) IBOutlet UIImageView *backGroundImg;
+@property (strong, nonatomic) IBOutlet UIImageView *backGroundImageView;
 /** 播放模式按钮 */
-@property (weak, nonatomic) IBOutlet UIButton *playModeBtn;
+@property (strong, nonatomic) IBOutlet UIButton *playModeBtn;
 /** 退出 */
-@property (weak, nonatomic) IBOutlet UIButton *powerBtn;
+@property (strong, nonatomic) IBOutlet UIButton *powerBtn;
 /** 播放/暂停按钮 */
-@property (weak, nonatomic) IBOutlet UIButton *playBtn;
+@property (strong, nonatomic) IBOutlet UIButton *playBtn;
 /** 上一首 */
-@property (weak, nonatomic) IBOutlet UIButton *prevBtn;
+@property (strong, nonatomic) IBOutlet UIButton *prevBtn;
 /** 下一首 */
-@property (weak, nonatomic) IBOutlet UIButton *nextBtn;
+@property (strong, nonatomic) IBOutlet UIButton *nextBtn;
 /** 状态 */
-@property (weak, nonatomic) IBOutlet UILabel *statusLabel;
+@property (strong, nonatomic) IBOutlet UILabel *statusLabel;
 
 /** 录音按钮 */
-@property (weak, nonatomic) IBOutlet UIButton *micBtn;
+@property (strong, nonatomic) IBOutlet UIButton *micBtn;
 /** mic图片 */
-@property (weak, nonatomic) IBOutlet UIImageView *micImage;
+@property (strong, nonatomic) IBOutlet UIImageView *micImage;
 
 /** 改变播放模式 */
 - (IBAction)playModeClick;
@@ -69,15 +75,16 @@
 /** 创建新的console对象 */
 +(instancetype)playerConsole
 {
+    return [[self alloc]init];
+}
+/** 创建新的console对象 */
++(instancetype)playerConsoleWithNib
+{
     NSBundle * bundle = [NSBundle mainBundle];
     NSArray * objs = [bundle loadNibNamed:NSStringFromClass(self) owner:nil options:nil];
     SYPlayerConsole * console = [objs lastObject];
     
     return console;
-}
-/** 从XIB加载完毕 */
--(void)awakeFromNib
-{
 }
 /** 从代码初始化 */
 -(instancetype)initWithFrame:(CGRect)frame
@@ -91,21 +98,110 @@
 -(instancetype)initWithCoder:(NSCoder *)aDecoder
 {
     if (self = [super initWithCoder:aDecoder]) {
-        [self customInit];
+//        [self customInit];
     }
     return self;
 }
 /** 初始化代码 */
 -(void)customInit
 {
-    //设置进度条外观
-    [self.playSlider setThumbImage:[UIImage imageNamed:@"dot"] forState:UIControlStateNormal];
-    self.playSlider.maximumTrackTintColor = [UIColor blackColor];
-    self.playSlider.minimumTrackTintColor = [UIColor lightGrayColor];
-    self.playSliderDraging = NO;//没有正在拖动
+    self.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:self.playSlider];
+    {
+        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.playSlider attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.playSlider attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:0.25 constant:0];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.playSlider attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:0.7 constant:0];
+        [self addConstraints:@[cnsX,cnsY,cnsW]];
+    }
+    [self addSubview:self.timeTotal];
+    {
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.timeTotal attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.playSlider attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.timeTotal attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:timeLablePos constant:0];
+        [self addConstraints:@[cnsX,cnsY]];
+    }
+    [self addSubview:self.timeProgress];
+    {
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.timeProgress attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.playSlider attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.timeProgress attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:2 - timeLablePos constant:0];
+        [self addConstraints:@[cnsX,cnsY]];
+    }
+    self.playing = NO;
+    [self addSubview:self.playBtn];
+    {
+        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:0.85 constant:0];
+        [self addConstraints:@[cnsX,cnsY]];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:46];
+        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:46];
+        [self.playBtn addConstraints:@[cnsW,cnsH]];
+    }
+    [self addSubview:self.prevBtn];
+    {
+        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.prevBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:pnButtonPos constant:0];
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.prevBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.playBtn attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+        [self addConstraints:@[cnsX,cnsY]];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.prevBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.prevBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        [self.prevBtn addConstraints:@[cnsW,cnsH]];
+    }
+    [self addSubview:self.nextBtn];
+    {
+        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.nextBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:2 - pnButtonPos constant:0];
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.nextBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.playBtn attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+        [self addConstraints:@[cnsX,cnsY]];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.nextBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.nextBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        [self.nextBtn addConstraints:@[cnsW,cnsH]];
+    }
+    [self addSubview:self.micBtn];
+    {
+        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.micBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:micButtonPos constant:0];
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.micBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.playBtn attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+        [self addConstraints:@[cnsX,cnsY]];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.micBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.micBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        [self.micBtn addConstraints:@[cnsW,cnsH]];
+    }
+    [self addSubview:self.micImage];
+    {
+        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.micImage attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.micBtn attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.micImage attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.micBtn attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+        [self addConstraints:@[cnsX,cnsY]];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.micImage attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:66];
+        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.micImage attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:40];
+        [self.micImage addConstraints:@[cnsW,cnsH]];
+    }
+    [self addSubview:self.powerBtn];
+    {
+        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.powerBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:2 - micButtonPos constant:0];
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.powerBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.playBtn attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+        [self addConstraints:@[cnsX,cnsY]];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.powerBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.powerBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        [self.powerBtn addConstraints:@[cnsW,cnsH]];
+    }
     
-    self.recording = NO;
+    self.playModeBtn.hidden = YES;
+    [self addSubview:self.playModeBtn];
+    {
+        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.micBtn attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.micBtn attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+        [self addConstraints:@[cnsX,cnsY]];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        [self.playModeBtn addConstraints:@[cnsW,cnsH]];
+    }
+    [self addSubview:self.backGroundImageView];
+    {
+        NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.backGroundImageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.backGroundImageView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        NSLayoutConstraint *cnsL = [NSLayoutConstraint constraintWithItem:self.backGroundImageView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+        NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.backGroundImageView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+        [self addConstraints:@[cnsT,cnsB,cnsL,cnsR]];
+    }
+    
 }
+
 #pragma mark - IBAction
 /** 改变播放模式按钮按下 */
 - (IBAction)playModeClick {
@@ -189,6 +285,110 @@
 }
 
 #pragma mark - Property
+-(UILabel *)timeTotal{
+    if (_timeTotal == nil) {
+        _timeTotal = [[UILabel alloc] init];
+        _timeTotal.text = @"00:00";
+        _timeTotal.textColor = lightGreenColor;
+        _timeTotal.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _timeTotal;
+}
+-(UILabel *)timeProgress{
+    if (_timeProgress == nil) {
+        _timeProgress = [[UILabel alloc] init];
+        _timeProgress.text = @"00:00";
+        _timeProgress.textColor = lightGreenColor;
+        _timeProgress.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _timeProgress;
+}
+-(UISlider *)playSlider{
+    if (_playSlider == nil) {
+        _playSlider = [[UISlider alloc] init];
+        [_playSlider setThumbImage:[UIImage imageNamed:@"hp_player_progress_played"] forState:UIControlStateNormal];
+        _playSlider.maximumTrackTintColor = [UIColor lightGrayColor];
+        _playSlider.minimumTrackTintColor = lightGreenColor;
+        [_playSlider addTarget:self action:@selector(progressTouchDown) forControlEvents:UIControlEventTouchDown];
+        [_playSlider addTarget:self action:@selector(progressTouchUp) forControlEvents:UIControlEventTouchUpInside];
+        [_playSlider addTarget:self action:@selector(progressTouchUp) forControlEvents:UIControlEventTouchUpOutside];
+        [_playSlider addTarget:self action:@selector(progressChanged) forControlEvents:UIControlEventValueChanged];
+        _playSlider.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        self.playSliderDraging = NO;//没有正在拖动
+    }
+    return _playSlider;
+}
+-(UIButton *)playBtn{
+    if (_playBtn == nil) {
+        _playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_playBtn addTarget:self action:@selector(playBtnClick) forControlEvents:UIControlEventTouchUpInside];
+        _playBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _playBtn;
+}
+-(UIButton *)prevBtn{
+    if (_prevBtn == nil) {
+        _prevBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_prevBtn setImage:[UIImage imageNamed:@"player_btn_pre_normal"] forState:UIControlStateNormal];
+        [_prevBtn setImage:[UIImage imageNamed:@"player_btn_pre_highlight"] forState:UIControlStateHighlighted];
+        [_prevBtn addTarget:self action:@selector(prevBtnClick) forControlEvents:UIControlEventTouchUpInside];
+        _prevBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _prevBtn;
+}
+-(UIButton *)nextBtn{
+    if (_nextBtn == nil) {
+        _nextBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_nextBtn setImage:[UIImage imageNamed:@"player_btn_next_normal"] forState:UIControlStateNormal];
+        [_nextBtn setImage:[UIImage imageNamed:@"player_btn_next_highlight"] forState:UIControlStateHighlighted];
+        [_nextBtn addTarget:self action:@selector(nextBtnClick) forControlEvents:UIControlEventTouchUpInside];
+        _nextBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _nextBtn;
+}
+-(UIButton *)powerBtn{
+    if (_powerBtn == nil) {
+        _powerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_powerBtn setImage:[UIImage imageNamed:@"btn_power"] forState:UIControlStateNormal];
+        [_powerBtn addTarget:self action:@selector(powerOff) forControlEvents:UIControlEventTouchUpInside];
+        _powerBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _powerBtn;
+}
+-(UIButton *)micBtn{
+    if (_micBtn == nil) {
+        _micBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_micBtn setBackgroundColor:[UIColor clearColor]];
+        [_micBtn addTarget:self action:@selector(micBtnClick) forControlEvents:UIControlEventTouchUpInside];
+        _micBtn.translatesAutoresizingMaskIntoConstraints = NO;
+        self.recording = NO;
+    }
+    return _micBtn;
+}
+-(UIImageView *)micImage{
+    if (_micImage == nil) {
+        _micImage = [[UIImageView alloc] init];
+        _micImage.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _micImage;
+}
+-(UIButton *)playModeBtn{
+    if (_playModeBtn == nil) {
+        _playModeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_playModeBtn addTarget:self action:@selector(playModeClick) forControlEvents:UIControlEventTouchUpInside];
+        _playModeBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _playModeBtn;
+}
+-(UIImageView *)backGroundImageView{
+    if (_backGroundImageView == nil) {
+        _backGroundImageView = [[UIImageView alloc] init];
+        _backGroundImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        _backGroundImageView.backgroundColor = [UIColor clearColor];
+    }
+    return _backGroundImageView;
+}
 /** 存储modeName的数组 */
 -(NSArray *)modeImageArray
 {
@@ -257,11 +457,12 @@
     
     NSString *currentImage;
     if (self.isPlaying) {
-        currentImage = @"btn_pause";
+        currentImage = @"player_btn_pause";
     }else{
-        currentImage = @"btn_play";
+        currentImage = @"player_btn_play";
     }
-    [self.playBtn setImage:[UIImage imageNamed:currentImage] forState:UIControlStateNormal];
+    [self.playBtn setImage:[UIImage imageNamed:[currentImage stringByAppendingString:@"_normal"]] forState:UIControlStateNormal];
+    [self.playBtn setImage:[UIImage imageNamed:[currentImage stringByAppendingString:@"_highlight"]] forState:UIControlStateHighlighted];
 }
 /** 更新播放/停止状态并使能/禁止播放按钮 */
 -(void)setStopped:(BOOL)stopped
@@ -294,7 +495,7 @@
 -(void)setBackgroundImage:(UIImage *)backgroundImage
 {
     _backgroundImage = backgroundImage;
-    [self.backGroundImg setImage:self.backgroundImage];
+    [self.backGroundImageView setImage:self.backgroundImage];
 }
 /** 设定录音状态并更新图片 */
 -(void)setRecording:(BOOL)recording

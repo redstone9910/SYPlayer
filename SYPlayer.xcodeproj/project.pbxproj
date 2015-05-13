@@ -10,7 +10,7 @@
 		521F15351AD4042C0049E225 /* MIBServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 521F15341AD4042C0049E225 /* MIBServer.m */; };
 		521F73261AF4F16100700BBC /* sound in Resources */ = {isa = PBXBuildFile; fileRef = 521F73251AF4F16100700BBC /* sound */; };
 		521F73281AF7091600700BBC /* mic in Resources */ = {isa = PBXBuildFile; fileRef = 521F73271AF7091600700BBC /* mic */; };
-		521F73311AF7130E00700BBC /* SYRecordViewE.m in Sources */ = {isa = PBXBuildFile; fileRef = 521F73301AF7130E00700BBC /* SYRecordViewE.m */; };
+		521F73311AF7130E00700BBC /* SYRecordView.m in Sources */ = {isa = PBXBuildFile; fileRef = 521F73301AF7130E00700BBC /* SYRecordView.m */; };
 		522424021AE5B74800795868 /* libGDTMobSDK_v3.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 522423FF1AE5B74800795868 /* libGDTMobSDK_v3.3.a */; };
 		522424041AE5B91200795868 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424031AE5B91200795868 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		522424061AE5B92E00795868 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424051AE5B92E00795868 /* CoreLocation.framework */; };
@@ -24,6 +24,7 @@
 		522694CA1AD79065003C2EFF /* song_list_第三册.plist in Resources */ = {isa = PBXBuildFile; fileRef = 522694C61AD79065003C2EFF /* song_list_第三册.plist */; };
 		522694CB1AD79065003C2EFF /* song_list_第四册.plist in Resources */ = {isa = PBXBuildFile; fileRef = 522694C71AD79065003C2EFF /* song_list_第四册.plist */; };
 		522694CC1AD79065003C2EFF /* song_list_第一册.plist in Resources */ = {isa = PBXBuildFile; fileRef = 522694C81AD79065003C2EFF /* song_list_第一册.plist */; };
+		522902491AFF503E00A6DDD0 /* SYCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 522902481AFF503E00A6DDD0 /* SYCollectionViewLayout.m */; };
 		522ACD581ADA1D3100F12819 /* plan.txt in Resources */ = {isa = PBXBuildFile; fileRef = 522ACD571ADA1D3100F12819 /* plan.txt */; };
 		522ACD5B1ADAA45700F12819 /* Gloable.c in Sources */ = {isa = PBXBuildFile; fileRef = 522ACD591ADAA45700F12819 /* Gloable.c */; };
 		522ACD5E1ADAA5AF00F12819 /* MKDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 522ACD5D1ADAA5AF00F12819 /* MKDownloader.m */; };
@@ -34,8 +35,7 @@
 		524037CF1AE539B800E12A96 /* libMobClickLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 524037CD1AE539B800E12A96 /* libMobClickLibrary.a */; };
 		524037D11AE539DE00E12A96 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 524037D01AE539DE00E12A96 /* libz.dylib */; };
 		524B019F1ABD072E00E183CB /* SYPlayingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 524B019E1ABD072E00E183CB /* SYPlayingViewController.m */; };
-		524B01A91ABD14E900E183CB /* SYPlayListButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 524B01A81ABD14E900E183CB /* SYPlayListButton.xib */; };
-		524B01AC1ABD194800E183CB /* SYPlayListButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 524B01AB1ABD194800E183CB /* SYPlayListButton.m */; };
+		524B01AC1ABD194800E183CB /* SYTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 524B01AB1ABD194800E183CB /* SYTitleButton.m */; };
 		524B01B31ABD299700E183CB /* NSString+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 524B01B21ABD299700E183CB /* NSString+Tools.m */; };
 		524B01B61ABD442600E183CB /* SYPlayerConsole.m in Sources */ = {isa = PBXBuildFile; fileRef = 524B01B51ABD442600E183CB /* SYPlayerConsole.m */; };
 		524B01B81ABD444F00E183CB /* SYPlayerConsole.xib in Resources */ = {isa = PBXBuildFile; fileRef = 524B01B71ABD444F00E183CB /* SYPlayerConsole.xib */; };
@@ -77,8 +77,8 @@
 		521F15341AD4042C0049E225 /* MIBServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIBServer.m; sourceTree = "<group>"; };
 		521F73251AF4F16100700BBC /* sound */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sound; sourceTree = "<group>"; };
 		521F73271AF7091600700BBC /* mic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mic; path = icon/mic; sourceTree = "<group>"; };
-		521F732F1AF7130E00700BBC /* SYRecordViewE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYRecordViewE.h; sourceTree = "<group>"; };
-		521F73301AF7130E00700BBC /* SYRecordViewE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYRecordViewE.m; sourceTree = "<group>"; };
+		521F732F1AF7130E00700BBC /* SYRecordView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYRecordView.h; sourceTree = "<group>"; };
+		521F73301AF7130E00700BBC /* SYRecordView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYRecordView.m; sourceTree = "<group>"; };
 		522423FE1AE5B74800795868 /* GDTNativeAd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDTNativeAd.h; sourceTree = "<group>"; };
 		522423FF1AE5B74800795868 /* libGDTMobSDK_v3.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGDTMobSDK_v3.3.a; sourceTree = "<group>"; };
 		522424001AE5B74800795868 /* GDTMobBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDTMobBannerView.h; sourceTree = "<group>"; };
@@ -95,6 +95,8 @@
 		522694C61AD79065003C2EFF /* song_list_第三册.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "song_list_第三册.plist"; sourceTree = "<group>"; };
 		522694C71AD79065003C2EFF /* song_list_第四册.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "song_list_第四册.plist"; sourceTree = "<group>"; };
 		522694C81AD79065003C2EFF /* song_list_第一册.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "song_list_第一册.plist"; sourceTree = "<group>"; };
+		522902471AFF503E00A6DDD0 /* SYCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYCollectionViewLayout.h; sourceTree = "<group>"; };
+		522902481AFF503E00A6DDD0 /* SYCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYCollectionViewLayout.m; sourceTree = "<group>"; };
 		522ACD571ADA1D3100F12819 /* plan.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = plan.txt; sourceTree = "<group>"; };
 		522ACD591ADAA45700F12819 /* Gloable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Gloable.c; sourceTree = "<group>"; };
 		522ACD5A1ADAA45700F12819 /* Gloable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gloable.h; sourceTree = "<group>"; };
@@ -110,9 +112,8 @@
 		524037D01AE539DE00E12A96 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		524B019D1ABD072E00E183CB /* SYPlayingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SYPlayingViewController.h; path = ../SYPlayingViewController.h; sourceTree = "<group>"; };
 		524B019E1ABD072E00E183CB /* SYPlayingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SYPlayingViewController.m; path = ../SYPlayingViewController.m; sourceTree = "<group>"; };
-		524B01A81ABD14E900E183CB /* SYPlayListButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SYPlayListButton.xib; sourceTree = "<group>"; };
-		524B01AA1ABD194800E183CB /* SYPlayListButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYPlayListButton.h; sourceTree = "<group>"; };
-		524B01AB1ABD194800E183CB /* SYPlayListButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYPlayListButton.m; sourceTree = "<group>"; };
+		524B01AA1ABD194800E183CB /* SYTitleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYTitleButton.h; sourceTree = "<group>"; };
+		524B01AB1ABD194800E183CB /* SYTitleButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYTitleButton.m; sourceTree = "<group>"; };
 		524B01B11ABD299700E183CB /* NSString+Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Tools.h"; sourceTree = "<group>"; };
 		524B01B21ABD299700E183CB /* NSString+Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Tools.m"; sourceTree = "<group>"; };
 		524B01B41ABD442600E183CB /* SYPlayerConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYPlayerConsole.h; sourceTree = "<group>"; };
@@ -247,9 +248,8 @@
 		524B01A01ABD0FCB00E183CB /* View */ = {
 			isa = PBXGroup;
 			children = (
-				524B01AA1ABD194800E183CB /* SYPlayListButton.h */,
-				524B01AB1ABD194800E183CB /* SYPlayListButton.m */,
-				524B01A81ABD14E900E183CB /* SYPlayListButton.xib */,
+				524B01AA1ABD194800E183CB /* SYTitleButton.h */,
+				524B01AB1ABD194800E183CB /* SYTitleButton.m */,
 				524B01B41ABD442600E183CB /* SYPlayerConsole.h */,
 				524B01B51ABD442600E183CB /* SYPlayerConsole.m */,
 				524B01B71ABD444F00E183CB /* SYPlayerConsole.xib */,
@@ -259,8 +259,8 @@
 				52B3B36C1ABF881B00C574A8 /* SYSongCell.h */,
 				52B3B36D1ABF881B00C574A8 /* SYSongCell.m */,
 				52B3B36E1ABF881B00C574A8 /* SYSongCell.xib */,
-				521F732F1AF7130E00700BBC /* SYRecordViewE.h */,
-				521F73301AF7130E00700BBC /* SYRecordViewE.m */,
+				521F732F1AF7130E00700BBC /* SYRecordView.h */,
+				521F73301AF7130E00700BBC /* SYRecordView.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -330,6 +330,8 @@
 			children = (
 				52B0B2181AFAF44900B39977 /* SYCircleCell.h */,
 				52B0B2191AFAF44900B39977 /* SYCircleCell.m */,
+				522902471AFF503E00A6DDD0 /* SYCollectionViewLayout.h */,
+				522902481AFF503E00A6DDD0 /* SYCollectionViewLayout.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -521,7 +523,6 @@
 				52B6CC581A9BF53D00E043C0 /* Images.xcassets in Resources */,
 				522BB7191ACD321A00E834A4 /* nec_mp3_file_list.txt in Resources */,
 				522694C31AD54373003C2EFF /* root.plist in Resources */,
-				524B01A91ABD14E900E183CB /* SYPlayListButton.xib in Resources */,
 				522694C91AD79065003C2EFF /* song_list_第二册.plist in Resources */,
 				521F73261AF4F16100700BBC /* sound in Resources */,
 				522694CA1AD79065003C2EFF /* song_list_第三册.plist in Resources */,
@@ -583,16 +584,17 @@
 				524B01B31ABD299700E183CB /* NSString+Tools.m in Sources */,
 				52B0B21A1AFAF44900B39977 /* SYCircleCell.m in Sources */,
 				52B6CC501A9BF53D00E043C0 /* AppDelegate.m in Sources */,
-				524B01AC1ABD194800E183CB /* SYPlayListButton.m in Sources */,
+				524B01AC1ABD194800E183CB /* SYTitleButton.m in Sources */,
 				52B6CC4D1A9BF53D00E043C0 /* main.m in Sources */,
 				52B3B3731ABFB79D00C574A8 /* SYSongModel.m in Sources */,
 				52B14C741AE11CA9006F5F35 /* SYAudioController.m in Sources */,
+				522902491AFF503E00A6DDD0 /* SYCollectionViewLayout.m in Sources */,
 				524B019F1ABD072E00E183CB /* SYPlayingViewController.m in Sources */,
 				522ACD5E1ADAA5AF00F12819 /* MKDownloader.m in Sources */,
 				521F15351AD4042C0049E225 /* MIBServer.m in Sources */,
 				522ACD5B1ADAA45700F12819 /* Gloable.c in Sources */,
 				52B3B36F1ABF881B00C574A8 /* SYSongCell.m in Sources */,
-				521F73311AF7130E00700BBC /* SYRecordViewE.m in Sources */,
+				521F73311AF7130E00700BBC /* SYRecordView.m in Sources */,
 				522BB71C1ACD393300E834A4 /* SYPlayListModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

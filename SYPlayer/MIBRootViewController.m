@@ -12,6 +12,7 @@
 #import "MobClick.h"
 #import "SYCircleCell.h"
 #import "SYCircleModel.h"
+#import "SYCollectionViewLayout.h"
 
 #define SYCircleCellID @"SYCircleCell"
 
@@ -50,15 +51,16 @@
     
     /** volumePage初始化 */
     // 1.流水布局
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    // 2.每个cell的尺寸
-    layout.itemSize = CGSizeMake(60, 90);
-    // 3.设置cell之间的水平间距
-    layout.minimumInteritemSpacing = 50;
-    // 4.设置cell之间的垂直间距
-    layout.minimumLineSpacing = 20;
-    // 5.设置四周的内边距
-    layout.sectionInset = UIEdgeInsetsMake(20, 50, 0, 50);
+//    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+//    // 2.每个cell的尺寸
+//    layout.itemSize = CGSizeMake(60, 90);
+//    // 3.设置cell之间的水平间距
+//    layout.minimumInteritemSpacing = 50;
+//    // 4.设置cell之间的垂直间距
+//    layout.minimumLineSpacing = 20;
+//    // 5.设置四周的内边距
+//    layout.sectionInset = UIEdgeInsetsMake(20, 50, 0, 50);
+    SYCollectionViewLayout *layout = [[SYCollectionViewLayout alloc] init];
     self.volumePage = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
     [self.volumePage registerClass:[SYCircleCell class] forCellWithReuseIdentifier:SYCircleCellID];
     self.volumePage.delegate = self;
@@ -69,7 +71,7 @@
     [self.view addSubview:self.volumePage];
     self.volumePage.translatesAutoresizingMaskIntoConstraints = NO;
     
-    NSLayoutConstraint *cnsT2 = [NSLayoutConstraint constraintWithItem:self.volumePage attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.backBg attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    NSLayoutConstraint *cnsT2 = [NSLayoutConstraint constraintWithItem:self.volumePage attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.backBg attribute:NSLayoutAttributeBottom multiplier:1 constant:10];
     NSLayoutConstraint *cnsB2 = [NSLayoutConstraint constraintWithItem:self.volumePage attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:-50];
     NSLayoutConstraint *cnsL2 = [NSLayoutConstraint constraintWithItem:self.volumePage attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
     NSLayoutConstraint *cnsR2 = [NSLayoutConstraint constraintWithItem:self.volumePage attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
@@ -114,6 +116,7 @@
     // 2.传递模型
     cell.model = self.circles[indexPath.item];
     cell.delegate = self;
+    cell.defaultColor = [UIColor blackColor];
     
     return cell;
 }

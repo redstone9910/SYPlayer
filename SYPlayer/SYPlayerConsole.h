@@ -39,6 +39,8 @@ typedef enum playModeState
 @interface SYPlayerConsole : UIView
 /** 创建对象 */
 +(instancetype)playerConsole;
+/** 创建新的console对象 */
++(instancetype)playerConsoleWithNib;
 
 /** 总时长，单位秒 */
 @property (nonatomic,assign) float timeTotalInSecond;

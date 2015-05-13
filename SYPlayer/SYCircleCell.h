@@ -18,4 +18,6 @@
 @interface SYCircleCell : UICollectionViewCell
 @property (nonatomic,strong) SYCircleModel * model;
 @property (nonatomic,weak) id<SYCircleCellDelegate> delegate;
+@property (nonatomic,strong,readwrite) UIColor * defaultColor;
+@property (nonatomic,assign) float titleFontSize;
 @end

@@ -11,7 +11,7 @@
 typedef void(^playCompletion)();
 typedef void(^recordCompletion)(NSString *recordPath);
 
-@interface SYRecordViewE : UIView
+@interface SYRecordView : UIView
 /** 创建新对象 */
 +(instancetype)recordView;
 /** 加载句子 */

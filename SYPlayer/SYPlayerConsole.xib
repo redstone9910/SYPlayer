@@ -11,9 +11,10 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="back_color" id="7it-Vk-TR3" userLabel="BackGround">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="7it-Vk-TR3" userLabel="BackGround">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </imageView>
                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="OZi-E0-tgq" userLabel="PlayMode">
                     <rect key="frame" x="12" y="52" width="32" height="32"/>
@@ -118,10 +119,11 @@
                 </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
-                <outlet property="backGroundImg" destination="7it-Vk-TR3" id="b29-gi-6uT"/>
+                <outlet property="backGroundImageView" destination="7it-Vk-TR3" id="nBC-a8-keX"/>
                 <outlet property="bufferProgressIndicator" destination="qBf-wR-gAs" id="C7T-Wg-P3s"/>
                 <outlet property="micBtn" destination="Uu6-0x-IeD" id="qnF-C3-O1A"/>
                 <outlet property="micImage" destination="E52-tY-i9N" id="Q9v-w7-H8W"/>
@@ -139,7 +141,6 @@
         </view>
     </objects>
     <resources>
-        <image name="back_color" width="16" height="16"/>
         <image name="btn_next" width="12" height="13"/>
         <image name="btn_play" width="46" height="46"/>
         <image name="btn_power" width="15" height="16"/>

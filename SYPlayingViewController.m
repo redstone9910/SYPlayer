@@ -8,7 +8,7 @@
 #warning 收藏页功能
 #warning 重设字体，字号，颜色，重设皮肤颜色功能
 #import "SYPlayingViewController.h"
-#import "SYPlayListButton.h"
+#import "SYTitleButton.h"
 #import "SYPlayerConsole.h"
 #import "SYLrcView.h"
 #import "SYSongCell.h"
@@ -22,7 +22,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "MobClick.h"
 #import "GDTMobBannerView.h"
-#import "SYRecordViewE.h"
+#import "SYRecordView.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -44,7 +44,7 @@ typedef void (^SYDownloadCompletion)();
 //#define GDT_BANNERID @"9079537207574943610"
 #endif
 
-@interface SYPlayingViewController ()<SYPlayListButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate,SYSongCellDelegate,GDTMobBannerViewDelegate>
+@interface SYPlayingViewController ()<SYTitleButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate,SYSongCellDelegate,GDTMobBannerViewDelegate>
 /** 全部下载按钮 */
 @property (strong, nonatomic) IBOutlet UIButton *downloadBtn;
 /** 收藏按钮 */
@@ -59,7 +59,7 @@ typedef void (^SYDownloadCompletion)();
 /** 标题按钮View */
 //@property (weak, nonatomic) IBOutlet UIView *titleBtnView;
 /** 标题按钮 */
-@property (nonatomic,strong) SYPlayListButton *titleListBtn;
+@property (nonatomic,strong) SYTitleButton *titleListBtn;
 /** 控制台View */
 //@property (weak, nonatomic) IBOutlet UIView *playerConsoleView;
 /** 控制台 */
@@ -76,7 +76,7 @@ typedef void (^SYDownloadCompletion)();
 /** 广点通 */
 @property (nonatomic,strong) GDTMobBannerView * bannerView;
 /** 录音面板 */
-@property (nonatomic,strong) SYRecordViewE * recordView;
+@property (nonatomic,strong) SYRecordView * recordView;
 @property (nonatomic,strong) NSLayoutConstraint * recordWConstraint;
 
 /** 用于保存playListTable原始Frame */
@@ -131,7 +131,8 @@ typedef void (^SYDownloadCompletion)();
     self.plistPath = path;
     
     /** 标题栏 */
-    self.titleListBtn = [SYPlayListButton playListButtonWithString:self.playListModel.lessonTitle];
+    self.titleListBtn = [SYTitleButton playListButton];
+    self.titleListBtn.titleText = self.playListModel.lessonTitle;
     [self.view addSubview:self.titleListBtn];
     self.titleListBtn.translatesAutoresizingMaskIntoConstraints = NO;
     
@@ -202,6 +203,20 @@ typedef void (^SYDownloadCompletion)();
     [self.bannerView addConstraints:@[cnsH5]];
 //    [self reLayoutSubviewsWithAdHeight:50];//设定广告条高度为0并重新布局
     
+    /** 歌词 */
+    self.lrcView = [SYLrcView lrcView];
+    self.lrcView.lrcFile = nil;
+    self.lrcView.delegate = self;
+    
+    [self.view addSubview:self.lrcView];
+    self.lrcView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    NSLayoutConstraint *cnsT3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    NSLayoutConstraint *cnsB3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bannerView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    NSLayoutConstraint *cnsL3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    NSLayoutConstraint *cnsR3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+    [self.view addConstraints:@[cnsT3,cnsB3,cnsL3,cnsR3]];
+    
     /** 控制台 */
     self.playerConsole = [SYPlayerConsole playerConsole];
     self.playerConsole.delegate = self;
@@ -214,20 +229,6 @@ typedef void (^SYDownloadCompletion)();
     
     NSLayoutConstraint *cnsH2 = [NSLayoutConstraint constraintWithItem:self.playerConsole attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:100];
     [self.playerConsole addConstraints:@[cnsH2]];
-    
-    /** 歌词 */
-    self.lrcView = [SYLrcView lrcView];
-    self.lrcView.lrcFile = nil;
-    self.lrcView.delegate = self;
-    
-    [self.view addSubview:self.lrcView];
-    self.lrcView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    NSLayoutConstraint *cnsT3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-    NSLayoutConstraint *cnsB3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.playerConsole attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    NSLayoutConstraint *cnsL3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-    NSLayoutConstraint *cnsR3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
-    [self.view addConstraints:@[cnsT3,cnsB3,cnsL3,cnsR3]];
     
     /** 歌曲列表 */
     self.playListTable = [[UITableView alloc] init];
@@ -649,10 +650,10 @@ typedef void (^SYDownloadCompletion)();
     
     return _songModelArrary;
 }
--(SYRecordViewE *)recordView
+-(SYRecordView *)recordView
 {
     if (_recordView == nil) {
-        _recordView = [SYRecordViewE recordView];
+        _recordView = [SYRecordView recordView];
         [_recordView stop];
         
         [self.view addSubview:_recordView];
@@ -764,8 +765,6 @@ typedef void (^SYDownloadCompletion)();
     
     __weak typeof(self) weakSelf = self;
     
-//    NSLog(@"%@",NSStringFromCGRect(self.recordView.frame));
-    
     [self popOutRecorder:YES];
     [self.recordView startRecordCompletion:^(NSString *recordPath) {
         weakSelf.playerConsole.playing = YES;
@@ -806,14 +805,14 @@ typedef void (^SYDownloadCompletion)();
     
     [self.view bringSubviewToFront:self.recordView];
 }
-#pragma mark - SYPlayListButtonDelegate
+#pragma mark - SYTitleButtonDelegate
 /** 播放列表展开/关闭 */
--(void)playListButtonBtnClicked:(SYPlayListButton *)playListBtn
+-(void)playListButtonBtnClicked:(SYTitleButton *)playListBtn
 {
     __weak typeof(self) weakSelf = self;
     for (NSLayoutConstraint *cst in self.view.constraints) {
         if ((cst.firstItem == self.playListTable) && (cst.firstAttribute == NSLayoutAttributeBottom)) {
-            cst.constant = playListBtn.isOpened ? 0 : -self.lrcView.frame.size.height;
+            cst.constant = playListBtn.isOpened ? 0 : -(self.lrcView.bounds.size.height - self.playerConsole.bounds.size.height);
             [UIView animateWithDuration:0.3 animations:^{
                 [weakSelf.view layoutIfNeeded];
             }];
@@ -893,6 +892,6 @@ typedef void (^SYDownloadCompletion)();
     self.bannerView.delegate = nil;
     self.bannerView.currentViewController = nil;
     self.bannerView = nil;
-    NSLog(@"%@ dealloc!",NSStringFromClass(self.class));
+//    NSLog(@"%@ dealloc!",NSStringFromClass(self.class));
 }
 @end

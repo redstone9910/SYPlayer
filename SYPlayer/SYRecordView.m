@@ -6,7 +6,7 @@
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
 
-#import "SYRecordViewE.h"
+#import "SYRecordView.h"
 #import "Gloable.h"
 #import <AVFoundation/AVFoundation.h>
 #import "FSAudioController.h"
@@ -17,8 +17,8 @@
 #define statusPlayingRecordText @"播放录音"
 #define statusNoneText @""
 
-#define alphaUnavailable 1.0
-#define alphaAvailable 1.0
+#define alphaUnavailable 0.8
+#define alphaAvailable 0.8
 /** fontSizeScale=文字高度/中央图片高度 */
 #define fontSizeScale 0.2
 #define kDuration (4.0 / 6)
@@ -31,7 +31,7 @@ typedef enum recordStatus{
     recordStatusPlayingNone,
 }recordStatus;
 
-@interface SYRecordViewE ()
+@interface SYRecordView ()
 /** 状态数组 */
 @property (nonatomic,strong) NSArray * statusArray;
 /** 状态 */
@@ -59,7 +59,7 @@ typedef enum recordStatus{
 @property (nonatomic,strong) FSAudioController *audioController;
 @end
 
-@implementation SYRecordViewE
+@implementation SYRecordView
 /** 创建新对象 */
 +(instancetype)recordView
 {
@@ -442,6 +442,6 @@ typedef enum recordStatus{
 }
 -(void)dealloc
 {
-    NSLog(@"%@ dealloc!",NSStringFromClass(self.class));
+//    NSLog(@"%@ dealloc!",NSStringFromClass(self.class));
 }
 @end
