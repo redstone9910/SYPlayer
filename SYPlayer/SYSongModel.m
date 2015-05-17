@@ -9,6 +9,7 @@
 #import "SYSongModel.h"
 #import "MIBServer.h"
 #import "MKDownloader.h"
+#import "AFNetworking.h"
 #import "Gloable.h"
 
 @interface SYSongModel ()

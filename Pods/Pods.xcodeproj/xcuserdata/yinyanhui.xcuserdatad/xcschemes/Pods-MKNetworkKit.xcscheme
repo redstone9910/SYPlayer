@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0510"
+   LastUpgradeVersion = "0640"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "289B125A9A51BE25156284E9"
+               BlueprintIdentifier = "376F8C68AC85B54B1E29E78B"
                BuildableName = "libPods-MKNetworkKit.a"
                BlueprintName = "Pods-MKNetworkKit"
                ReferencedContainer = "container:Pods.xcodeproj">

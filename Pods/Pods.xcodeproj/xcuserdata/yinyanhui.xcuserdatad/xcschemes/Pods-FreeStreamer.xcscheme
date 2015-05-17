@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0510"
+   LastUpgradeVersion = "0640"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CDE3E3F24ADAC0D9E073BC9F"
+               BlueprintIdentifier = "5559D5A9437A75FDF6E591E0"
                BuildableName = "libPods-FreeStreamer.a"
                BlueprintName = "Pods-FreeStreamer"
                ReferencedContainer = "container:Pods.xcodeproj">

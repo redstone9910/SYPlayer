@@ -12,7 +12,7 @@
 #import "Gloable.h"
 
 #define centerMargin 5
-#define bottomLabelFontSize 0.2
+#define bottomLabelFontSize 0.18
 #define buttonLabelFontSize 0.5
 
 @interface SYCircleCell()
@@ -36,15 +36,10 @@
     self.defaultColor = lightGreenColor;
     self.titleFontSize = bottomLabelFontSize;
     
-    /** centerButton约束关系 */
-    self.centerButton = [[DKCircleButton alloc] init];
-    self.centerButton.borderColor = self.defaultColor;
-    [self.centerButton setTitleColor:self.defaultColor forState:UIControlStateNormal];
-    [self.centerButton addTarget:self action:@selector(buttonDidClick) forControlEvents:UIControlEventTouchUpInside];
-    
     /** centerLabel约束关系 */
     self.centerLabel = [[UILabel alloc] init];
     self.centerLabel.textColor = self.defaultColor;
+//    self.centerLabel.adjustsFontSizeToFitWidth = YES;
     [self.contentView addSubview:self.centerLabel];
     self.centerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     NSLayoutConstraint *cnsB2 = [NSLayoutConstraint constraintWithItem:self.centerLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
@@ -53,6 +48,12 @@
     [self.contentView addConstraints:@[cnsB2,cnsL2,cnsR2]];
     self.centerLabel.numberOfLines = 1;
     self.centerLabel.textAlignment = NSTextAlignmentCenter;
+    
+    /** centerButton约束关系 */
+    self.centerButton = [[DKCircleButton alloc] init];
+    self.centerButton.borderColor = self.defaultColor;
+    [self.centerButton setTitleColor:self.defaultColor forState:UIControlStateNormal];
+    [self.centerButton addTarget:self action:@selector(buttonDidClick) forControlEvents:UIControlEventTouchUpInside];
     
     [self.contentView addSubview:self.centerButton];
     self.centerButton.translatesAutoresizingMaskIntoConstraints = NO;
@@ -82,6 +83,7 @@
 //        }
 //    }];
 //    [fontArray writeToFile:[catchePath stringByAppendingPathComponent:@"font.plist"] atomically:YES];
+    
     self.centerLabel.font = [UIFont fontWithName:@"Iowan Old Style" size:self.contentView.bounds.size.height * self.titleFontSize];
     self.centerButton.titleLabel.font = [UIFont fontWithName:@"Iowan Old Style" size:self.contentView.bounds.size.height * buttonLabelFontSize];
 }
@@ -92,12 +94,6 @@
     [self.centerButton setTitle:self.model.buttonTitle forState:UIControlStateNormal];
     self.centerLabel.text = self.model.bottomTitle;
 }
-//-(UIColor *)defaultColor{
-//    if (_defaultColor == nil) {
-//        _defaultColor = lightGreenColor;
-//    }
-//    return _defaultColor;
-//}
 -(void)setDefaultColor:(UIColor *)defaultColor{
     _defaultColor = defaultColor;
     

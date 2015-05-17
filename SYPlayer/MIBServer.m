@@ -9,7 +9,7 @@
 #import "MIBServer.h"
 #import "NSString+Tools.h"
 
-#define SERVER_ADDR @"http://www.ht501.cn/"//@"http://www.xyuan360.com/"
+#define SERVER_ADDR @"http://www.xyuan360.com/"//@"http://www.ht501.cn/"//@"http://www.xyuan360.com/"
 
 @implementation MIBServer
 

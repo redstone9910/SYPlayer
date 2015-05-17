@@ -17,16 +17,9 @@
 #define SYCircleCellID @"SYCircleCell"
 
 @interface MIBRootViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,SYCircleCellDelegate>
-- (IBAction)lesson1BtnClick;
-- (IBAction)lesson2BtnClick;
-- (IBAction)lesson3BtnClick;
-- (IBAction)lesson4BtnClick;
 /** 按钮容器 */
-@property (nonatomic,strong) UICollectionView * buttonContainer;
-
-@property (nonatomic,strong) NSArray *lessonArray;
-@property (nonatomic,assign) int lessonNum;
 @property (nonatomic,strong) UICollectionView *volumePage;
+@property (nonatomic,strong) NSArray *lessonArray;
 
 @end
 
@@ -152,42 +145,6 @@
         _circles = [circleArray copy];
     }
     return _circles;
-}
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-    
-    id vc = segue.destinationViewController;
-    
-    if([vc isKindOfClass:[SYPlayingViewController class]])
-    {
-        SYPlayingViewController *sVc = (SYPlayingViewController *)vc;
-        SYPlayListModel *model = self.lessonArray[self.lessonNum - 1];
-        sVc.playListModel = model;
-    }
-}
-
-- (IBAction)lesson1BtnClick {
-    self.lessonNum = 1;
-    [self performSegueWithIdentifier:@"main2playing" sender:self];
-}
-
-- (IBAction)lesson2BtnClick {
-    self.lessonNum = 2;
-    [self performSegueWithIdentifier:@"main2playing" sender:self];
-}
-
-- (IBAction)lesson3BtnClick {
-    self.lessonNum = 3;
-    [self performSegueWithIdentifier:@"main2playing" sender:self];
-}
-
-- (IBAction)lesson4BtnClick {
-    self.lessonNum = 4;
-    [self performSegueWithIdentifier:@"main2playing" sender:self];
 }
 
 @end

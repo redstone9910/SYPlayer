@@ -9,6 +9,7 @@
 #import "SYLrcView.h"
 #import "NSString+Tools.h"
 #import "Gloable.h"
+#import "UIImage+MIB.h"
 
 #define lrcOffset 0.3
 #define edgeInsets 10
@@ -17,13 +18,13 @@
 
 @interface SYLrcView ()<UIScrollViewDelegate>
 /** 背景图片Scroll */
-@property (weak, nonatomic) IBOutlet UIScrollView *backgroundScroll;
+@property (strong, nonatomic) IBOutlet UIScrollView *backgroundScroll;
 /** 用于显示歌词的Scroll */
-@property (weak, nonatomic) IBOutlet UIScrollView *lrcScroll;
+@property (strong, nonatomic) IBOutlet UIScrollView *lrcScroll;
 /** 歌词标题 */
-@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (strong, nonatomic) IBOutlet UILabel *titleLabel;
 /** 背景图片 */
-@property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
+@property (strong, nonatomic) IBOutlet UIImageView *backgroundImageView;
 /** 文件转为lrc字符串 */
 -(NSString *) lrcWithFile:(NSString *)file;
 /** 分离时间和歌词 */
@@ -49,10 +50,11 @@
 @end
 
 @implementation SYLrcView
-
+//@synthesize backgroundImage = _backgroundImage;
 /** 创建新LRC View */
 +(instancetype) lrcView
 {
+    return [[self alloc] init];
     NSBundle *bundle = [NSBundle mainBundle];
     NSArray *objs = [bundle loadNibNamed:NSStringFromClass(self) owner:nil options:nil];
     SYLrcView *lrcview = [objs lastObject];
@@ -60,24 +62,56 @@
     return lrcview;
 }
 
--(void)awakeFromNib
-{
+-(instancetype)initWithFrame:(CGRect)frame{
+    if (self = [super initWithFrame:frame]) {
+        [self customInit];
+    }
+    return self;
+}
+-(id)initWithCoder:(NSCoder *)aDecoder{
+    if (self = [super initWithCoder:aDecoder]) {
+        [self customInit];
+    }
+    return self;
+}
+-(void)customInit{
     self.lrcFont = [UIFont systemFontOfSize:14.0f];
     self.lrcCurrentFont = [UIFont fontWithName:@"Helvetica-BoldObLique" size:15];
     self.lrcPastFont = [UIFont fontWithName:@"Helvetica-ObLique" size:13];
     
-    self.lrcScroll.delegate = self;
-    self.lrcScroll.contentInset = UIEdgeInsetsMake(edgeInsets, edgeInsets, edgeInsets, edgeInsets);
-    
     self.lrcLabelArray = [NSMutableArray array];
     self.dragging = NO;
-    self.backgroundScroll.contentSize = self.backgroundImageView.image.size;
+    self.lrcFile = nil;
+    
+    self.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    [self addSubview:self.backgroundScroll];
+    {
+        NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.backgroundScroll attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.backgroundScroll attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        NSLayoutConstraint *cnsL = [NSLayoutConstraint constraintWithItem:self.backgroundScroll attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.titleLabel attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+        NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.backgroundScroll attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+        [self addConstraints:@[cnsT,cnsB,cnsL,cnsR]];
+    }
+    [self.backgroundScroll addSubview:self.backgroundImageView];
+    {
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.backgroundImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.backgroundScroll attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
+        [self.backgroundScroll addConstraints:@[cnsW]];
+    }
+    [self addSubview:self.lrcScroll];
+    {
+        NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        NSLayoutConstraint *cnsL = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.titleLabel attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+        NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+        [self addConstraints:@[cnsT,cnsB,cnsL,cnsR]];
+    }
 }
-
 /** 重新布局时调用 */
 -(void)layoutSubviews
 {
     [super layoutSubviews];
+    self.backgroundScroll.contentSize = self.backgroundImageView.frame.size;
 }
 /** 分离时间和歌词 */
 -(NSArray*) parseLrcLine:(NSString *)lrcLineText
@@ -254,10 +288,30 @@
     
     return currentLine;
 }
+-(UIImageView *)backgroundImageView{
+    if (_backgroundImageView == nil) {
+        _backgroundImageView = [[UIImageView alloc] init];
+        self.backgroundImage = [UIImage imageNamed:@"girl"];
+        _backgroundImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        {
+            NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.backgroundImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.backgroundImageView attribute:NSLayoutAttributeHeight multiplier:640.0 / 1138 constant:0];
+            [self.backgroundImageView addConstraints:@[cnsR]];
+        }
+    }
+    return _backgroundImageView;
+}
+//-(UIImage *)backgroundImage{
+//    if (_backgroundImage == nil) {
+//        _backgroundImage = [UIImage imageNamed:@"girl"];
+//    }
+//    return _backgroundImage;
+//}
 /** 设定并更新背景图片 */
 -(void)setBackgroundImage:(UIImage *)backgroundImage
 {
     _backgroundImage = backgroundImage;
+//    _backgroundImage = [backgroundImage re_applyBlurWithRadius:10.0f tintColor:[UIColor whiteColor] saturationDeltaFactor:1.8 maskImage:nil];
+    _backgroundImage = [_backgroundImage applyBlurWithRadius:1 tintColor:[UIColor clearColor] saturationDeltaFactor:1.8 maskImage:nil];
     
     self.backgroundImageView.image = self.backgroundImage;
 }
@@ -311,6 +365,7 @@
             label.textAlignment = NSTextAlignmentLeft;
             label.text = labelText;
             label.font = self.lrcFont;
+            label.textColor = lightGreenColor;
             
             [self.lrcScroll addSubview:label];
             [self.lrcLabelArray addObject:label];
@@ -321,6 +376,24 @@
         float labelY = lastLabel.frame.origin.y + lastLabel.frame.size.height;
         self.lrcScroll.contentSize = CGSizeMake(0, labelY + self.lrcScroll.bounds.size.height * (1 - lrcOffset));
     }
+}
+-(UIScrollView *)backgroundScroll{
+    if (_backgroundScroll == nil) {
+        _backgroundScroll = [[UIScrollView alloc] init];
+        _backgroundScroll.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _backgroundScroll;
+}
+-(UIScrollView *)lrcScroll{
+    if (_lrcScroll == nil) {
+        _lrcScroll = [[UIScrollView alloc] init];
+        _lrcScroll.delegate = self;
+        _lrcScroll.contentInset = UIEdgeInsetsMake(edgeInsets, edgeInsets, edgeInsets, edgeInsets);
+        _lrcScroll.translatesAutoresizingMaskIntoConstraints = NO;
+        _lrcScroll.backgroundColor = [UIColor blackColor];
+        _lrcScroll.alpha = 0.8;
+    }
+    return _lrcScroll;
 }
 #pragma mark - UIScrollViewDelegate
 
