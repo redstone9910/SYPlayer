@@ -117,7 +117,7 @@ typedef void (^SYDownloadCompletion)();
 -(void)loadView{
     [super loadView];
     
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor clearColor];
     
     __weak typeof(self) weakSelf = self;
     
@@ -169,7 +169,8 @@ typedef void (^SYDownloadCompletion)();
     
     /** 全部下载按钮 */
     self.downloadBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.downloadBtn setImage:[UIImage imageNamed:@"btn_downLoad"] forState:UIControlStateNormal];
+    [self.downloadBtn setImage:[UIImage imageNamed:@"actionIconLike_b"] forState:UIControlStateNormal];
+    [self.downloadBtn setImage:[UIImage imageNamed:@"actionIconLikeSelected_b"] forState:UIControlStateSelected];
     [self.downloadBtn addTarget:self action:@selector(downloadBtnClick) forControlEvents:UIControlEventTouchUpInside];
     [self.titleListBtn addSubview:self.downloadBtn];
     {
@@ -211,7 +212,7 @@ typedef void (^SYDownloadCompletion)();
     [self.view addSubview:self.lrcView];
     self.lrcView.translatesAutoresizingMaskIntoConstraints = NO;
     
-    NSLayoutConstraint *cnsT3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    NSLayoutConstraint *cnsT3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0];
     NSLayoutConstraint *cnsB3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bannerView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
     NSLayoutConstraint *cnsL3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
     NSLayoutConstraint *cnsR3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
@@ -245,6 +246,7 @@ typedef void (^SYDownloadCompletion)();
     [self.view addConstraints:@[cnsT4,cnsB4,cnsL4,cnsR4]];
     
     /** 按钮移到最前 */
+    [self.view bringSubviewToFront:self.titleListBtn];
     [self.view bringSubviewToFront:self.downloadBtn];
     [self.view bringSubviewToFront:self.backBtn];
     
@@ -812,7 +814,7 @@ typedef void (^SYDownloadCompletion)();
     __weak typeof(self) weakSelf = self;
     for (NSLayoutConstraint *cst in self.view.constraints) {
         if ((cst.firstItem == self.playListTable) && (cst.firstAttribute == NSLayoutAttributeBottom)) {
-            cst.constant = playListBtn.isOpened ? 0 : -(self.lrcView.bounds.size.height - self.playerConsole.bounds.size.height);
+            cst.constant = playListBtn.isOpened ? 0 : -(self.playerConsole.frame.origin.y - self.playListTable.frame.origin.y);
             [UIView animateWithDuration:0.3 animations:^{
                 [weakSelf.view layoutIfNeeded];
             }];

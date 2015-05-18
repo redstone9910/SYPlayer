@@ -8,6 +8,7 @@
 
 #import "SYSongCell.h"
 #import "SYSongModel.h"
+#import "Gloable.h"
 
 @interface SYSongCell()
 /** 播放按钮 */
@@ -38,7 +39,21 @@
     
     return cell;
 }
-
+-(id)initWithCoder:(NSCoder *)aDecoder{
+    if (self = [super initWithCoder:aDecoder]) {
+        [self customInit];
+    }
+    return self;
+}
+-(void)customInit{
+    self.backgroundColor = [UIColor blackColor];
+    self.songNameLabel.textColor = lightGreenColor;
+    self.downloadBtn.titleLabel.textColor = lightGreenColor;
+    
+    [self.playBtn setImage:[UIImage imageNamed:@"miniplayer_btn_playlist_normal"] forState:UIControlStateNormal];
+    [self.playBtn setImage:[UIImage imageNamed:@"miniplayer_btn_playlist_highlight"] forState:UIControlStateHighlighted];
+    [self.playBtn setImage:[UIImage imageNamed:@"miniplayer_btn_playlist_disable"] forState:UIControlStateDisabled];
+}
 /** Cell被选中 */
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
@@ -70,7 +85,7 @@
 {
     _playing = playing;
     
-    UIImage *img = [UIImage imageNamed:(self.isPlaying ? @"btn_play" : @"btn_pause")];
+    UIImage *img = [UIImage imageNamed:(self.isPlaying ? @"colorStyle_nowPlaying" : @"colorStyle_nowPlaying")];
     [self.playBtn setImage:img forState:UIControlStateNormal];
 }
 /** 设定歌曲名 */

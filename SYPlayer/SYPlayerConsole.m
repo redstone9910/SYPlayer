@@ -11,7 +11,7 @@
 #import "Gloable.h"
 
 #define timeLablePos 0.15
-#define pnButtonPos 0.4
+#define pnButtonPos 0.6
 #define micButtonPos 0.175
 
 @interface SYPlayerConsole ()
@@ -129,10 +129,10 @@
     [self addSubview:self.playBtn];
     {
         NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
-        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:0.85 constant:0];
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.1 constant:0];
         [self addConstraints:@[cnsX,cnsY]];
-        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:46];
-        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:46];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
+        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
         [self.playBtn addConstraints:@[cnsW,cnsH]];
     }
     [self addSubview:self.prevBtn];
@@ -140,8 +140,8 @@
         NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.prevBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:pnButtonPos constant:0];
         NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.prevBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.playBtn attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
         [self addConstraints:@[cnsX,cnsY]];
-        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.prevBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
-        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.prevBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.prevBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
+        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.prevBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
         [self.prevBtn addConstraints:@[cnsW,cnsH]];
     }
     [self addSubview:self.nextBtn];
@@ -149,8 +149,8 @@
         NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.nextBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:2 - pnButtonPos constant:0];
         NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.nextBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.playBtn attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
         [self addConstraints:@[cnsX,cnsY]];
-        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.nextBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
-        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.nextBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.nextBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
+        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.nextBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
         [self.nextBtn addConstraints:@[cnsW,cnsH]];
     }
     [self addSubview:self.micBtn];
@@ -158,8 +158,8 @@
         NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.micBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:micButtonPos constant:0];
         NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.micBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.playBtn attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
         [self addConstraints:@[cnsX,cnsY]];
-        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.micBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
-        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.micBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.micBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
+        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.micBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
         [self.micBtn addConstraints:@[cnsW,cnsH]];
     }
     [self addSubview:self.micImage];
@@ -176,8 +176,8 @@
         NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.powerBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:2 - micButtonPos constant:0];
         NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.powerBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.playBtn attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
         [self addConstraints:@[cnsX,cnsY]];
-        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.powerBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
-        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.powerBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.powerBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
+        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.powerBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
         [self.powerBtn addConstraints:@[cnsW,cnsH]];
     }
     
@@ -187,8 +187,8 @@
         NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.micBtn attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
         NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.micBtn attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
         [self addConstraints:@[cnsX,cnsY]];
-        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
-        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:32];
+        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
+        NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
         [self.playModeBtn addConstraints:@[cnsW,cnsH]];
     }
     [self addSubview:self.backGroundImageView];
@@ -289,7 +289,7 @@
     if (_timeTotal == nil) {
         _timeTotal = [[UILabel alloc] init];
         _timeTotal.text = @"00:00";
-        _timeTotal.textColor = lightGreenColor;
+        _timeTotal.textColor = [UIColor whiteColor];
         _timeTotal.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _timeTotal;
@@ -298,7 +298,7 @@
     if (_timeProgress == nil) {
         _timeProgress = [[UILabel alloc] init];
         _timeProgress.text = @"00:00";
-        _timeProgress.textColor = lightGreenColor;
+        _timeProgress.textColor = [UIColor whiteColor];
         _timeProgress.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _timeProgress;
@@ -350,7 +350,9 @@
 -(UIButton *)powerBtn{
     if (_powerBtn == nil) {
         _powerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_powerBtn setImage:[UIImage imageNamed:@"btn_power"] forState:UIControlStateNormal];
+        [_powerBtn setImage:[UIImage imageNamed:@"miniplayer_btn_playlist_normal"] forState:UIControlStateNormal];
+        [_powerBtn setImage:[UIImage imageNamed:@"miniplayer_btn_playlist_highlight"] forState:UIControlStateHighlighted];
+        [_powerBtn setImage:[UIImage imageNamed:@"miniplayer_btn_playlist_disable"] forState:UIControlStateDisabled];
         [_powerBtn addTarget:self action:@selector(powerOff) forControlEvents:UIControlEventTouchUpInside];
         _powerBtn.translatesAutoresizingMaskIntoConstraints = NO;
     }

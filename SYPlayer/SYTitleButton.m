@@ -8,6 +8,7 @@
 
 #import "SYTitleButton.h"
 #import "NSString+Tools.h"
+#import "Gloable.h"
 
 @interface SYTitleButton()
 @property (strong, nonatomic) UIButton *titleBtn;
@@ -41,6 +42,7 @@
     
     self.titleLabel.backgroundColor = [UIColor clearColor];
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.titleLabel.textColor = [UIColor whiteColor];
     [self addSubview:self.titleLabel];
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     {
@@ -112,7 +114,7 @@
 
 -(UIImageView *)titleArrow{
     if (_titleArrow == nil) {
-        _titleArrow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"miniplayer_btn_playlist_close"]];
+        _titleArrow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"navigationbar_arrow_down"]];
         _titleArrow.contentMode = UIViewContentModeCenter;
     }
     return _titleArrow;
