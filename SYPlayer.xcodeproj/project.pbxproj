@@ -25,6 +25,8 @@
 		522694CA1AD79065003C2EFF /* song_list_第三册.plist in Resources */ = {isa = PBXBuildFile; fileRef = 522694C61AD79065003C2EFF /* song_list_第三册.plist */; };
 		522694CB1AD79065003C2EFF /* song_list_第四册.plist in Resources */ = {isa = PBXBuildFile; fileRef = 522694C71AD79065003C2EFF /* song_list_第四册.plist */; };
 		522694CC1AD79065003C2EFF /* song_list_第一册.plist in Resources */ = {isa = PBXBuildFile; fileRef = 522694C81AD79065003C2EFF /* song_list_第一册.plist */; };
+		52276C741B0B385500049815 /* SYLrcMaskLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52276C731B0B385500049815 /* SYLrcMaskLayer.m */; };
+		52276C781B0B555B00049815 /* SYLrcMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 52276C771B0B555B00049815 /* SYLrcMaskView.m */; };
 		522902491AFF503E00A6DDD0 /* SYCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 522902481AFF503E00A6DDD0 /* SYCollectionViewLayout.m */; };
 		522ACD581ADA1D3100F12819 /* plan.txt in Resources */ = {isa = PBXBuildFile; fileRef = 522ACD571ADA1D3100F12819 /* plan.txt */; };
 		522ACD5B1ADAA45700F12819 /* Gloable.c in Sources */ = {isa = PBXBuildFile; fileRef = 522ACD591ADAA45700F12819 /* Gloable.c */; };
@@ -98,6 +100,10 @@
 		522694C61AD79065003C2EFF /* song_list_第三册.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "song_list_第三册.plist"; sourceTree = "<group>"; };
 		522694C71AD79065003C2EFF /* song_list_第四册.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "song_list_第四册.plist"; sourceTree = "<group>"; };
 		522694C81AD79065003C2EFF /* song_list_第一册.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "song_list_第一册.plist"; sourceTree = "<group>"; };
+		52276C721B0B385500049815 /* SYLrcMaskLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYLrcMaskLayer.h; sourceTree = "<group>"; };
+		52276C731B0B385500049815 /* SYLrcMaskLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcMaskLayer.m; sourceTree = "<group>"; };
+		52276C761B0B555B00049815 /* SYLrcMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYLrcMaskView.h; sourceTree = "<group>"; };
+		52276C771B0B555B00049815 /* SYLrcMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcMaskView.m; sourceTree = "<group>"; };
 		522902471AFF503E00A6DDD0 /* SYCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYCollectionViewLayout.h; sourceTree = "<group>"; };
 		522902481AFF503E00A6DDD0 /* SYCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYCollectionViewLayout.m; sourceTree = "<group>"; };
 		522ACD571ADA1D3100F12819 /* plan.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = plan.txt; sourceTree = "<group>"; };
@@ -242,6 +248,21 @@
 			name = GDT;
 			sourceTree = "<group>";
 		};
+		52276C751B0B550700049815 /* LRC */ = {
+			isa = PBXGroup;
+			children = (
+				52B3B3651ABE3CBD00C574A8 /* SYLrcView.h */,
+				52B3B3661ABE3CBD00C574A8 /* SYLrcView.m */,
+				522306AB1B0960D4000BA9D3 /* SYGradientView.h */,
+				522306AC1B0960D4000BA9D3 /* SYGradientView.m */,
+				52276C721B0B385500049815 /* SYLrcMaskLayer.h */,
+				52276C731B0B385500049815 /* SYLrcMaskLayer.m */,
+				52276C761B0B555B00049815 /* SYLrcMaskView.h */,
+				52276C771B0B555B00049815 /* SYLrcMaskView.m */,
+			);
+			name = LRC;
+			sourceTree = "<group>";
+		};
 		524037CC1AE5399D00E12A96 /* UMENG */ = {
 			isa = PBXGroup;
 			children = (
@@ -254,20 +275,17 @@
 		524B01A01ABD0FCB00E183CB /* View */ = {
 			isa = PBXGroup;
 			children = (
+				52276C751B0B550700049815 /* LRC */,
 				524B01AA1ABD194800E183CB /* SYTitleButton.h */,
 				524B01AB1ABD194800E183CB /* SYTitleButton.m */,
 				524B01B41ABD442600E183CB /* SYPlayerConsole.h */,
 				524B01B51ABD442600E183CB /* SYPlayerConsole.m */,
 				524B01B71ABD444F00E183CB /* SYPlayerConsole.xib */,
-				52B3B3651ABE3CBD00C574A8 /* SYLrcView.h */,
-				52B3B3661ABE3CBD00C574A8 /* SYLrcView.m */,
 				52B3B36C1ABF881B00C574A8 /* SYSongCell.h */,
 				52B3B36D1ABF881B00C574A8 /* SYSongCell.m */,
 				52B3B36E1ABF881B00C574A8 /* SYSongCell.xib */,
 				521F732F1AF7130E00700BBC /* SYRecordView.h */,
 				521F73301AF7130E00700BBC /* SYRecordView.m */,
-				522306AB1B0960D4000BA9D3 /* SYGradientView.h */,
-				522306AC1B0960D4000BA9D3 /* SYGradientView.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -596,6 +614,7 @@
 				52B3B3731ABFB79D00C574A8 /* SYSongModel.m in Sources */,
 				52B14C741AE11CA9006F5F35 /* SYAudioController.m in Sources */,
 				522902491AFF503E00A6DDD0 /* SYCollectionViewLayout.m in Sources */,
+				52276C781B0B555B00049815 /* SYLrcMaskView.m in Sources */,
 				524B019F1ABD072E00E183CB /* SYPlayingViewController.m in Sources */,
 				522ACD5E1ADAA5AF00F12819 /* MKDownloader.m in Sources */,
 				522306AD1B0960D4000BA9D3 /* SYGradientView.m in Sources */,
@@ -604,6 +623,7 @@
 				52B3B36F1ABF881B00C574A8 /* SYSongCell.m in Sources */,
 				521F73311AF7130E00700BBC /* SYRecordView.m in Sources */,
 				522BB71C1ACD393300E834A4 /* SYPlayListModel.m in Sources */,
+				52276C741B0B385500049815 /* SYLrcMaskLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

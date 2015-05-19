@@ -9,7 +9,7 @@
 #import "SYLrcView.h"
 #import "NSString+Tools.h"
 #import "Gloable.h"
-#import "UIImage+MIB.h"
+#import "UIImage+REFrostedViewController.h"
 #import "SYGradientView.h"
 
 #define lrcOffset 0.3
@@ -21,8 +21,8 @@
 /** 背景图片Scroll */
 @property (strong, nonatomic) IBOutlet UIScrollView *backgroundScroll;
 /** 用于显示歌词的Scroll */
-@property (strong, nonatomic) IBOutlet UIScrollView *lrcScroll;
-@property (nonatomic,strong) SYGradientView * gradientView;
+@property (strong, nonatomic) IBOutlet SYGradientView *lrcScroll;
+@property (nonatomic,strong) UIView * gradientView;
 /** 歌词标题 */
 @property (strong, nonatomic) IBOutlet UILabel *titleLabel;
 /** 背景图片 */
@@ -77,9 +77,9 @@
     return self;
 }
 -(void)customInit{
-    self.lrcNextFont = [UIFont systemFontOfSize:15.0f];
+    self.lrcNextFont = [UIFont fontWithName:@"Helvetica-ObLique" size:15];
     self.lrcCurrentFont = [UIFont fontWithName:@"Helvetica-Bold" size:15];
-    self.lrcPastFont = [UIFont systemFontOfSize:15.0f];//[UIFont fontWithName:@"Helvetica-ObLique" size:14];
+    self.lrcPastFont = [UIFont fontWithName:@"Helvetica-ObLique" size:15];//[UIFont fontWithName:@"Helvetica-ObLique" size:14];
     
     self.lrcLabelArray = [NSMutableArray array];
     self.dragging = NO;
@@ -100,15 +100,8 @@
         NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.backgroundImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.backgroundScroll attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
         [self.backgroundScroll addConstraints:@[cnsW]];
     }
-    [self addSubview:self.lrcScroll];
-    {
-        NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-        NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        NSLayoutConstraint *cnsL = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-        NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1 constant:0];
-        [self addConstraints:@[cnsT,cnsB,cnsL,cnsR]];
-    }
     [self addSubview:self.gradientView];
+    [self addSubview:self.lrcScroll];
     {
         NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.gradientView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.lrcScroll attribute:NSLayoutAttributeTop multiplier:1 constant:0];
         NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.gradientView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.lrcScroll attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
@@ -116,7 +109,14 @@
         NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.gradientView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.lrcScroll attribute:NSLayoutAttributeRight multiplier:1 constant:0];
         [self addConstraints:@[cnsT,cnsB,cnsL,cnsR]];
     }
-    self.gradientView.backgroundColor = [UIColor clearColor];
+    
+    {
+        NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        NSLayoutConstraint *cnsL = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+        NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+        [self addConstraints:@[cnsT,cnsB,cnsL,cnsR]];
+    }
 }
 
 /** 分离时间和歌词 */
@@ -185,6 +185,45 @@
     
     return lrcString;
 }
+
+-(void)finishProcess:(NSTimer *)timer
+{
+    NSDictionary *userInfo = timer.userInfo;
+    
+    NSNumber *nInterval = userInfo[@"interval"];
+    float interval = [nInterval floatValue];
+    NSString *sentence = userInfo[@"sentence"];
+    NSNumber *nCurrentTime = userInfo[@"currentTime"];
+    float currentTime = [nCurrentTime floatValue];
+    
+    [self.delegate lrcView:self sentenceInterval:interval sentence:sentence time:currentTime];
+}
+
+/** 跳转到下一句(单句模式需要手动调用) */
+-(NSString *)nextSentence:(float)time
+{
+    UILabel *firstLabel = self.lrcLabelArray[0];
+    UILabel *currentLabel;
+    NSString *currentLine;
+    for (long index = 0; index < self.lrcTimeArray.count; index ++) {
+        NSString *str1 = self.lrcTimeArray[index];
+        float currentTime = [self timeWithString:str1];
+        if (currentTime == time) {
+            currentLabel =  self.lrcLabelArray[index];
+            currentLine = self.lrcLineArray[index];
+        }
+    }
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        currentLabel.font = self.lrcCurrentFont;
+        currentLabel.textColor = lightGreenColor;
+        self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, currentLabel.frame.origin.y - firstLabel.frame.origin.y);
+    } completion:^(BOOL finished) {
+        [self.lrcScroll addMask];
+    }];
+    
+    return currentLine;
+}
 #pragma mark - Property
 /** 设定播放模式 */
 -(void)setPlayMode:(lrcPlayMode)playMode
@@ -233,8 +272,6 @@
                             NSString *sentence = self.lrcLineArray[index];
                             if (index == self.lrcTimeArray.count - 1){
                                 nextTime = currentTime;
-//                                NSDictionary *userInfo = @{@"interval":[NSNumber numberWithFloat:0],@"sentence":@"",@"currentTime":[NSNumber numberWithFloat:0]};
-//                                [NSTimer scheduledTimerWithTimeInterval:defaultInterval target:self selector:@selector(finishProcess:) userInfo: userInfo repeats:NO];
                             }
                             float interval = nextTime - currentTime;
                             [self.delegate lrcView:self sentenceInterval:interval sentence:sentence time:currentTime];
@@ -254,42 +291,6 @@
     }
 }
 
--(void)finishProcess:(NSTimer *)timer
-{
-    NSDictionary *userInfo = timer.userInfo;
-    
-    NSNumber *nInterval = userInfo[@"interval"];
-    float interval = [nInterval floatValue];
-    NSString *sentence = userInfo[@"sentence"];
-    NSNumber *nCurrentTime = userInfo[@"currentTime"];
-    float currentTime = [nCurrentTime floatValue];
-    
-    [self.delegate lrcView:self sentenceInterval:interval sentence:sentence time:currentTime];
-}
-
-/** 跳转到下一句(单句模式需要手动调用) */
--(NSString *)nextSentence:(float)time
-{
-    UILabel *firstLabel = self.lrcLabelArray[0];
-    UILabel *currentLabel;
-    NSString *currentLine;
-    for (long index = 0; index < self.lrcTimeArray.count; index ++) {
-        NSString *str1 = self.lrcTimeArray[index];
-        float currentTime = [self timeWithString:str1];
-        if (currentTime == time) {
-            currentLabel =  self.lrcLabelArray[index];
-            currentLine = self.lrcLineArray[index];
-        }
-    }
-    
-    [UIView animateWithDuration:0.3 animations:^{
-        currentLabel.font = self.lrcCurrentFont;
-        currentLabel.textColor = lightGreenColor;
-        self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, currentLabel.frame.origin.y - firstLabel.frame.origin.y);
-    }];
-    
-    return currentLine;
-}
 -(UIImageView *)backgroundImageView{
     if (_backgroundImageView == nil) {
         _backgroundImageView = [[UIImageView alloc] init];
@@ -311,7 +312,7 @@
 /** 设定并更新背景图片 */
 -(void)setBackgroundImage:(UIImage *)backgroundImage
 {
-    _backgroundImage = [backgroundImage applyBlurWithRadius:6 tintColor:[UIColor clearColor] saturationDeltaFactor:1.8 maskImage:nil];
+    _backgroundImage = [backgroundImage re_applyBlurWithRadius:6 tintColor:[UIColor clearColor] saturationDeltaFactor:1.8 maskImage:nil];
     
     self.backgroundImageView.image = self.backgroundImage;
 }
@@ -376,6 +377,7 @@
         float labelY = lastLabel.frame.origin.y + lastLabel.frame.size.height;
         self.lrcScroll.contentSize = CGSizeMake(0, labelY + self.lrcScroll.bounds.size.height * (1 - lrcOffset));
     }
+    [self.lrcScroll addMask];
     self.backgroundScroll.contentSize = self.backgroundImageView.bounds.size;
 }
 -(UIScrollView *)backgroundScroll{
@@ -387,20 +389,22 @@
 }
 -(UIScrollView *)lrcScroll{
     if (_lrcScroll == nil) {
-        _lrcScroll = [[UIScrollView alloc] init];
+        _lrcScroll = [[SYGradientView alloc] init];
         _lrcScroll.delegate = self;
         _lrcScroll.contentInset = UIEdgeInsetsMake(edgeInsets, edgeInsets, edgeInsets, edgeInsets);
         _lrcScroll.translatesAutoresizingMaskIntoConstraints = NO;
-        _lrcScroll.backgroundColor = [UIColor blackColor];
-        _lrcScroll.alpha = 0.8;
+        _lrcScroll.backgroundColor = [UIColor clearColor];
+//        _lrcScroll.alpha = 0.8;
     }
     return _lrcScroll;
 }
--(SYGradientView *)gradientView{
+-(UIView *)gradientView{
     if (_gradientView == nil) {
-        _gradientView = [[SYGradientView alloc] init];
+        _gradientView = [[UIView alloc] init];
         _gradientView.translatesAutoresizingMaskIntoConstraints = NO;
         _gradientView.userInteractionEnabled = NO;
+        _gradientView.backgroundColor = [UIColor blackColor];
+        _gradientView.alpha = 0.6;
     }
     return _gradientView;
 }

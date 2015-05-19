@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "994283D69597C9ACEC978047"
+               BlueprintIdentifier = "B2372AFDED91EC4D829DBA32"
                BuildableName = "libPods-DKCircleButton.a"
                BlueprintName = "Pods-DKCircleButton"
                ReferencedContainer = "container:Pods.xcodeproj">

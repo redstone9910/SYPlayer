@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface SYGradientView : UIScrollView
-
+- (void)addMask;
 @end

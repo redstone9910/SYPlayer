@@ -1,39 +1,38 @@
 //
-//  SYGradientView.m
+//  SYLrcMaskLayer.m
 //  SYPlayer
 //
-//  Created by YinYanhui on 15-5-18.
+//  Created by YinYanhui on 15-5-19.
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
 
-#import "SYGradientView.h"
-@interface SYGradientView()
+#import "SYLrcMaskLayer.h"
 
+@implementation SYLrcMaskLayer
 
-@end
-
-@implementation SYGradientView
--(void)drawRect:(CGRect)rect{
-    [self setupBlorBackground:rect];
-}
-
--(void)setupBlorBackground:(CGRect)rect{
-    // 渐变色 gradient
+- (void)drawInContext:(CGContextRef)context{
+//    UIBezierPath *path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
+//
+//    // MARK: circlePath
+//    [path appendPath:[UIBezierPath bezierPathWithArcCenter:CGPointMake(self.bounds.size.width / 2, 200) radius:100 startAngle:0 endAngle:2*M_PI clockwise:NO]];
+//
+//    self.path = path.CGPath;
+//    CGContextSetRGBFillColor(context, 1, 0, 0, 1);
+//    return;
+    
     CGFloat colors [] = {
+        0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.0, 1.0,
         0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 1.0
     };
     CGFloat locations[] = {
-        0.0f,0.4f,0.5f,1.0f
+        0.0f,0.3f,1.0f
     };
     CGColorSpaceRef baseSpace = CGColorSpaceCreateDeviceRGB();
     CGGradientRef gradient = CGGradientCreateWithColorComponents(baseSpace, colors, locations, sizeof(colors)/(sizeof(colors[0])*4));
     CGColorSpaceRelease(baseSpace), baseSpace = NULL;
     
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGRect aRect = rect;//CGRectInset(CGContextGetClipBoundingBox(context), 50.0f, 20.0f);
+    CGRect aRect = self.frame;//CGRectInset(CGContextGetClipBoundingBox(context), 50.0f, 20.0f);
     CGContextSaveGState(context);                // SaveGState
     CGContextClipToRect(context, aRect);
     
@@ -49,4 +48,5 @@
     CGContextRestoreGState(context);            // RestoreGState
     CGContextDrawPath(context, kCGPathStroke);
 }
+
 @end

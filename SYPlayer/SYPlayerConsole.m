@@ -289,7 +289,7 @@
     if (_timeTotal == nil) {
         _timeTotal = [[UILabel alloc] init];
         _timeTotal.text = @"00:00";
-        _timeTotal.textColor = [UIColor whiteColor];
+        _timeTotal.textColor = [UIColor lightGrayColor];
         _timeTotal.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _timeTotal;
@@ -298,7 +298,7 @@
     if (_timeProgress == nil) {
         _timeProgress = [[UILabel alloc] init];
         _timeProgress.text = @"00:00";
-        _timeProgress.textColor = [UIColor whiteColor];
+        _timeProgress.textColor = [UIColor lightGrayColor];
         _timeProgress.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _timeProgress;

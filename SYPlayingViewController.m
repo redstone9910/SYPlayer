@@ -192,7 +192,7 @@ typedef void (^SYDownloadCompletion)();
     self.bannerView.isGpsOn = NO; //【可选】开启GPS定位;默认关闭
     self.bannerView.showCloseBtn = NO; //【可选】展⽰示关闭按钮;默认显⽰示
     self.bannerView.isAnimationOn = YES; //【可选】开启banner轮播和展现时的动画效果;默认开启
-    [self.bannerView loadAdAndShow]; //加载⼲⼴广告并展⽰示
+//    [self.bannerView loadAdAndShow]; //加载⼲⼴广告并展⽰示
     
     [self.view addSubview:self.bannerView];
     self.bannerView.translatesAutoresizingMaskIntoConstraints = NO;
