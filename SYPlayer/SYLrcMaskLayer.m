@@ -28,11 +28,14 @@
     CGFloat locations[] = {
         0.0f,0.3f,1.0f
     };
+    
+    self.backgroundColor = [UIColor clearColor].CGColor;
+    
     CGColorSpaceRef baseSpace = CGColorSpaceCreateDeviceRGB();
     CGGradientRef gradient = CGGradientCreateWithColorComponents(baseSpace, colors, locations, sizeof(colors)/(sizeof(colors[0])*4));
     CGColorSpaceRelease(baseSpace), baseSpace = NULL;
     
-    CGRect aRect = self.frame;//CGRectInset(CGContextGetClipBoundingBox(context), 50.0f, 20.0f);
+    CGRect aRect = {self.bounds.origin,self.bounds.size};//CGRectInset(CGContextGetClipBoundingBox(context), 50.0f, 20.0f);
     CGContextSaveGState(context);                // SaveGState
     CGContextClipToRect(context, aRect);
     

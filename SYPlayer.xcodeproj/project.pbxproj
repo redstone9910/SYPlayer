@@ -8,9 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		521F15351AD4042C0049E225 /* MIBServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 521F15341AD4042C0049E225 /* MIBServer.m */; };
+		521F28521B0D6226005921AA /* SYLrcMaskLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 521F28511B0D6226005921AA /* SYLrcMaskLayer.m */; };
 		521F73261AF4F16100700BBC /* sound in Resources */ = {isa = PBXBuildFile; fileRef = 521F73251AF4F16100700BBC /* sound */; };
 		521F73281AF7091600700BBC /* mic in Resources */ = {isa = PBXBuildFile; fileRef = 521F73271AF7091600700BBC /* mic */; };
 		521F73311AF7130E00700BBC /* SYRecordView.m in Sources */ = {isa = PBXBuildFile; fileRef = 521F73301AF7130E00700BBC /* SYRecordView.m */; };
+		522174F91B0C83E7004ADAE3 /* SYBackGroundScroll.m in Sources */ = {isa = PBXBuildFile; fileRef = 522174F81B0C83E7004ADAE3 /* SYBackGroundScroll.m */; };
 		522306AD1B0960D4000BA9D3 /* SYGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 522306AC1B0960D4000BA9D3 /* SYGradientView.m */; };
 		522424021AE5B74800795868 /* libGDTMobSDK_v3.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 522423FF1AE5B74800795868 /* libGDTMobSDK_v3.3.a */; };
 		522424041AE5B91200795868 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424031AE5B91200795868 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -25,7 +27,6 @@
 		522694CA1AD79065003C2EFF /* song_list_第三册.plist in Resources */ = {isa = PBXBuildFile; fileRef = 522694C61AD79065003C2EFF /* song_list_第三册.plist */; };
 		522694CB1AD79065003C2EFF /* song_list_第四册.plist in Resources */ = {isa = PBXBuildFile; fileRef = 522694C71AD79065003C2EFF /* song_list_第四册.plist */; };
 		522694CC1AD79065003C2EFF /* song_list_第一册.plist in Resources */ = {isa = PBXBuildFile; fileRef = 522694C81AD79065003C2EFF /* song_list_第一册.plist */; };
-		52276C741B0B385500049815 /* SYLrcMaskLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52276C731B0B385500049815 /* SYLrcMaskLayer.m */; };
 		52276C781B0B555B00049815 /* SYLrcMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 52276C771B0B555B00049815 /* SYLrcMaskView.m */; };
 		522902491AFF503E00A6DDD0 /* SYCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 522902481AFF503E00A6DDD0 /* SYCollectionViewLayout.m */; };
 		522ACD581ADA1D3100F12819 /* plan.txt in Resources */ = {isa = PBXBuildFile; fileRef = 522ACD571ADA1D3100F12819 /* plan.txt */; };
@@ -78,10 +79,14 @@
 		3E6801AC50639668D3115AA8 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		521F15331AD4042C0049E225 /* MIBServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIBServer.h; sourceTree = "<group>"; };
 		521F15341AD4042C0049E225 /* MIBServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIBServer.m; sourceTree = "<group>"; };
+		521F28501B0D6226005921AA /* SYLrcMaskLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYLrcMaskLayer.h; sourceTree = "<group>"; };
+		521F28511B0D6226005921AA /* SYLrcMaskLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcMaskLayer.m; sourceTree = "<group>"; };
 		521F73251AF4F16100700BBC /* sound */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sound; sourceTree = "<group>"; };
 		521F73271AF7091600700BBC /* mic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mic; path = icon/mic; sourceTree = "<group>"; };
 		521F732F1AF7130E00700BBC /* SYRecordView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYRecordView.h; sourceTree = "<group>"; };
 		521F73301AF7130E00700BBC /* SYRecordView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYRecordView.m; sourceTree = "<group>"; };
+		522174F71B0C83E7004ADAE3 /* SYBackGroundScroll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYBackGroundScroll.h; sourceTree = "<group>"; };
+		522174F81B0C83E7004ADAE3 /* SYBackGroundScroll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYBackGroundScroll.m; sourceTree = "<group>"; };
 		522306AB1B0960D4000BA9D3 /* SYGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYGradientView.h; sourceTree = "<group>"; };
 		522306AC1B0960D4000BA9D3 /* SYGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYGradientView.m; sourceTree = "<group>"; };
 		522423FE1AE5B74800795868 /* GDTNativeAd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDTNativeAd.h; sourceTree = "<group>"; };
@@ -100,8 +105,6 @@
 		522694C61AD79065003C2EFF /* song_list_第三册.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "song_list_第三册.plist"; sourceTree = "<group>"; };
 		522694C71AD79065003C2EFF /* song_list_第四册.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "song_list_第四册.plist"; sourceTree = "<group>"; };
 		522694C81AD79065003C2EFF /* song_list_第一册.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "song_list_第一册.plist"; sourceTree = "<group>"; };
-		52276C721B0B385500049815 /* SYLrcMaskLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYLrcMaskLayer.h; sourceTree = "<group>"; };
-		52276C731B0B385500049815 /* SYLrcMaskLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcMaskLayer.m; sourceTree = "<group>"; };
 		52276C761B0B555B00049815 /* SYLrcMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYLrcMaskView.h; sourceTree = "<group>"; };
 		52276C771B0B555B00049815 /* SYLrcMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcMaskView.m; sourceTree = "<group>"; };
 		522902471AFF503E00A6DDD0 /* SYCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYCollectionViewLayout.h; sourceTree = "<group>"; };
@@ -255,8 +258,8 @@
 				52B3B3661ABE3CBD00C574A8 /* SYLrcView.m */,
 				522306AB1B0960D4000BA9D3 /* SYGradientView.h */,
 				522306AC1B0960D4000BA9D3 /* SYGradientView.m */,
-				52276C721B0B385500049815 /* SYLrcMaskLayer.h */,
-				52276C731B0B385500049815 /* SYLrcMaskLayer.m */,
+				521F28501B0D6226005921AA /* SYLrcMaskLayer.h */,
+				521F28511B0D6226005921AA /* SYLrcMaskLayer.m */,
 				52276C761B0B555B00049815 /* SYLrcMaskView.h */,
 				52276C771B0B555B00049815 /* SYLrcMaskView.m */,
 			);
@@ -286,6 +289,8 @@
 				52B3B36E1ABF881B00C574A8 /* SYSongCell.xib */,
 				521F732F1AF7130E00700BBC /* SYRecordView.h */,
 				521F73301AF7130E00700BBC /* SYRecordView.m */,
+				522174F71B0C83E7004ADAE3 /* SYBackGroundScroll.h */,
+				522174F81B0C83E7004ADAE3 /* SYBackGroundScroll.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -612,18 +617,19 @@
 				524B01AC1ABD194800E183CB /* SYTitleButton.m in Sources */,
 				52B6CC4D1A9BF53D00E043C0 /* main.m in Sources */,
 				52B3B3731ABFB79D00C574A8 /* SYSongModel.m in Sources */,
+				521F28521B0D6226005921AA /* SYLrcMaskLayer.m in Sources */,
 				52B14C741AE11CA9006F5F35 /* SYAudioController.m in Sources */,
 				522902491AFF503E00A6DDD0 /* SYCollectionViewLayout.m in Sources */,
 				52276C781B0B555B00049815 /* SYLrcMaskView.m in Sources */,
 				524B019F1ABD072E00E183CB /* SYPlayingViewController.m in Sources */,
 				522ACD5E1ADAA5AF00F12819 /* MKDownloader.m in Sources */,
 				522306AD1B0960D4000BA9D3 /* SYGradientView.m in Sources */,
+				522174F91B0C83E7004ADAE3 /* SYBackGroundScroll.m in Sources */,
 				521F15351AD4042C0049E225 /* MIBServer.m in Sources */,
 				522ACD5B1ADAA45700F12819 /* Gloable.c in Sources */,
 				52B3B36F1ABF881B00C574A8 /* SYSongCell.m in Sources */,
 				521F73311AF7130E00700BBC /* SYRecordView.m in Sources */,
 				522BB71C1ACD393300E834A4 /* SYPlayListModel.m in Sources */,
-				52276C741B0B385500049815 /* SYLrcMaskLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

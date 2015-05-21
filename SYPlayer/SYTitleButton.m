@@ -56,13 +56,13 @@
     [self addSubview:self.titleArrow];
     self.titleArrow.translatesAutoresizingMaskIntoConstraints = NO;
     {
-        NSLayoutConstraint *cnsT2 = [NSLayoutConstraint constraintWithItem:self.titleArrow attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-        NSLayoutConstraint *cnsB2 = [NSLayoutConstraint constraintWithItem:self.titleArrow attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        NSLayoutConstraint *cnsL2 = [NSLayoutConstraint constraintWithItem:self.titleArrow attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.titleLabel attribute:NSLayoutAttributeRight multiplier:1 constant:0];
-        [self addConstraints:@[cnsT2,cnsB2,cnsL2]];
+        NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.titleArrow attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.titleArrow attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        NSLayoutConstraint *cnsL = [NSLayoutConstraint constraintWithItem:self.titleArrow attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.titleLabel attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+        [self addConstraints:@[cnsT,cnsB,cnsL]];
         
-        NSLayoutConstraint *cnsR2 = [NSLayoutConstraint constraintWithItem:self.titleArrow attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.titleArrow attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
-        [self.titleArrow addConstraints:@[cnsR2]];
+        NSLayoutConstraint *cnsRe = [NSLayoutConstraint constraintWithItem:self.titleArrow attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.titleArrow attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
+        [self.titleArrow addConstraints:@[cnsRe]];
     }
     
     self.titleBtn.backgroundColor = [UIColor clearColor];
@@ -89,7 +89,8 @@
     _Opened = Opened;
     
     [UIView animateWithDuration:0.5 animations:^{
-        self.titleArrow.transform = CGAffineTransformMakeRotation((self.isOpened ? 179.9 : 0) * M_PI / 180);
+        self.titleArrow.layer.transform = CATransform3DMakeRotation((self.isOpened ? 179.9 : 0) * M_PI / 180, 0, 0, 1);
+//        self.titleArrow.transform = CGAffineTransformMakeRotation((self.isOpened ? 179.9 : 0) * M_PI / 180);
     }];
     
     if ([self.delegate respondsToSelector:@selector(playListButtonBtnClicked:)]) {

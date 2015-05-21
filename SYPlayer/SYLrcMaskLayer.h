@@ -9,5 +9,5 @@
 #import <QuartzCore/QuartzCore.h>
 #import <UIKit/UIKit.h>
 
-@interface SYLrcMaskLayer : CAShapeLayer
+@interface SYLrcMaskLayer : CALayer
 @end

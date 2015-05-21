@@ -9,8 +9,8 @@
 #import "SYLrcView.h"
 #import "NSString+Tools.h"
 #import "Gloable.h"
-#import "UIImage+REFrostedViewController.h"
 #import "SYGradientView.h"
+#import "SYBackGroundScroll.h"
 
 #define lrcOffset 0.3
 #define edgeInsets 10
@@ -18,15 +18,10 @@
 #define timeOffset -0.1
 
 @interface SYLrcView ()<UIScrollViewDelegate>
-/** 背景图片Scroll */
-@property (strong, nonatomic) IBOutlet UIScrollView *backgroundScroll;
 /** 用于显示歌词的Scroll */
 @property (strong, nonatomic) IBOutlet SYGradientView *lrcScroll;
-@property (nonatomic,strong) UIView * gradientView;
 /** 歌词标题 */
 @property (strong, nonatomic) IBOutlet UILabel *titleLabel;
-/** 背景图片 */
-@property (strong, nonatomic) IBOutlet UIImageView *backgroundImageView;
 /** 文件转为lrc字符串 */
 -(NSString *) lrcWithFile:(NSString *)file;
 /** 分离时间和歌词 */
@@ -48,7 +43,7 @@
 /** LRC已过字体 */
 @property (nonatomic,strong) UIFont * lrcPastFont;
 /** 正在拖动 */
-@property (nonatomic,assign,getter = isDragging) BOOL dragging;
+@property (nonatomic,assign) BOOL lrcDragging;
 @end
 
 @implementation SYLrcView
@@ -57,11 +52,6 @@
 +(instancetype) lrcView
 {
     return [[self alloc] init];
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSArray *objs = [bundle loadNibNamed:NSStringFromClass(self) owner:nil options:nil];
-    SYLrcView *lrcview = [objs lastObject];
-    
-    return lrcview;
 }
 
 -(instancetype)initWithFrame:(CGRect)frame{
@@ -77,39 +67,18 @@
     return self;
 }
 -(void)customInit{
+    self.backgroundColor = [UIColor clearColor];
     self.lrcNextFont = [UIFont fontWithName:@"Helvetica-ObLique" size:15];
     self.lrcCurrentFont = [UIFont fontWithName:@"Helvetica-Bold" size:15];
     self.lrcPastFont = [UIFont fontWithName:@"Helvetica-ObLique" size:15];//[UIFont fontWithName:@"Helvetica-ObLique" size:14];
     
     self.lrcLabelArray = [NSMutableArray array];
-    self.dragging = NO;
+    self.lrcDragging = NO;
     self.lrcFile = nil;
     
     self.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [self addSubview:self.backgroundScroll];
-    {
-        NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.backgroundScroll attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-        NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.backgroundScroll attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        NSLayoutConstraint *cnsL = [NSLayoutConstraint constraintWithItem:self.backgroundScroll attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.titleLabel attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-        NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.backgroundScroll attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1 constant:0];
-        [self addConstraints:@[cnsT,cnsB,cnsL,cnsR]];
-    }
-    [self.backgroundScroll addSubview:self.backgroundImageView];
-    {
-        NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.backgroundImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.backgroundScroll attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
-        [self.backgroundScroll addConstraints:@[cnsW]];
-    }
-    [self addSubview:self.gradientView];
     [self addSubview:self.lrcScroll];
-    {
-        NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.gradientView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.lrcScroll attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-        NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.gradientView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.lrcScroll attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        NSLayoutConstraint *cnsL = [NSLayoutConstraint constraintWithItem:self.gradientView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.lrcScroll attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-        NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.gradientView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.lrcScroll attribute:NSLayoutAttributeRight multiplier:1 constant:0];
-        [self addConstraints:@[cnsT,cnsB,cnsL,cnsR]];
-    }
-    
     {
         NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
         NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
@@ -218,8 +187,9 @@
         currentLabel.font = self.lrcCurrentFont;
         currentLabel.textColor = lightGreenColor;
         self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, currentLabel.frame.origin.y - firstLabel.frame.origin.y);
-    } completion:^(BOOL finished) {
         [self.lrcScroll addMask];
+    } completion:^(BOOL finished) {
+        
     }];
     
     return currentLine;
@@ -236,7 +206,7 @@
     _timeProgressInSecond = timeProgressInSecond;
     static float lastSelectTime = 0;
     
-    if (!self.isDragging) {
+    if (!self.lrcDragging) {
         dispatch_async(dispatch_get_main_queue(), ^{
             for (long index = 0; index < self.lrcTimeArray.count; index ++) {
                 NSString *str1 = self.lrcTimeArray[index];
@@ -289,32 +259,6 @@
             }
         });
     }
-}
-
--(UIImageView *)backgroundImageView{
-    if (_backgroundImageView == nil) {
-        _backgroundImageView = [[UIImageView alloc] init];
-        self.backgroundImage = [UIImage imageNamed:@"girl"];
-        _backgroundImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        {
-            NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.backgroundImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.backgroundImageView attribute:NSLayoutAttributeHeight multiplier:640.0 / 1138 constant:0];
-            [self.backgroundImageView addConstraints:@[cnsR]];
-        }
-    }
-    return _backgroundImageView;
-}
-//-(UIImage *)backgroundImage{
-//    if (_backgroundImage == nil) {
-//        _backgroundImage = [UIImage imageNamed:@"girl"];
-//    }
-//    return _backgroundImage;
-//}
-/** 设定并更新背景图片 */
--(void)setBackgroundImage:(UIImage *)backgroundImage
-{
-    _backgroundImage = [backgroundImage re_applyBlurWithRadius:6 tintColor:[UIColor clearColor] saturationDeltaFactor:1.8 maskImage:nil];
-    
-    self.backgroundImageView.image = self.backgroundImage;
 }
 
 /** 设定LRC源文件 */
@@ -378,14 +322,6 @@
         self.lrcScroll.contentSize = CGSizeMake(0, labelY + self.lrcScroll.bounds.size.height * (1 - lrcOffset));
     }
     [self.lrcScroll addMask];
-    self.backgroundScroll.contentSize = self.backgroundImageView.bounds.size;
-}
--(UIScrollView *)backgroundScroll{
-    if (_backgroundScroll == nil) {
-        _backgroundScroll = [[UIScrollView alloc] init];
-        _backgroundScroll.translatesAutoresizingMaskIntoConstraints = NO;
-    }
-    return _backgroundScroll;
 }
 -(UIScrollView *)lrcScroll{
     if (_lrcScroll == nil) {
@@ -398,39 +334,33 @@
     }
     return _lrcScroll;
 }
--(UIView *)gradientView{
-    if (_gradientView == nil) {
-        _gradientView = [[UIView alloc] init];
-        _gradientView.translatesAutoresizingMaskIntoConstraints = NO;
-        _gradientView.userInteractionEnabled = NO;
-        _gradientView.backgroundColor = [UIColor blackColor];
-        _gradientView.alpha = 0.6;
-    }
-    return _gradientView;
-}
+
 #pragma mark - UIScrollViewDelegate
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    self.dragging = YES;
+    self.lrcDragging = YES;
 }
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     static int last_index = 0;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        float h1 = self.backgroundScroll.contentSize.height - self.backgroundScroll.frame.size.height * (1 - lrcOffset);
-        float h2 = self.lrcScroll.contentSize.height;
-        if (h2) {
-            float scrollScale = h1 / h2;
-            float offsetY = self.lrcScroll.contentOffset.y;
+        float maxBackOffset = self.backgroundScroll.contentSize.height - self.backgroundScroll.frame.size.height;
+        float maxLrcOffset = self.lrcScroll.contentSize.height - self.lrcScroll.bounds.size.height;
+        
+//        float h1 = self.backgroundScroll.contentSize.height - self.backgroundScroll.frame.size.height * (1 - lrcOffset);
+//        float h2 = self.lrcScroll.contentSize.height;
+        if (maxLrcOffset > 0) {
+            float scrollScale = maxBackOffset / maxLrcOffset;
+            float offsetY = self.lrcScroll.contentOffset.y - self.lrcScroll.bounds.size.height * lrcOffset;
             [UIView animateWithDuration:0.3 animations:^{
                 self.backgroundScroll.contentOffset = CGPointMake(0, offsetY * scrollScale);
             }];
         }
     });
     
-    if (self.isDragging) {
+    if (self.lrcDragging) {
         int index = 0;
         float offset = self.lrcScroll.contentOffset.y + self.lrcScroll.frame.size.height * lrcOffset;
         for (int i = 0; i < self.lrcLabelArray.count; i ++) {
@@ -474,6 +404,6 @@
 }
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-    self.dragging = NO;
+    self.lrcDragging = NO;
 }
 @end

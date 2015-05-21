@@ -68,6 +68,7 @@
     [self.centerButton addConstraints:@[cnsRe1]];
 }
 -(void)layoutSubviews{
+    [super layoutSubviews];
     //    NSLog(@"%@,%@",NSStringFromCGRect(self.contentView.bounds),NSStringFromCGRect(self.centerButton.bounds));
 //    NSArray *fontArray = [UIFont familyNames];
 //    fontArray = [fontArray sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {

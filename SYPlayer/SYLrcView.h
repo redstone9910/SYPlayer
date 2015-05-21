@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 @class SYLrcView;
+@class SYBackGroundScroll;
 
 typedef enum lrcPlayMode
 {
@@ -29,13 +30,12 @@ typedef enum lrcPlayMode
 @property (nonatomic,copy) NSString * lrcFile;
 /** 当前播放进度(秒) */
 @property (nonatomic,assign) float timeProgressInSecond;
-/** 背景图片 */
-@property (nonatomic,strong) UIImage * backgroundImage;
 /** 单曲/单句模式 */
 @property (nonatomic,assign) lrcPlayMode playMode;
 /** 跳转到下一句(单句模式需要手动调用) */
 -(NSString *)nextSentence:(float)time;
-
+/** 背景图片Scroll */
+@property (strong, nonatomic) UIScrollView *backgroundScroll;
 /** 创建新LRC View */
 +(instancetype) lrcView;
 /** 代理 */

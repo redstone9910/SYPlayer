@@ -23,6 +23,7 @@
 #import "MobClick.h"
 #import "GDTMobBannerView.h"
 #import "SYRecordView.h"
+#include "SYBackGroundScroll.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -56,8 +57,8 @@ typedef void (^SYDownloadCompletion)();
 /** 后退按钮按下 */
 - (IBAction)backBtnClick;
 
-/** 标题按钮View */
-//@property (weak, nonatomic) IBOutlet UIView *titleBtnView;
+/** 背景图片Scroll */
+@property (strong, nonatomic) SYBackGroundScroll *backgroundScroll;
 /** 标题按钮 */
 @property (nonatomic,strong) SYTitleButton *titleListBtn;
 /** 控制台View */
@@ -130,6 +131,15 @@ typedef void (^SYDownloadCompletion)();
     }
     self.plistPath = path;
     
+    [self.view addSubview:self.backgroundScroll];
+    {
+        NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.backgroundScroll attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.backgroundScroll attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        NSLayoutConstraint *cnsL = [NSLayoutConstraint constraintWithItem:self.backgroundScroll attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+        NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.backgroundScroll attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+        [self.view addConstraints:@[cnsT,cnsB,cnsL,cnsR]];
+    }
+    
     /** 标题栏 */
     self.titleListBtn = [SYTitleButton playListButton];
     self.titleListBtn.titleText = self.playListModel.lessonTitle;
@@ -192,7 +202,7 @@ typedef void (^SYDownloadCompletion)();
     self.bannerView.isGpsOn = NO; //【可选】开启GPS定位;默认关闭
     self.bannerView.showCloseBtn = NO; //【可选】展⽰示关闭按钮;默认显⽰示
     self.bannerView.isAnimationOn = YES; //【可选】开启banner轮播和展现时的动画效果;默认开启
-//    [self.bannerView loadAdAndShow]; //加载⼲⼴广告并展⽰示
+    [self.bannerView loadAdAndShow]; //加载⼲⼴广告并展⽰示
     
     [self.view addSubview:self.bannerView];
     self.bannerView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -203,20 +213,6 @@ typedef void (^SYDownloadCompletion)();
     NSLayoutConstraint *cnsH5 = [NSLayoutConstraint constraintWithItem:self.bannerView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:50];
     [self.bannerView addConstraints:@[cnsH5]];
 //    [self reLayoutSubviewsWithAdHeight:50];//设定广告条高度为0并重新布局
-    
-    /** 歌词 */
-    self.lrcView = [SYLrcView lrcView];
-    self.lrcView.lrcFile = nil;
-    self.lrcView.delegate = self;
-    
-    [self.view addSubview:self.lrcView];
-    self.lrcView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    NSLayoutConstraint *cnsT3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    NSLayoutConstraint *cnsB3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bannerView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    NSLayoutConstraint *cnsL3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-    NSLayoutConstraint *cnsR3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
-    [self.view addConstraints:@[cnsT3,cnsB3,cnsL3,cnsR3]];
     
     /** 控制台 */
     self.playerConsole = [SYPlayerConsole playerConsole];
@@ -230,6 +226,21 @@ typedef void (^SYDownloadCompletion)();
     
     NSLayoutConstraint *cnsH2 = [NSLayoutConstraint constraintWithItem:self.playerConsole attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:100];
     [self.playerConsole addConstraints:@[cnsH2]];
+    
+    /** 歌词 */
+    self.lrcView = [SYLrcView lrcView];
+    self.lrcView.lrcFile = nil;
+    self.lrcView.delegate = self;
+    self.lrcView.backgroundScroll = self.backgroundScroll;
+    
+    [self.view addSubview:self.lrcView];
+    self.lrcView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    NSLayoutConstraint *cnsT3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    NSLayoutConstraint *cnsB3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.playerConsole attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    NSLayoutConstraint *cnsL3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    NSLayoutConstraint *cnsR3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+    [self.view addConstraints:@[cnsT3,cnsB3,cnsL3,cnsR3]];
     
     /** 歌曲列表 */
     self.playListTable = [[UITableView alloc] init];
@@ -384,10 +395,6 @@ typedef void (^SYDownloadCompletion)();
     //        self.progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval target:self selector:@selector(updatePlaybackProgress) userInfo:nil repeats:YES];
     //    }
 }
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-}
 
 -(void)reLayoutSubviewsWithAdHeight:(float)height
 {
@@ -397,6 +404,12 @@ typedef void (^SYDownloadCompletion)();
             break;
         }
     }
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+//    SYLog(@"viewDidAppear %@",NSStringFromCGSize(self.backgroundScroll.contentSize));
 }
 /** 更新songModelArrary内容到plist文件 */
 -(BOOL)refreshSongModelArrary
@@ -673,6 +686,13 @@ typedef void (^SYDownloadCompletion)();
     return _recordView;
 }
 
+-(UIScrollView *)backgroundScroll{
+    if (_backgroundScroll == nil) {
+        _backgroundScroll = [[SYBackGroundScroll alloc] init];
+        _backgroundScroll.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _backgroundScroll;
+}
 #pragma mark - SYPlayerConsoleDelegate
 
 /** 下一首 */
@@ -811,12 +831,11 @@ typedef void (^SYDownloadCompletion)();
 /** 播放列表展开/关闭 */
 -(void)playListButtonBtnClicked:(SYTitleButton *)playListBtn
 {
-    __weak typeof(self) weakSelf = self;
     for (NSLayoutConstraint *cst in self.view.constraints) {
         if ((cst.firstItem == self.playListTable) && (cst.firstAttribute == NSLayoutAttributeBottom)) {
             cst.constant = playListBtn.isOpened ? 0 : -(self.playerConsole.frame.origin.y - self.playListTable.frame.origin.y);
             [UIView animateWithDuration:0.3 animations:^{
-                [weakSelf.view layoutIfNeeded];
+                [self.view layoutIfNeeded];
             }];
             break;
         }
