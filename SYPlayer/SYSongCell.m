@@ -7,7 +7,7 @@
 //
 
 #import "SYSongCell.h"
-#import "SYSongModel.h"
+#import "SYSong.h"
 #import "Gloable.h"
 
 @interface SYSongCell()
@@ -46,9 +46,11 @@
     return self;
 }
 -(void)customInit{
-    self.backgroundColor = [UIColor blackColor];
-    self.songNameLabel.textColor = lightGreenColor;
-    self.downloadBtn.titleLabel.textColor = lightGreenColor;
+    self.selectedBackgroundView = [[UIView alloc] init];
+    self.backgroundColor = [UIColor clearColor];
+    
+    self.songNameLabel.textColor = [UIColor whiteColor];
+    self.downloadBtn.titleLabel.textColor = [UIColor whiteColor];
     
     [self.playBtn setImage:[UIImage imageNamed:@"miniplayer_btn_playlist_normal"] forState:UIControlStateNormal];
     [self.playBtn setImage:[UIImage imageNamed:@"miniplayer_btn_playlist_highlight"] forState:UIControlStateHighlighted];
@@ -71,29 +73,31 @@
     self.playing = !self.isPlaying;
 }
 /** 设定数据并更新Cell */
--(void)setPlayListData:(SYSongModel *)playListData
+-(void)setPlayListData:(SYSong *)playListData
 {
     _playListData = playListData;
-    SYSongModel *data = self.playListData;
+    SYSong *data = self.playListData;
     
-    self.playing = data.playing;
-    self.songName = data.songName;
+//    self.playing = data.playing;
+    self.name = data.name;
     self.downloading = data.downloading;
     self.downloadProgress = data.downloadProgress;}
 /** Play/Pause */
 -(void)setPlaying:(BOOL)playing
 {
     _playing = playing;
-    
-    UIImage *img = [UIImage imageNamed:(self.isPlaying ? @"colorStyle_nowPlaying" : @"colorStyle_nowPlaying")];
-    [self.playBtn setImage:img forState:UIControlStateNormal];
+}
+-(void)setSelected:(BOOL)selected{
+    [super setSelected:selected];
+    UIColor *textColor = selected ? lightGreenColor : [UIColor whiteColor];
+    self.songNameLabel.textColor = textColor;
 }
 /** 设定歌曲名 */
--(void)setSongName:(NSString *)songName
+-(void)setName:(NSString *)name
 {
-    _songName = songName;
+    _name = name;
     
-    self.songNameLabel.text = self.songName;
+    self.songNameLabel.text = self.name;
 }
 /** 开始下载 */
 -(void)setDownloading:(BOOL)downloading

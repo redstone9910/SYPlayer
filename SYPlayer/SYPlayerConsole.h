@@ -29,7 +29,7 @@ typedef enum playModeState
 /** 播放/暂停状态改变 */
 -(void)playerConsolePlayingStatusChanged:(SYPlayerConsole *)console;
 /** 退出键按下 */
--(void)playerConsolePowerOff:(SYPlayerConsole *)console;
+-(void)playerConsoleListClick:(SYPlayerConsole *)console;
 /** 播放模式改变 */
 -(void)playerConsolePlayModeStateChanged:(SYPlayerConsole *)console withModeName:(NSString *)name;
 /** 录音模式更新 */

@@ -12,7 +12,7 @@
 #import "SYPlayerConsole.h"
 #import "SYLrcView.h"
 #import "SYSongCell.h"
-#import "SYSongModel.h"
+#import "SYSong.h"
 #import "SYAudioController.h"
 #import "MIBServer.h"
 #import "UIImageView+WebCache.h"
@@ -24,6 +24,8 @@
 #import "GDTMobBannerView.h"
 #import "SYRecordView.h"
 #include "SYBackGroundScroll.h"
+#import "SYPlaylist.h"
+#import "SYPlaylists.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -46,14 +48,12 @@ typedef void (^SYDownloadCompletion)();
 #endif
 
 @interface SYPlayingViewController ()<SYTitleButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,FSAudioControllerDelegate,SYSongCellDelegate,GDTMobBannerViewDelegate>
-/** 全部下载按钮 */
-@property (strong, nonatomic) IBOutlet UIButton *downloadBtn;
 /** 收藏按钮 */
-//@property (strong, nonatomic) IBOutlet UIButton *favoriteBtn;
+@property (strong, nonatomic) IBOutlet UIButton *favoriteBtn;
 /** 后退按钮 */
 @property (strong, nonatomic) UIButton *backBtn;
 /** 全部下载按钮按下 */
-- (IBAction)downloadBtnClick;
+- (IBAction)favoriteBtnClick;
 /** 后退按钮按下 */
 - (IBAction)backBtnClick;
 
@@ -61,27 +61,17 @@ typedef void (^SYDownloadCompletion)();
 @property (strong, nonatomic) SYBackGroundScroll *backgroundScroll;
 /** 标题按钮 */
 @property (nonatomic,strong) SYTitleButton *titleListBtn;
-/** 控制台View */
-//@property (weak, nonatomic) IBOutlet UIView *playerConsoleView;
 /** 控制台 */
 @property (nonatomic,strong) SYPlayerConsole * playerConsole;
-/** LRC View */
-//@property (weak, nonatomic) IBOutlet UIView *lrcUIView;
 /** 歌词显示 */
 @property (nonatomic,strong) SYLrcView *lrcView;
-/** 播放下拉列表 */
-//@property (weak, nonatomic) IBOutlet UITableView *playListTable;
 @property (strong, nonatomic) UITableView *playListTable;
-/** 广告条View */
-//@property (weak, nonatomic) IBOutlet UIView *gdtAdView;
 /** 广点通 */
 @property (nonatomic,strong) GDTMobBannerView * bannerView;
 /** 录音面板 */
 @property (nonatomic,strong) SYRecordView * recordView;
 @property (nonatomic,strong) NSLayoutConstraint * recordWConstraint;
 
-/** 用于保存playListTable原始Frame */
-//@property (nonatomic,assign) CGRect playListFrame;
 /** 播放列表数据数组 */
 @property (nonatomic,strong) NSArray * songModelArrary;
 /** 更新songModelArrary内容到plist文件 */
@@ -100,18 +90,18 @@ typedef void (^SYDownloadCompletion)();
 @property (nonatomic,assign,getter=isSeeking) BOOL seeking;
 
 /** 存储播放列表数据的plist文件路径 */
-@property (nonatomic,copy) NSString * plistPath;
+//@property (nonatomic,copy) NSString * plistPath;
 /** 当前被选中的行号 */
 @property (nonatomic,strong) NSIndexPath *selectedIndexpath;
 /** 下载 */
--(void)downloadToDir:(NSString *)dirPath onModel:(SYSongModel *)model withCompletionBlock:(SYDownloadCompletion)completionBlock;
+-(void)downloadToDir:(NSString *)dirPath onModel:(SYSong *)model withCompletionBlock:(SYDownloadCompletion)completionBlock;
 /** 下载（带WIFI检测） */
--(void)downloadWithWifiCheckToDir:(NSString *)dirPath onModel:(SYSongModel *)model withCompletionBlock:(SYDownloadCompletion)completionBlock;
+-(void)downloadWithWifiCheckToDir:(NSString *)dirPath onModel:(SYSong *)model withCompletionBlock:(SYDownloadCompletion)completionBlock;
 /** 正在下载队列中 */
 @property (nonatomic,assign) BOOL downloading;
 
 /** 播放model对应的歌曲 */
--(BOOL)playModel:(SYSongModel *)model;
+-(BOOL)playModel:(SYSong *)model;
 @end
 
 @implementation SYPlayingViewController
@@ -122,15 +112,12 @@ typedef void (^SYDownloadCompletion)();
     
     __weak typeof(self) weakSelf = self;
     
-    NSMutableString *t_evnt = [NSMutableString stringWithFormat:@"Volume:%@",self.playListModel.lessonTitle];
+    SYPlaylist *playlist = self.playLists.playLists[self.playLists.playingIndex];
+    self.playList = playlist;
+    
+    NSMutableString *t_evnt = [NSMutableString stringWithFormat:@"Volume:%@",self.playList.lessonTitle];
     [MobClick event:@"Enter" label:t_evnt];
-    
-    NSString *path = [catchePath stringByAppendingPathComponent:[NSString stringWithFormat:@"song_list_%@.plist",self.playListModel.lessonTitle]];
-    if(![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        path = [SYSongModel songModelArrayWithFileNameArray:self.playListModel.songList withPlistFileName:[NSString stringWithFormat:@"song_list_%@.plist",self.playListModel.lessonTitle] atPath:self.playListModel.lessonTitle];
-    }
-    self.plistPath = path;
-    
+
     [self.view addSubview:self.backgroundScroll];
     {
         NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.backgroundScroll attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0];
@@ -142,7 +129,7 @@ typedef void (^SYDownloadCompletion)();
     
     /** 标题栏 */
     self.titleListBtn = [SYTitleButton playListButton];
-    self.titleListBtn.titleText = self.playListModel.lessonTitle;
+    self.titleListBtn.titleText = self.playList.lessonTitle;
     [self.view addSubview:self.titleListBtn];
     self.titleListBtn.translatesAutoresizingMaskIntoConstraints = NO;
     
@@ -159,7 +146,7 @@ typedef void (^SYDownloadCompletion)();
     
     dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC);
     dispatch_after(time, dispatch_get_main_queue(), ^{
-        weakSelf.titleListBtn.Opened = YES;
+        self.titleListBtn.Opened = YES;
     });
     
     /** 后退按钮 */
@@ -178,19 +165,19 @@ typedef void (^SYDownloadCompletion)();
     }
     
     /** 全部下载按钮 */
-    self.downloadBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.downloadBtn setImage:[UIImage imageNamed:@"actionIconLike_b"] forState:UIControlStateNormal];
-    [self.downloadBtn setImage:[UIImage imageNamed:@"actionIconLikeSelected_b"] forState:UIControlStateSelected];
-    [self.downloadBtn addTarget:self action:@selector(downloadBtnClick) forControlEvents:UIControlEventTouchUpInside];
-    [self.titleListBtn addSubview:self.downloadBtn];
+    self.favoriteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.favoriteBtn setImage:[UIImage imageNamed:@"actionIconLike_b"] forState:UIControlStateNormal];
+    [self.favoriteBtn setImage:[UIImage imageNamed:@"actionIconLikeSelected_b"] forState:UIControlStateSelected];
+    [self.favoriteBtn addTarget:self action:@selector(favoriteBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.titleListBtn addSubview:self.favoriteBtn];
     {
-        self.downloadBtn.translatesAutoresizingMaskIntoConstraints = NO;
-        NSLayoutConstraint *cnsB5 = [NSLayoutConstraint constraintWithItem:self.downloadBtn attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        NSLayoutConstraint *cnsR5 = [NSLayoutConstraint constraintWithItem:self.downloadBtn attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeRight multiplier:1 constant:0];
-        NSLayoutConstraint *cnsT5 = [NSLayoutConstraint constraintWithItem:self.downloadBtn attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        self.favoriteBtn.translatesAutoresizingMaskIntoConstraints = NO;
+        NSLayoutConstraint *cnsB5 = [NSLayoutConstraint constraintWithItem:self.favoriteBtn attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        NSLayoutConstraint *cnsR5 = [NSLayoutConstraint constraintWithItem:self.favoriteBtn attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+        NSLayoutConstraint *cnsT5 = [NSLayoutConstraint constraintWithItem:self.favoriteBtn attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeTop multiplier:1 constant:0];
         [self.titleListBtn addConstraints:@[cnsB5,cnsR5,cnsT5]];
-        NSLayoutConstraint *cnsW5 = [NSLayoutConstraint constraintWithItem:self.downloadBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:44];
-        [self.downloadBtn addConstraints:@[cnsW5]];
+        NSLayoutConstraint *cnsW5 = [NSLayoutConstraint constraintWithItem:self.favoriteBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:44];
+        [self.favoriteBtn addConstraints:@[cnsW5]];
     }
     
     /** 广点通 */
@@ -247,6 +234,9 @@ typedef void (^SYDownloadCompletion)();
     self.playListTable.rowHeight = 30;
     self.playListTable.delegate = self;
     self.playListTable.dataSource = self;
+    self.playListTable.backgroundColor = [UIColor blackColor];
+    self.playListTable.alpha = 0.6;
+    
     [self.view addSubview:self.playListTable];
     self.playListTable.translatesAutoresizingMaskIntoConstraints = NO;
     
@@ -258,7 +248,7 @@ typedef void (^SYDownloadCompletion)();
     
     /** 按钮移到最前 */
     [self.view bringSubviewToFront:self.titleListBtn];
-    [self.view bringSubviewToFront:self.downloadBtn];
+    [self.view bringSubviewToFront:self.favoriteBtn];
     [self.view bringSubviewToFront:self.backBtn];
     
     /** 播放器 */
@@ -386,7 +376,7 @@ typedef void (^SYDownloadCompletion)();
     };
     
     if(!self.audioController.isPlaying){
-        //        SYSongModel *model = self.songModelArrary[0];
+        //        SYSong *model = self.songModelArrary[0];
         //        [self playModel:model];
         weakSelf.playerConsole.stopped = YES;
     }
@@ -406,22 +396,10 @@ typedef void (^SYDownloadCompletion)();
     }
 }
 
--(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    
-//    SYLog(@"viewDidAppear %@",NSStringFromCGSize(self.backgroundScroll.contentSize));
-}
 /** 更新songModelArrary内容到plist文件 */
 -(BOOL)refreshSongModelArrary
 {
-    NSMutableArray *array = [[NSMutableArray alloc] init];
-    for (SYSongModel *model in self.songModelArrary) {
-        NSDictionary *dict = [model dictFromSongModel];
-        [array addObject:dict];
-    }
-    [array writeToFile:self.plistPath atomically:YES];
-    
-    return [[NSFileManager defaultManager] fileExistsAtPath:self.plistPath];
+    return [self.playLists save];
 }
 
 #warning 拖动过快时播放会死机
@@ -454,7 +432,7 @@ typedef void (^SYDownloadCompletion)();
 }
 
 /** 下载（带WIFI检测） */
--(void)downloadWithWifiCheckToDir:(NSString *)dirPath onModel:(SYSongModel *)model withCompletionBlock:(SYDownloadCompletion)completionBlock
+-(void)downloadWithWifiCheckToDir:(NSString *)dirPath onModel:(SYSong *)model withCompletionBlock:(SYDownloadCompletion)completionBlock
 {
     __weak typeof(self) weakSelf = self;
     Reachability *wifiChecker = [Reachability reachabilityForInternetConnection];
@@ -473,7 +451,7 @@ typedef void (^SYDownloadCompletion)();
     }
 }
 /** 下载 */
--(void)downloadToDir:(NSString *)dirPath onModel:(SYSongModel *)model withCompletionBlock:(SYDownloadCompletion)completionBlock
+-(void)downloadToDir:(NSString *)dirPath onModel:(SYSong *)model withCompletionBlock:(SYDownloadCompletion)completionBlock
 {
     long index = [self.songModelArrary indexOfObject:model];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
@@ -493,11 +471,11 @@ typedef void (^SYDownloadCompletion)();
     }];
 }
 
--(BOOL)playModel:(SYSongModel *)model
+-(BOOL)playModel:(SYSong *)model
 {
     if(model == nil) return NO;
     
-    if([model checkPathUpdate:self.playListModel.lessonTitle]){
+    if([model checkPathUpdate:self.playList.lessonTitle]){
         [self refreshSongModelArrary];
     }
     if (model.downloadProgress < 1)
@@ -508,35 +486,39 @@ typedef void (^SYDownloadCompletion)();
     }
     
     if (model.downloadProgress >= 1) {
-        NSString *mp3Path = model.mp3URL;
-        if([mp3Path hasPrefix:@"/"]) mp3Path = [@"file://" stringByAppendingPathComponent:[mp3Path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        NSURL *url = [NSURL URLWithString:mp3Path];
+        NSString *mp3Path = model.url;
+        NSURL *url;
+        if([mp3Path hasPrefix:@"/"]){
+            url = [NSURL fileURLWithPath:mp3Path];
+        }else{
+            url = [NSURL URLWithString:mp3Path];
+        }
         
         self.audioController.url = url;
         [self.audioController play];
         self.playerConsole.playing = YES;
         
-        NSString *lrcPath = [model.mp3URL stringByReplacingOccurrencesOfString:@"mp3" withString:@"lrc"];
+        NSString *lrcPath = [model.url stringByReplacingOccurrencesOfString:@"mp3" withString:@"lrc"];
         self.lrcView.lrcFile = lrcPath;
         
-        NSArray *ary = [model.songName componentsSeparatedByString:@"－"];
+        NSArray *ary = [model.name componentsSeparatedByString:@"－"];
         NSString *str = [ary firstObject];
-        self.titleListBtn.titleText = [NSString stringWithFormat:@"%@-%@",self.playListModel.lessonTitle,str];
+        self.titleListBtn.titleText = [NSString stringWithFormat:@"%@-%@",self.playList.lessonTitle,str];
         
         self.titleListBtn.Opened = NO;
         
 //        MPMediaItemArtwork *albumArt = [ [MPMediaItemArtwork alloc] initWithImage: [UIImage imageNamed:@"main_bg"]];
 //        NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
-//        songInfo[MPMediaItemPropertyTitle] = model.songName;
+//        songInfo[MPMediaItemPropertyTitle] = model.name;
 //        songInfo[MPMediaItemPropertyArtist] = @"新概念英语";
-//        songInfo[MPMediaItemPropertyAlbumTitle] = self.playListModel.lessonTitle;
+//        songInfo[MPMediaItemPropertyAlbumTitle] = self.playList.lessonTitle;
 //        [songInfo setObject: albumArt forKey:MPMediaItemPropertyArtwork ];
 //        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:songInfo];
         
         long index = [self.songModelArrary indexOfObject:model];
         self.selectedIndexpath = [NSIndexPath indexPathForRow:index inSection:0];
         
-        NSMutableString *t_evnt = [NSMutableString stringWithFormat:@"Song:%@",model.songName];
+        NSMutableString *t_evnt = [NSMutableString stringWithFormat:@"Song:%@",model.name];
         [MobClick event:@"Playing" label:t_evnt];
         
         return YES;
@@ -546,7 +528,7 @@ typedef void (^SYDownloadCompletion)();
     if (model.downloading == NO) {
         RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"取消"];
         RIButtonItem *okItem = [RIButtonItem itemWithLabel:@"下载" action:^{
-            NSString *dirPath = [catchePath stringByAppendingPathComponent:weakSelf.playListModel.lessonTitle];
+            NSString *dirPath = [catchePath stringByAppendingPathComponent:weakSelf.playList.lessonTitle];
             [weakSelf downloadWithWifiCheckToDir:dirPath onModel:model withCompletionBlock:^{
             }];
         }];
@@ -556,7 +538,7 @@ typedef void (^SYDownloadCompletion)();
     }
     
     if (self.selectedIndexpath != nil) {
-        SYSongModel *lastModel = self.songModelArrary[self.selectedIndexpath.row];
+        SYSong *lastModel = self.songModelArrary[self.selectedIndexpath.row];
         if(lastModel != model){
             [self playModel:lastModel];
         }
@@ -605,25 +587,25 @@ typedef void (^SYDownloadCompletion)();
 #pragma mark - IBAction
 
 /** 全部下载按钮按下 */
-- (IBAction)downloadBtnClick {
+- (IBAction)favoriteBtnClick {
     __weak typeof(self) weakSelf = self;
     RIButtonItem *cancelButtonItem = [RIButtonItem itemWithLabel:@"取消" action:^{
         weakSelf.downloading = NO;
     }];
     
-    SYSongModel *downloadModel = nil;
-    for (SYSongModel *model in self.songModelArrary) {
+    SYSong *downloadModel = nil;
+    for (SYSong *model in self.songModelArrary) {
         if (model.downloading == NO) {
             downloadModel = model;
             break;
         }
     }
     if (downloadModel != nil) {
-        NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
+        NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playList.lessonTitle];
         RIButtonItem *okButtonItem = [RIButtonItem itemWithLabel:@"下载" action:^{
             [weakSelf downloadWithWifiCheckToDir:dirPath onModel:downloadModel withCompletionBlock:^{
                 weakSelf.downloading = YES;
-                [weakSelf downloadBtnClick];
+                [weakSelf favoriteBtnClick];
             }];
         }];
         
@@ -633,7 +615,7 @@ typedef void (^SYDownloadCompletion)();
         }else{
             [self downloadWithWifiCheckToDir:dirPath onModel:downloadModel withCompletionBlock:^{
                 weakSelf.downloading = YES;
-                [weakSelf downloadBtnClick];
+                [weakSelf favoriteBtnClick];
             }];
         }
     }else{
@@ -652,15 +634,7 @@ typedef void (^SYDownloadCompletion)();
 -(NSArray *)songModelArrary
 {
     if (_songModelArrary == nil) {
-        //        NSArray *array = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"PlayList" ofType:@"plist"]];
-        NSArray *array = [NSArray arrayWithContentsOfFile:self.plistPath];
-        NSMutableArray *retArray = [NSMutableArray array];
-        for (NSDictionary *dict in array) {
-            SYSongModel *model = [SYSongModel songModelWithDict:dict];
-            [retArray addObject:model];
-        }
-        
-        _songModelArrary = retArray;
+        _songModelArrary = self.playList.songs;
     }
     
     return _songModelArrary;
@@ -693,6 +667,13 @@ typedef void (^SYDownloadCompletion)();
     }
     return _backgroundScroll;
 }
+-(void)setSelectedIndexpath:(NSIndexPath *)selectedIndexpath{
+    SYSongCell *prevCell = (SYSongCell *)[self.playListTable cellForRowAtIndexPath:_selectedIndexpath];
+    [prevCell setSelected:NO];
+    _selectedIndexpath = selectedIndexpath;
+    SYSongCell *currCell = (SYSongCell *)[self.playListTable cellForRowAtIndexPath:_selectedIndexpath];
+    [currCell setSelected:YES];
+}
 #pragma mark - SYPlayerConsoleDelegate
 
 /** 下一首 */
@@ -701,7 +682,7 @@ typedef void (^SYDownloadCompletion)();
     if (newIndexPath.row < [self.playListTable numberOfRowsInSection:newIndexPath.section] - 1) {
         newIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row + 1 inSection:newIndexPath.section];
         [self.playListTable selectRowAtIndexPath:newIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-        SYSongModel *model = self.songModelArrary[newIndexPath.row];
+        SYSong *model = self.songModelArrary[newIndexPath.row];
         [self playModel:model];
         self.titleListBtn.Opened = NO;
     }
@@ -712,7 +693,7 @@ typedef void (^SYDownloadCompletion)();
     if (newIndexPath.row > 0) {
         newIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row - 1 inSection:newIndexPath.section];
         [self.playListTable selectRowAtIndexPath:newIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-        SYSongModel *model = self.songModelArrary[newIndexPath.row];
+        SYSong *model = self.songModelArrary[newIndexPath.row];
         [self playModel:model];
         self.titleListBtn.Opened = NO;
     }
@@ -733,8 +714,8 @@ typedef void (^SYDownloadCompletion)();
     else [self.audioController pause];
 }
 /** 退出键按下 */
--(void)playerConsolePowerOff:(SYPlayerConsole *)console{
-    [self backBtnClick];
+-(void)playerConsoleListClick:(SYPlayerConsole *)console{
+    self.titleListBtn.Opened = !self.titleListBtn.Opened;
 }
 /** 播放模式改变 */
 -(void)playerConsolePlayModeStateChanged:(SYPlayerConsole *)console withModeName:(NSString *)name{
@@ -776,8 +757,8 @@ typedef void (^SYDownloadCompletion)();
 /** 一句播完 */
 -(void)lrcView:(SYLrcView *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence time:(float)time
 {
-    SYSongModel *model = self.songModelArrary[self.selectedIndexpath.row];
-    NSString *title = model.songName;
+    SYSong *model = self.songModelArrary[self.selectedIndexpath.row];
+    NSString *title = model.name;
     
     self.playerConsole.playing = NO;
     [self.progressUpdateTimer invalidate];
@@ -850,8 +831,8 @@ typedef void (^SYDownloadCompletion)();
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     SYSongCell *cell = [SYSongCell cellWithTableView:tableView];
-    SYSongModel *model = self.songModelArrary[indexPath.row];
-    if([model checkPathUpdate:self.playListModel.lessonTitle]){
+    SYSong *model = self.songModelArrary[indexPath.row];
+    if([model checkPathUpdate:self.playList.lessonTitle]){
         [self refreshSongModelArrary];
     }
 
@@ -864,7 +845,7 @@ typedef void (^SYDownloadCompletion)();
 #pragma mark - playListTableDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    SYSongModel *model = self.songModelArrary[indexPath.row];
+    SYSong *model = self.songModelArrary[indexPath.row];
     [self playModel:model];
 }
 
@@ -872,9 +853,9 @@ typedef void (^SYDownloadCompletion)();
 -(void)songCellDownloadBtnClick:(SYSongCell *)cell
 {
     NSIndexPath *indexPath = [self.playListTable indexPathForCell:cell];
-    SYSongModel *model = self.songModelArrary[indexPath.row];
+    SYSong *model = self.songModelArrary[indexPath.row];
     
-    NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playListModel.lessonTitle];
+    NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playList.lessonTitle];
     if (model.downloading == NO) {
         [self downloadWithWifiCheckToDir:dirPath onModel:model withCompletionBlock:^{
         }];

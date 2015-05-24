@@ -4,7 +4,7 @@ http://www.xyuan360.com/logon.php
 此处需要服务器端按照文件名-MD5对应列表检索出文件名，并搜索对应文件的路径。
 3.开始下载
 
-1.根据model的mp3URL判断并设定playlistItem的URL，title
+1.根据model的url判断并设定playlistItem的URL，title
 
 
 if (metaData[@"StreamUrl"] && [metaData[@"StreamUrl"] length] > 0) {
@@ -287,11 +287,11 @@ weakSelf.playerConsole.statusText = streamInfo;
 */
 
 //    NSMutableArray *playListItemArray = [[NSMutableArray alloc] init];
-//    for (SYSongModel *model in self.songModelArrary) {
+//    for (SYSong *model in self.songModelArrary) {
 //        FSPlaylistItem *item = [[FSPlaylistItem alloc] init];
 //
-//        item.title = model.songName;
-//        NSString *urlStr = [model.mp3URL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+//        item.title = model.name;
+//        NSString *urlStr = [model.url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 //        if ([urlStr hasPrefix:@"/"]) {
 //            urlStr = [@"file://" stringByAppendingPathComponent:urlStr];
 //        }

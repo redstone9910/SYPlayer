@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-@class SYSongModel;
+@class SYSong;
 @class SYSongCell;
 
 @protocol SYSongCellDelegate <NSObject>
@@ -18,11 +18,11 @@
 @interface SYSongCell : UITableViewCell
 /** 通过tableView缓存池创建 */
 +(instancetype) cellWithTableView:(UITableView *)tableView;
-@property (nonatomic,strong) SYSongModel *playListData;
+@property (nonatomic,strong) SYSong *playListData;
 /** 正在播放/暂停 */
 @property (nonatomic,assign,getter = isPlaying) BOOL playing;
 /** 歌曲名 */
-@property (nonatomic,copy) NSString * songName;
+@property (nonatomic,copy) NSString * name;
 /** 下载进度:0.0~1.0 */
 @property (nonatomic,assign) float downloadProgress;
 /** 是否下载中 */

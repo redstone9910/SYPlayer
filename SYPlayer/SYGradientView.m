@@ -24,7 +24,6 @@
 //    [maskView setNeedsDisplay];
 //    self.maskView = maskView;
     
-    CGRect frame = self.layer.bounds;
     SYLrcMaskLayer *maskLayer = [[SYLrcMaskLayer alloc] init];
     maskLayer.frame = self.layer.bounds;
     [maskLayer setNeedsDisplay];

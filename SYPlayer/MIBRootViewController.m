@@ -8,18 +8,19 @@
 
 #import "MIBRootViewController.h"
 #import "SYPlayingViewController.h"
-#import "SYPlayListModel.h"
+#import "SYPlaylist.h"
 #import "MobClick.h"
 #import "SYCircleCell.h"
 #import "SYCircleModel.h"
 #import "SYCollectionViewLayout.h"
+#include "SYPlaylists.h"
 
 #define SYCircleCellID @"SYCircleCell"
 
 @interface MIBRootViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,SYCircleCellDelegate>
 /** 按钮容器 */
 @property (nonatomic,strong) UICollectionView *volumePage;
-@property (nonatomic,strong) NSArray *lessonArray;
+@property (nonatomic,strong) SYPlaylists *volumes;
 
 @end
 
@@ -43,16 +44,6 @@
     [self.backBg addConstraints:@[cnsRe1]];
     
     /** volumePage初始化 */
-    // 1.流水布局
-//    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-//    // 2.每个cell的尺寸
-//    layout.itemSize = CGSizeMake(60, 90);
-//    // 3.设置cell之间的水平间距
-//    layout.minimumInteritemSpacing = 50;
-//    // 4.设置cell之间的垂直间距
-//    layout.minimumLineSpacing = 20;
-//    // 5.设置四周的内边距
-//    layout.sectionInset = UIEdgeInsetsMake(20, 50, 0, 50);
     SYCollectionViewLayout *layout = [[SYCollectionViewLayout alloc] init];
     self.volumePage = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
     [self.volumePage registerClass:[SYCircleCell class] forCellWithReuseIdentifier:SYCircleCellID];
@@ -64,31 +55,19 @@
     [self.view addSubview:self.volumePage];
     self.volumePage.translatesAutoresizingMaskIntoConstraints = NO;
     
-    NSLayoutConstraint *cnsT2 = [NSLayoutConstraint constraintWithItem:self.volumePage attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.backBg attribute:NSLayoutAttributeBottom multiplier:1 constant:10];
-    NSLayoutConstraint *cnsB2 = [NSLayoutConstraint constraintWithItem:self.volumePage attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:-50];
-    NSLayoutConstraint *cnsL2 = [NSLayoutConstraint constraintWithItem:self.volumePage attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-    NSLayoutConstraint *cnsR2 = [NSLayoutConstraint constraintWithItem:self.volumePage attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+    NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.volumePage attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.backBg attribute:NSLayoutAttributeBottom multiplier:1 constant:10];
+    NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.volumePage attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:-50];
+    NSLayoutConstraint *cnsL = [NSLayoutConstraint constraintWithItem:self.volumePage attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.volumePage attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
     
-    [self.view addConstraints:@[cnsT2,cnsB2,cnsL2,cnsR2]];
+    [self.view addConstraints:@[cnsT,cnsB,cnsL,cnsR]];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    NSString *fileName = [[NSBundle mainBundle] pathForResource:@"nec_mp3_file_list" ofType:@"txt"];
-    NSString *plistFilePath = [SYPlayListModel playListArrayFileWithMp3FileList:fileName withPlistFileName:@"root.plist"];
-    
-    if(plistFilePath != nil)
-    {
-        NSMutableArray *lessonArray = [NSMutableArray array];
-        NSArray *fileArray = [NSArray arrayWithContentsOfFile:plistFilePath];
-        for (NSDictionary *dict in fileArray) {
-            SYPlayListModel *model = [SYPlayListModel playListWithDict:dict];
-            [lessonArray addObject:model];
-        }
-        
-        self.lessonArray = lessonArray;
-    }
+    NSString *fileListAll = [[NSBundle mainBundle] pathForResource:@"nec_mp3_file_list" ofType:@"txt"];
+    self.volumes = [SYPlaylists playListsWithMp3FileList:fileListAll toPath:@"root.plist"];
 }
 
 #pragma - mark UICollectionViewDataSource
@@ -124,11 +103,10 @@
 -(void)circleCellDidClick:(SYCircleCell *)cell{
     NSIndexPath *indexPath = [self.volumePage indexPathForCell:cell];
     SYCircleModel *p = self.circles[indexPath.item];
-    NSLog(@"点击按钮-%@", p.bottomTitle);
     
     SYPlayingViewController *sVc = [[SYPlayingViewController alloc] init];
-    SYPlayListModel *model = self.lessonArray[[p.buttonTitle integerValue] - 1];
-    sVc.playListModel = model;
+    self.volumes.playingIndex = [p.buttonTitle integerValue] - 1;
+    sVc.playLists = self.volumes;
     
     [self presentViewController:sVc animated:YES completion:^{
     }];

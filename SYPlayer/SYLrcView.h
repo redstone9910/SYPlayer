@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 @class SYLrcView;
-@class SYBackGroundScroll;
 
 typedef enum lrcPlayMode
 {

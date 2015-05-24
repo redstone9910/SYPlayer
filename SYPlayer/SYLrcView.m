@@ -10,7 +10,6 @@
 #import "NSString+Tools.h"
 #import "Gloable.h"
 #import "SYGradientView.h"
-#import "SYBackGroundScroll.h"
 
 #define lrcOffset 0.3
 #define edgeInsets 10
@@ -351,7 +350,7 @@
         
 //        float h1 = self.backgroundScroll.contentSize.height - self.backgroundScroll.frame.size.height * (1 - lrcOffset);
 //        float h2 = self.lrcScroll.contentSize.height;
-        if (maxLrcOffset > 0) {
+        if ((maxBackOffset > 0) && (maxLrcOffset > 0)) {
             float scrollScale = maxBackOffset / maxLrcOffset;
             float offsetY = self.lrcScroll.contentOffset.y - self.lrcScroll.bounds.size.height * lrcOffset;
             [UIView animateWithDuration:0.3 animations:^{

@@ -9,18 +9,7 @@
 #import "SYAudioController.h"
 
 @implementation SYAudioController
-
-+(instancetype)allocWithZone:(struct _NSZone *)zone
-{
-    static SYAudioController *instance;
-    
-    static dispatch_once_t onceTolen;
-    dispatch_once(&onceTolen, ^{
-        instance = [super allocWithZone:zone];
-    });
-    return instance;
-}
-
+/** 单例 */
 +(instancetype)sharedAudioController
 {
     static SYAudioController *instance;
@@ -31,4 +20,5 @@
     });
     return instance;
 }
+
 @end

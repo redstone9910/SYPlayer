@@ -21,8 +21,14 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - DKCircleButton (1.1)
+  - FMDB (2.5):
+    - FMDB/standard (= 2.5)
+  - FMDB/common (2.5)
+  - FMDB/standard (2.5):
+    - FMDB/common
   - FreeStreamer (2.12.11):
     - Reachability (~> 3.0)
+  - FXBlurView (1.6.3)
   - MBProgressHUD (0.9.1)
   - MJExtension (2.1.0)
   - MKNetworkKit (0.87):
@@ -37,7 +43,9 @@ PODS:
 DEPENDENCIES:
   - AFNetworking
   - DKCircleButton
+  - FMDB (~> 2.5)
   - FreeStreamer (~> 2.12.5)
+  - FXBlurView
   - MBProgressHUD (~> 0.9.1)
   - MJExtension
   - MKNetworkKit
@@ -48,7 +56,9 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
   DKCircleButton: 62564c9debae08ad77dabb8d9658dfeb5520f2c4
+  FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   FreeStreamer: 37e0c8fe1e9fa6ced7349a9b01aaac81b013a814
+  FXBlurView: c6d23f3d35af2c6282296a2930f61c6e2c788d01
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   MJExtension: d4fd481247b262b59cf8cdf5815661cff460aaa2
   MKNetworkKit: 60ad3c83b62183e40ba75ce772c9427c25b520de

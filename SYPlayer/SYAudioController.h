@@ -7,7 +7,11 @@
 //
 
 #import "FSAudioController.h"
+@class SYPlaylist;
 
 @interface SYAudioController : FSAudioController
+/** 播放列表 */
+@property (nonatomic,strong) SYPlaylist * playList;
+/** 单例 */
 +(instancetype)sharedAudioController;
 @end

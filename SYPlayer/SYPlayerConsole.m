@@ -230,8 +230,8 @@
 }
 /** 退出键按下 */
 - (IBAction)powerOff {
-    if ([self.delegate respondsToSelector:@selector(playerConsolePowerOff:)]) {
-        [self.delegate playerConsolePowerOff:self];
+    if ([self.delegate respondsToSelector:@selector(playerConsoleListClick:)]) {
+        [self.delegate playerConsoleListClick:self];
     }
 }
 /** 播放/暂停键按下 */
