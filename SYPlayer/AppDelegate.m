@@ -8,10 +8,12 @@
 
 #import "AppDelegate.h"
 #import "MobClick.h"
-#import "MIBRootViewController.h"
+#import "SYRootViewController.h"
+#import "SYAudioController.h"
+#import "SYPlaylists.h"
 
 @interface AppDelegate ()
-
+@property (nonatomic,strong) SYAudioController * audioController;
 @end
 
 @implementation AppDelegate
@@ -22,7 +24,8 @@
     [MobClick startWithAppkey:@"553501df67e58e0eec0012ca" reportPolicy:BATCH   channelId:@""];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    MIBRootViewController *rootController = [[MIBRootViewController alloc] init];
+    SYRootViewController *rootController = [[SYRootViewController alloc] init];
+    
     self.window.rootViewController = rootController;
     [self.window makeKeyAndVisible];
     
@@ -53,4 +56,11 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+#pragma mark - property
+-(SYAudioController *)audioController{
+    if (_audioController == nil) {
+        _audioController = [SYAudioController sharedAudioController];
+    }
+    return _audioController;
+}
 @end

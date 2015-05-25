@@ -1,5 +1,5 @@
 //
-//  MIBRootViewController.h
+//  SYRootViewController.h
 //  SYPlayer
 //
 //  Created by YinYanhui on 15-3-20.
@@ -7,10 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface MIBRootViewController : UIViewController
-/** 按钮面板数据 */
-@property (nonatomic,strong) NSArray *circles;
+@class SYPlaylists;
+@interface SYRootViewController : UIViewController
 /** 顶部背景图 */
 @property (nonatomic,strong) UIImageView * backBg;
+@property (nonatomic,strong) SYPlaylists *volumes;
 @end

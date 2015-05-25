@@ -19,40 +19,22 @@
 @end
 
 @implementation SYSong
+@synthesize localPath = _localPath;
+
 /** 查找MP3文件并创建对象 */
 +(SYSong *)songWithFileName:(NSString *)name inDir:(NSString *)dir{
-    int downloading = 0;
-    float downloadProgress = 0;
-    NSString *path = [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:dir] stringByAppendingPathComponent:name];//查找resource目录
-    if([[NSFileManager defaultManager]fileExistsAtPath:path])
-    {
-        downloading = 1;
-        downloadProgress = 1;
-    }
-    else
-    {
-        path = [[catchePath stringByAppendingPathComponent:dir] stringByAppendingPathComponent:name];//查找沙盒Document目录
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path])
-        {
-            downloading = 1;
-            downloadProgress = 1;
-        }
-        else
-        {
-            path = @"";
-        }
-    }
-    
     SYSong *song = [[SYSong alloc] init];
-    song.localPath = path;
-    song.url = @"";
-    song.downloadProgress = downloadProgress;
-    song.downloading = downloading;
     
     NSArray *nameArray = [name componentsSeparatedByString:@"."];
     NSString *nameS = [nameArray firstObject];
     nameS = [nameS stringByReplacingOccurrencesOfString:@"." withString:@""];
     song.name = nameS;
+    
+    song.downloadProgress = 0;
+    song.downloading = NO;
+    [song updeteCheckInDir:dir];
+    [song url];
+    
     return song;
 }
 /** 通过字典创建 */
@@ -103,6 +85,7 @@
         return NO;
     }
 }
+
 -(void)prepareDownloadToFile:(NSString *)dirPath onDownloading:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock
 {
     if ([self.url isEqualToString:@""]) {
@@ -148,7 +131,7 @@
             [[NSFileManager defaultManager] removeItemAtPath:downloadPath error:nil];
             
             weakSelf.downloadProgress = 1;
-            weakSelf.url = mp3Path;
+            weakSelf.localPath = mp3Path;
             //下载LRC文件
             NSString *lrcURL = [urlStr stringByReplacingOccurrencesOfString:@".mp3" withString:@".lrc"];
             NSString *lrcPath = [mp3Path stringByReplacingOccurrencesOfString:@".mp3" withString:@".lrc"];
@@ -164,6 +147,15 @@
     }];
 }
 #pragma mark - property
+
+-(void)setLocalPath:(NSString *)localPath{
+    _localPath = localPath;
+    
+    self.lrcPath = [localPath stringByReplacingOccurrencesOfString:@".mp3" withString:@".lrc"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:self.lrcPath]) {
+        self.lrcPath = @"";
+    }
+}
 
 -(NSString *)localPath
 {
@@ -183,6 +175,22 @@
 {
     [self localPath];
     return _downloading;
+}
+
+#warning url获取此处有待完善
+-(NSString *)url{
+    if (_url == nil) {
+        _url = @"";
+        __weak typeof (self) weakSelf = self;
+        [MIBServer getLogonMD5WithName:@"wangwu" password:@"ww" fileName:self.name onComplete:^(NSString *fileURL) {
+            if (fileURL == nil)
+            {
+                return;
+            }
+            weakSelf.url = fileURL;
+        }];
+    }
+    return _url;
 }
 
 @end

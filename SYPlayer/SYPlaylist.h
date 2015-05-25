@@ -8,9 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+@class SYSong;
 @interface SYPlaylist : NSObject
 /** 第x册 */
-@property (nonatomic,copy) NSString * lessonTitle;
+@property (nonatomic,copy) NSString * volumeTitle;
+/** 册编号 */
+@property (nonatomic,assign) long volumeIndex;
 /** SYSong Array 播放列表 */
 @property (nonatomic,strong) NSArray * songs;
 /** 正在播放 */
@@ -25,4 +28,7 @@
 
 /** 检查列表中文件本地路径是否有更新 */
 -(BOOL)updateCheck;
+
+/** 正在播放的曲目 */
+-(SYSong *)playingSong;
 @end

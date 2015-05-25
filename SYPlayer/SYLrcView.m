@@ -272,7 +272,7 @@
         }
     }
     
-    if (nil == self.lrcFile) {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:self.lrcFile]) {
         self.titleLabel.text = @"未找到歌词";
     }
     else

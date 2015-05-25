@@ -26,7 +26,7 @@
 {
     return[self objectWithKeyValues:dict];
 }
-
+/** 模型转字典 */
 -(NSDictionary *)toDict{
     return [self keyValues];
 }
@@ -39,11 +39,30 @@
     }
     BOOL update = NO;
     for (SYSong *song in self.songs) {
-        if ([song updeteCheckInDir:self.lessonTitle]) {
+        if ([song updeteCheckInDir:self.volumeTitle]) {
             update = YES;
         }
     }
 
     return update;
+}
+/** 正在播放的曲目 */
+-(SYSong *)playingSong{
+    if (self.songs.count <= 0) {
+        self.playingIndex = 0;
+        return nil;
+    }
+
+    return self.songs[self.playingIndex];
+}
+/** 设定正在播放序号并越界检查 */
+-(void)setPlayingIndex:(long)playingIndex{
+    if (playingIndex > self.songs.count - 1) {
+        playingIndex = 0;
+    }else if(playingIndex < 0){
+        playingIndex = self.songs.count - 1;
+    }
+    
+    _playingIndex = playingIndex;
 }
 @end

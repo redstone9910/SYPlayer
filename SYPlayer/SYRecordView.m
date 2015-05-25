@@ -149,7 +149,7 @@ typedef enum recordStatus{
     self.recordStatus.font = [UIFont systemFontOfSize:fontSize];
 }
 /** 加载句子 */
--(BOOL)loadSentence:(NSString *)sentence lessonTitle:(NSString *)title duration:(float)duration
+-(BOOL)loadSentence:(NSString *)sentence volumeTitle:(NSString *)title duration:(float)duration
 {
     self.recordSentence.text = sentence;
     self.timeTotal = duration;

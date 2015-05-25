@@ -129,7 +129,8 @@
 -(UIButton *)playBtn{
     if (_playBtn == nil) {
         _playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_playBtn setImage:[UIImage imageNamed:@"colorStyle_nowPlaying"] forState:UIControlStateNormal];;
+        [_playBtn setImage:[UIImage imageNamed:@"colorStyle_nowPlaying"] forState:UIControlStateNormal];
+        [_playBtn setImage:[UIImage imageNamed:@"colorStyle_nowPause"] forState:UIControlStateDisabled];
     }
     return _playBtn;
 }

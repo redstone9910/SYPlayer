@@ -12,7 +12,5 @@
 @class FSStreamConfiguration;
 
 @interface SYPlayingViewController : UIViewController
-@property (nonatomic,strong) SYPlaylist * playList;
-@property (nonatomic,strong) SYPlaylists * playLists;
 @property (nonatomic,strong) FSStreamConfiguration * configuration;
 @end

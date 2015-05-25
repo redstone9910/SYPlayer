@@ -21,6 +21,8 @@ typedef void(^MIBSongDownloadingBlock)(float progress);
 @property (nonatomic,copy) NSString *localPath;
 /** URL */
 @property (nonatomic,copy) NSString *url;
+/** LRC文件路径 */
+@property (nonatomic,copy) NSString *lrcPath;
 
 /** 查找MP3文件并创建对象 */
 +(SYSong *)songWithFileName:(NSString *)name inDir:(NSString *)dir;

@@ -1,30 +1,33 @@
 //
-//  MIBRootViewController.m
+//  SYRootViewController.m
 //  SYPlayer
 //
 //  Created by YinYanhui on 15-3-20.
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
 
-#import "MIBRootViewController.h"
+#import "SYRootViewController.h"
 #import "SYPlayingViewController.h"
 #import "SYPlaylist.h"
 #import "MobClick.h"
 #import "SYCircleCell.h"
 #import "SYCircleModel.h"
 #import "SYCollectionViewLayout.h"
-#include "SYPlaylists.h"
+#import "SYPlaylists.h"
+#import "SYAudioController.h"
+#import "Gloable.h"
 
 #define SYCircleCellID @"SYCircleCell"
 
-@interface MIBRootViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,SYCircleCellDelegate>
+@interface SYRootViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,SYCircleCellDelegate>
 /** 按钮容器 */
 @property (nonatomic,strong) UICollectionView *volumePage;
-@property (nonatomic,strong) SYPlaylists *volumes;
+/** 按钮面板数据 */
+@property (nonatomic,strong) NSArray *circles;
 
 @end
 
-@implementation MIBRootViewController
+@implementation SYRootViewController
 -(void)loadView{
     [super loadView];
     self.view.backgroundColor = [UIColor whiteColor];
@@ -62,14 +65,15 @@
     
     [self.view addConstraints:@[cnsT,cnsB,cnsL,cnsR]];
 }
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-    NSString *fileListAll = [[NSBundle mainBundle] pathForResource:@"nec_mp3_file_list" ofType:@"txt"];
-    self.volumes = [SYPlaylists playListsWithMp3FileList:fileListAll toPath:@"root.plist"];
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+//    [[SYAudioController sharedAudioController] play];
 }
 
+-(void)dealloc{
+    [self.volumes save];
+    SYLog(@"%@ dealloc",NSStringFromClass([self class]));
+}
 #pragma - mark UICollectionViewDataSource
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
@@ -97,7 +101,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     SYCircleModel *p = self.circles[indexPath.item];
-    NSLog(@"点击了---%@", p.bottomTitle);
+    NSLog(@"点击了---%@", p.volumeTitle);
 }
 #pragma mark - SYCircleCellDelegate
 -(void)circleCellDidClick:(SYCircleCell *)cell{
@@ -105,8 +109,8 @@
     SYCircleModel *p = self.circles[indexPath.item];
     
     SYPlayingViewController *sVc = [[SYPlayingViewController alloc] init];
-    self.volumes.playingIndex = [p.buttonTitle integerValue] - 1;
-    sVc.playLists = self.volumes;
+    self.volumes.playingIndex = p.volumeIndex - 1;
+    [self.volumes save];
     
     [self presentViewController:sVc animated:YES completion:^{
     }];
@@ -114,10 +118,10 @@
 #pragma mark - property
 -(NSArray *)circles{
     if (_circles == nil) {
-        NSArray *dictArray = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"VolumeList.plist" ofType:nil]];
+        NSArray *playListArray = self.volumes.playLists;
         NSMutableArray *circleArray = [NSMutableArray array];
-        for (NSDictionary *dict in dictArray) {
-            SYCircleModel *model = [SYCircleModel circleMoelWithDict:dict];
+        for (SYPlaylist *list in playListArray) {
+            SYCircleModel *model = [SYCircleModel circleMoelWithDict:[list toDict]];
             [circleArray addObject:model];
         }
         _circles = [circleArray copy];
@@ -125,4 +129,10 @@
     return _circles;
 }
 
+-(SYPlaylists *)volumes{
+    if (_volumes == nil) {
+        _volumes = [SYAudioController sharedAudioController].volumes;
+    }
+    return _volumes;
+}
 @end

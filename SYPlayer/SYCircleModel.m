@@ -7,17 +7,16 @@
 //
 
 #import "SYCircleModel.h"
+#import "MJExtension.h"
 
 @implementation SYCircleModel
 +(instancetype)circleMoelWithDict:(NSDictionary *)dict
 {
-    return [[self alloc] initModelWithDict:dict];
+    return[self objectWithKeyValues:dict];
 }
 -(instancetype)initModelWithDict:(NSDictionary *)dict{
     if (self = [super init]) {
-        self.bottomTitle = dict[@"bottomTitle"];
-        self.buttonTitle = dict[@"buttonTitle"];
-//        [self setValuesForKeysWithDictionary:dict];
+        [self setKeyValues:dict];
     }
     return self;
 }

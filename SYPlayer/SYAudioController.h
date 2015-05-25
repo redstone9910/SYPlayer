@@ -7,11 +7,22 @@
 //
 
 #import "FSAudioController.h"
-@class SYPlaylist;
+@class SYPlaylists;
+@class SYAudioController;
+
+@protocol SYAudioControllerDelegate <NSObject>
+@optional
+-(void)SYAudioControllerTimerUpdate:(SYAudioController *)audiocontroller;
+@end
 
 @interface SYAudioController : FSAudioController
+/** 播放/暂停 */
+@property (nonatomic,assign,getter=isPlaying) BOOL playing;
+/** 停止 */
+@property (nonatomic,assign) BOOL stopped;
 /** 播放列表 */
-@property (nonatomic,strong) SYPlaylist * playList;
+@property (nonatomic,strong) SYPlaylists * volumes;
 /** 单例 */
 +(instancetype)sharedAudioController;
+@property (nonatomic,weak) id<SYAudioControllerDelegate> sydelegate;
 @end

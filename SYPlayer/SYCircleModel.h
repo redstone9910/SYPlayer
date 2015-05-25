@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 
 @interface SYCircleModel : NSObject
-/** button下方的标题 */
-@property (nonatomic,strong) NSString * bottomTitle;
-/** button中央的数字 */
-@property (nonatomic,strong) NSString * buttonTitle;
+/** 第x册 */
+@property (nonatomic,copy) NSString * volumeTitle;
+/** 册编号 */
+@property (nonatomic,assign) long volumeIndex;
 
 +(instancetype)circleMoelWithDict:(NSDictionary *)dict;
 -(instancetype)initModelWithDict:(NSDictionary *)dict;
