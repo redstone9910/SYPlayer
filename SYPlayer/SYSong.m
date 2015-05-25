@@ -15,7 +15,6 @@
 
 @interface SYSong ()
 /** 开始下载 */
--(void)startDownloadToFile:(NSString *)dirPath onDownloading:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock;
 @property (strong, nonatomic) MKNetworkOperation *downloadOperation;
 @end
 
@@ -46,7 +45,7 @@
     
     SYSong *song = [[SYSong alloc] init];
     song.localPath = path;
-    song.url = path;
+    song.url = @"";
     song.downloadProgress = downloadProgress;
     song.downloading = downloading;
     
@@ -75,55 +74,35 @@
     return [self keyValues];
 }
 
--(NSString *)url
-{
-    if ([_url hasPrefix:@"/"]) {
-        if([[NSFileManager defaultManager]fileExistsAtPath:_url])
-        {
-            self.downloading = YES;
-            self.downloadProgress = 1;
-        }else {
-            _url = @"";
-            self.downloading = NO;
-            self.downloadProgress = 0;
-        }
+/** 检查本地文件路径是否有更新 YES:有更新 NO:无更新 */
+-(BOOL)updeteCheckInDir:(NSString *)dir{
+    if ([[NSFileManager defaultManager] fileExistsAtPath:self.localPath]) {
+        return NO;
     }
-    return _url;
-}
-
--(float)downloadProgress
-{
-    [self url];
-    return _downloadProgress;
-}
-
--(BOOL)isDownloading
-{
-    [self url];
-    return _downloading;
-}
-/** 根据歌曲名查找文件 */
--(BOOL)checkPathUpdate:(NSString *)rootPath
-{
-    NSString *song = [self.name stringByAppendingString:@".mp3"];
+    
+    /** 文件不存在，按照dir目录查找 */
+    NSString *name = [self.name stringByAppendingString:@".mp3"];
     NSBundle *bundle = [NSBundle mainBundle];
-    NSString *path = [[[bundle resourcePath] stringByAppendingPathComponent:rootPath] stringByAppendingPathComponent:song];//查找resource目录
-    if(![[NSFileManager defaultManager]fileExistsAtPath:path]){
-        path = [[catchePath stringByAppendingPathComponent:rootPath] stringByAppendingPathComponent:song];//查找沙盒Document目录
-        if(![[NSFileManager defaultManager] fileExistsAtPath:path])
+    NSString *sPath = [[[bundle resourcePath] stringByAppendingPathComponent:dir] stringByAppendingPathComponent:name];//查找resource目录
+    if(![[NSFileManager defaultManager]fileExistsAtPath:sPath]){
+        sPath = [[catchePath stringByAppendingPathComponent:dir] stringByAppendingPathComponent:name];//查找沙盒Document目录
+        if(![[NSFileManager defaultManager] fileExistsAtPath:sPath])
         {
-            path = @"";
+            sPath = @"";
         }
     }
     
-    if(![self.url isEqualToString:path] && ![self.url hasPrefix:@"http://"]){
-        self.url = path;
+    if (sPath.length > 0) {
+        self.downloading = NO;
+        self.downloadProgress = 1;
+    }
+    if(![self.localPath isEqualToString:sPath]){
+        self.localPath = sPath;
         return YES;
     }else{
         return NO;
     }
 }
-
 -(void)prepareDownloadToFile:(NSString *)dirPath onDownloading:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock
 {
     if ([self.url isEqualToString:@""]) {
@@ -183,6 +162,27 @@
         weakSelf.downloading = NO;
         completeBlock(NO);
     }];
+}
+#pragma mark - property
+
+-(NSString *)localPath
+{
+    if (([_localPath hasPrefix:@"/"]) && ![[NSFileManager defaultManager]fileExistsAtPath:_localPath]) {
+        _localPath = @"";
+    }
+    return _localPath;
+}
+
+-(float)downloadProgress
+{
+    [self localPath];
+    return _downloadProgress;
+}
+
+-(BOOL)isDownloading
+{
+    [self localPath];
+    return _downloading;
 }
 
 @end

@@ -28,9 +28,9 @@ typedef void(^MIBSongDownloadingBlock)(float progress);
 +(instancetype) songModelWithDict:(NSDictionary*)dict;
 /** 模型转字典 */
 -(NSDictionary *)toDict;
+/** 检查本地文件路径是否有更新 YES:有更新 NO:无更新 */
+-(BOOL)updeteCheckInDir:(NSString *)dir;
 
-/** 根据歌曲名查找文件 */
--(BOOL)checkPathUpdate:(NSString *)rootPath;
 /** 准备开始下载 */
 -(void)prepareDownloadToFile:(NSString *)dirPath onDownloading:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock;
 @end

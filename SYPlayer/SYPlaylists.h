@@ -27,4 +27,6 @@
 -(BOOL)save;
 /** 从文件加载 */
 -(BOOL)load;
+/** 检查列表中文件本地路径是否有更新 */
+-(BOOL)updateCheck;
 @end

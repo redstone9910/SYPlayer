@@ -22,4 +22,7 @@
 +(instancetype)playListWithDict:(NSDictionary *)dict;
 /** 模型转字典 */
 -(NSDictionary *)toDict;
+
+/** 检查列表中文件本地路径是否有更新 */
+-(BOOL)updateCheck;
 @end

@@ -396,12 +396,6 @@ typedef void (^SYDownloadCompletion)();
     }
 }
 
-/** 更新songModelArrary内容到plist文件 */
--(BOOL)refreshSongModelArrary
-{
-    return [self.playLists save];
-}
-
 #warning 拖动过快时播放会死机
 /** 更新播放进度 */
 - (void)updatePlaybackProgress
@@ -474,10 +468,11 @@ typedef void (^SYDownloadCompletion)();
 -(BOOL)playModel:(SYSong *)model
 {
     if(model == nil) return NO;
-    
-    if([model checkPathUpdate:self.playList.lessonTitle]){
-        [self refreshSongModelArrary];
-    }
+
+#warning 更新plist
+//    if([model checkPathUpdate:self.playList.lessonTitle]){
+//        [self refreshSongModelArrary];
+//    }
     if (model.downloadProgress < 1)
     {
         long index = [self.songModelArrary indexOfObject:model];
@@ -486,7 +481,7 @@ typedef void (^SYDownloadCompletion)();
     }
     
     if (model.downloadProgress >= 1) {
-        NSString *mp3Path = model.url;
+        NSString *mp3Path = model.localPath;
         NSURL *url;
         if([mp3Path hasPrefix:@"/"]){
             url = [NSURL fileURLWithPath:mp3Path];
@@ -498,7 +493,7 @@ typedef void (^SYDownloadCompletion)();
         [self.audioController play];
         self.playerConsole.playing = YES;
         
-        NSString *lrcPath = [model.url stringByReplacingOccurrencesOfString:@"mp3" withString:@"lrc"];
+        NSString *lrcPath = [model.localPath stringByReplacingOccurrencesOfString:@"mp3" withString:@"lrc"];
         self.lrcView.lrcFile = lrcPath;
         
         NSArray *ary = [model.name componentsSeparatedByString:@"－"];
@@ -832,9 +827,10 @@ typedef void (^SYDownloadCompletion)();
 {
     SYSongCell *cell = [SYSongCell cellWithTableView:tableView];
     SYSong *model = self.songModelArrary[indexPath.row];
-    if([model checkPathUpdate:self.playList.lessonTitle]){
-        [self refreshSongModelArrary];
-    }
+#warning 更新plist
+//    if([model checkPathUpdate:self.playList.lessonTitle]){
+//        [self refreshSongModelArrary];
+//    }
 
     cell.playListData = model;
     cell.delegate = self;

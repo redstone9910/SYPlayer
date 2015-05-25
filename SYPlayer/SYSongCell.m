@@ -12,15 +12,13 @@
 
 @interface SYSongCell()
 /** 播放按钮 */
-@property (weak, nonatomic) IBOutlet UIButton *playBtn;
+@property (strong, nonatomic) UIButton *playBtn;
 /** 歌曲名 */
-@property (weak, nonatomic) IBOutlet UILabel *songNameLabel;
+@property (strong, nonatomic) UILabel *songNameLabel;
 /** 下载按钮 */
-@property (weak, nonatomic) IBOutlet UIButton *downloadBtn;
+@property (strong, nonatomic) UIButton *downloadBtn;
 /** 下载按钮按下 */
-- (IBAction)downloadBtnClick;
-/** 播放/暂停按钮点击 */
-- (IBAction)playBtnClick;
+- (void)downloadBtnClick;
 @end
 
 @implementation SYSongCell
@@ -31,13 +29,16 @@
     
     SYSongCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
     if (cell == nil) {
-        NSBundle *bundle = [NSBundle mainBundle];
-        NSArray *objs = [bundle loadNibNamed:NSStringFromClass(self) owner:nil options:nil];
-        
-        cell = [objs lastObject];
+        cell = [[self alloc] init];
     }
     
     return cell;
+}
+-(instancetype)initWithFrame:(CGRect)frame{
+    if (self = [super initWithFrame:frame]) {
+        [self customInit];
+    }
+    return self;
 }
 -(id)initWithCoder:(NSCoder *)aDecoder{
     if (self = [super initWithCoder:aDecoder]) {
@@ -49,85 +50,103 @@
     self.selectedBackgroundView = [[UIView alloc] init];
     self.backgroundColor = [UIColor clearColor];
     
-    self.songNameLabel.textColor = [UIColor whiteColor];
-    self.downloadBtn.titleLabel.textColor = [UIColor whiteColor];
+    [self.contentView addSubview:self.playBtn];
+    [self.contentView addSubview:self.songNameLabel];
+    [self.contentView addSubview:self.downloadBtn];
     
-    [self.playBtn setImage:[UIImage imageNamed:@"miniplayer_btn_playlist_normal"] forState:UIControlStateNormal];
-    [self.playBtn setImage:[UIImage imageNamed:@"miniplayer_btn_playlist_highlight"] forState:UIControlStateHighlighted];
-    [self.playBtn setImage:[UIImage imageNamed:@"miniplayer_btn_playlist_disable"] forState:UIControlStateDisabled];
+    self.playBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    {
+        NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *cnsL = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeading multiplier:1 constant:0];
+        NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        [self.contentView addConstraints:@[cnsT,cnsL,cnsB]];
+        NSLayoutConstraint *cnsRe = [NSLayoutConstraint constraintWithItem:self.playBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.playBtn attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
+        [self.playBtn addConstraints:@[cnsRe]];
+    }
+    self.songNameLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    {
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.songNameLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+        NSLayoutConstraint *cnsL = [NSLayoutConstraint constraintWithItem:self.songNameLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.playBtn attribute:NSLayoutAttributeTrailing multiplier:1 constant:0];
+        NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.songNameLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.downloadBtn attribute:NSLayoutAttributeLeading multiplier:1 constant:0];
+        [self.contentView addConstraints:@[cnsY,cnsL,cnsR]];
+    }
+    self.downloadBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    {
+        NSLayoutConstraint *cnsT = [NSLayoutConstraint constraintWithItem:self.downloadBtn attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.downloadBtn attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1 constant:0];
+        NSLayoutConstraint *cnsB = [NSLayoutConstraint constraintWithItem:self.downloadBtn attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        [self.contentView addConstraints:@[cnsT,cnsR,cnsB]];
+        NSLayoutConstraint *cnsRe = [NSLayoutConstraint constraintWithItem:self.downloadBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.downloadBtn attribute:NSLayoutAttributeHeight multiplier:2 constant:0];
+        [self.downloadBtn addConstraints:@[cnsRe]];
+    }
 }
-/** Cell被选中 */
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
 
-    // Configure the view for the selected state
-}
 /** 下载按钮按下 */
-- (IBAction)downloadBtnClick {
+- (void)downloadBtnClick {
     if ([self.delegate respondsToSelector:@selector(songCellDownloadBtnClick:)]) {
         [self.delegate songCellDownloadBtnClick:self];
     }
 }
-/** 播放/暂停按钮点击 */
-- (IBAction)playBtnClick {
-    self.playing = !self.isPlaying;
-}
+
+#pragma mark - property
 /** 设定数据并更新Cell */
 -(void)setPlayListData:(SYSong *)playListData
 {
     _playListData = playListData;
     SYSong *data = self.playListData;
+
+    self.songNameLabel.text = data.name;
     
-//    self.playing = data.playing;
-    self.name = data.name;
-    self.downloading = data.downloading;
-    self.downloadProgress = data.downloadProgress;}
-/** Play/Pause */
--(void)setPlaying:(BOOL)playing
-{
-    _playing = playing;
+    self.playBtn.enabled = NO;//本地不存在的歌曲不能播放
+    
+    if (data.downloadProgress < 1) {
+        if (data.isDownloading){
+            [self.downloadBtn setTitle:[NSString stringWithFormat:@"%3d%%",(int)(data.downloadProgress * 100)] forState:UIControlStateNormal];
+            self.downloadBtn.enabled = NO;
+        }else{
+            if (data.downloadProgress > 0) {
+                [self.downloadBtn setTitle:@"继续" forState:UIControlStateNormal];
+            }else{
+                [self.downloadBtn setTitle:@"下载" forState:UIControlStateNormal];
+            }
+            self.downloadBtn.enabled = YES;
+        }
+    }
+    else
+    {
+        [self.downloadBtn setTitle:@"已下载" forState:UIControlStateNormal];
+        self.downloadBtn.enabled = NO;
+        self.playBtn.enabled = YES;//下载完成，可以播放
+    }
 }
+
 -(void)setSelected:(BOOL)selected{
     [super setSelected:selected];
     UIColor *textColor = selected ? lightGreenColor : [UIColor whiteColor];
     self.songNameLabel.textColor = textColor;
 }
-/** 设定歌曲名 */
--(void)setName:(NSString *)name
-{
-    _name = name;
-    
-    self.songNameLabel.text = self.name;
-}
-/** 开始下载 */
--(void)setDownloading:(BOOL)downloading
-{
-    _downloading = downloading;
-    
-    if (self.isDownloading) self.downloadProgress = 0;
-    else [self.downloadBtn setTitle:@"下载" forState:UIControlStateNormal];
-}
-/** 设定下载进度 */
--(void)setDownloadProgress:(float)downloadProgress
-{
-    _downloadProgress = downloadProgress;
-    
-    self.playBtn.enabled = NO;//本地不存在的歌曲不能播放
-    if (self.isDownloading) {
-        if (self.downloadProgress < 1) {
-            [self.downloadBtn setTitle:[NSString stringWithFormat:@"%3d%%",(int)(self.downloadProgress * 100)] forState:UIControlStateNormal];
-        }
-        else
-        {
-            [self.downloadBtn setTitle:@"已下载" forState:UIControlStateNormal];
-            self.downloadBtn.enabled = NO;
-            self.playBtn.enabled = YES;//下载完成，可以播放
-        }
-    }
-    else
-    {
-        [self.downloadBtn setTitle:@"下载" forState:UIControlStateNormal];
-    }
-}
 
+-(UIButton *)playBtn{
+    if (_playBtn == nil) {
+        _playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_playBtn setImage:[UIImage imageNamed:@"colorStyle_nowPlaying"] forState:UIControlStateNormal];;
+    }
+    return _playBtn;
+}
+-(UILabel *)songNameLabel{
+    if (_songNameLabel == nil) {
+        _songNameLabel = [[UILabel alloc] init];
+        _songNameLabel.textColor = [UIColor whiteColor];
+    }
+    return _songNameLabel;
+}
+-(UIButton *)downloadBtn{
+    if (_downloadBtn == nil) {
+        _downloadBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _downloadBtn.titleLabel.textColor = [UIColor whiteColor];
+        _downloadBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+        [_downloadBtn addTarget:self action:@selector(downloadBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _downloadBtn;
+}
 @end

@@ -26,6 +26,7 @@
     SYPlaylists *playLists = [[SYPlaylists alloc] init];
     playLists.path = destPath;
     if ([playLists load]) {
+#warning 检查文件是否存在
         return playLists;
     }
     
@@ -88,6 +89,18 @@
     }
     [self setKeyValues:dict];
     
+    if ([self updateCheck]) {
+        [self save];
+    }
     return YES;
+}
+-(BOOL)updateCheck{
+    BOOL update = NO;
+    for (SYPlaylist *list in self.playLists) {
+        if ([list updateCheck]) {
+            update = YES;
+        }
+    }
+    return update;
 }
 @end
