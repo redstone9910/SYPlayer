@@ -17,4 +17,5 @@ typedef void (^MIBCompleteBlock)(NSString *fileURL);
 +(void)getLogonMD5WithName:(NSString *)userName password:(NSString *)userPWD fileName:(NSString *)fileName onComplete:(MIBCompleteBlock)complete;
 +(void)postLogonWithName:(NSString *)userName password:(NSString *)userPWD fileName:(NSString *)fileName onComplete:(MIBCompleteBlock)complete;
 +(void)postLogonMD5WithName:(NSString *)userName password:(NSString *)userPWD fileName:(NSString *)fileName onComplete:(MIBCompleteBlock)complete;
++(void)fetchURLWithFileName:(NSString *)fileName onComplete:(MIBCompleteBlock)complete;
 @end

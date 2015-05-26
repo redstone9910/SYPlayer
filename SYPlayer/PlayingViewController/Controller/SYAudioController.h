@@ -19,9 +19,14 @@
 -(void)SYAudioControllerStop:(SYAudioController *)audioController;
 -(void)SYAudioControllerPlaybackComplete:(SYAudioController *)audioController;
 -(void)SYAudioController:(SYAudioController *)audioController mediaInfoLoaded:(SYMediaInfo *)info;
+-(void)SYAudioControllerFetchingURL:(SYAudioController *)audioController;
+-(void)SYAudioControllerFetchURLFailed:(SYAudioController *)audioController;
+-(void)SYAudioControllerFetchURLSuccess:(SYAudioController *)audioController;
 @end
 
 @interface SYAudioController : FSAudioController
+/** 开始播放 */
+-(void)startPlay;
 /** 播放/暂停 */
 @property (nonatomic,assign,getter=isPlaying) BOOL playing;
 /** 停止 */

@@ -207,7 +207,7 @@
     
     if (!self.lrcDragging) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            for (long index = 0; index < self.lrcTimeArray.count; index ++) {
+            for (long index = 0; index < self.lrcLabelArray.count; index ++) {
                 NSString *str1 = self.lrcTimeArray[index];
                 float currentTime = [self timeWithString:str1];
                 UILabel *currentLabel =  self.lrcLabelArray[index];

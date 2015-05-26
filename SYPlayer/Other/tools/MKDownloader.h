@@ -28,4 +28,6 @@
 @interface MKDownloader : MKNetworkEngine
 
 -(MKNetworkOperation*) downloadFatAssFileFrom:(NSString*) remoteURL toFile:(NSString*) fileName;
+/** 单例 */
++(instancetype)sharedDownloader;
 @end

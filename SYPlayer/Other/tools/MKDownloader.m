@@ -40,6 +40,19 @@
     [self enqueueOperation:op];
     return op;
 }
+
+/** 单例 */
++(instancetype)sharedDownloader
+{
+    static MKDownloader *instance;
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [[self alloc] init];
+    });
+    return instance;
+}
+
 /** 单例 */
 +(instancetype)allocWithZone:(struct _NSZone *)zone
 {

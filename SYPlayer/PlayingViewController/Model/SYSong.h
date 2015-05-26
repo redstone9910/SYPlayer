@@ -7,8 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-typedef void(^MIBSongDownloadCompleteBlock)(BOOL complete);
-typedef void(^MIBSongDownloadingBlock)(float progress);
 
 @interface SYSong : NSObject
 /** 歌曲名 */
@@ -34,5 +32,9 @@ typedef void(^MIBSongDownloadingBlock)(float progress);
 -(BOOL)updeteCheckInDir:(NSString *)dir;
 
 /** 准备开始下载 */
--(void)prepareDownloadToFile:(NSString *)dirPath onDownloading:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock;
+-(void)prepareDownloadToFile:(NSString *)dirPath onDownloading:(void(^)(float progress))downloadingBlock onComplete:(void(^)(BOOL success))completeBlock;
+/** 获取URL */
+-(void)fetchURL:(void(^)(BOOL success))completeBlock;
+/** 获取LRC */
+-(void)fetchLRCToDir:(NSString *)dir complete:(void(^)(BOOL success))completeBlock;
 @end

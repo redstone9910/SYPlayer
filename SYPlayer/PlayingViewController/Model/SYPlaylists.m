@@ -12,6 +12,9 @@
 #import "MJExtension.h"
 #import "Gloable.h"
 
+@interface SYPlaylists ()
+@end
+
 @implementation SYPlaylists
 /** playLists 数组类型为 SYPlaylist */
 + (NSDictionary *)objectClassInArray
@@ -62,7 +65,8 @@
         else//文件名
         {
             if ([line hasSuffix:@"mp3"]) {//mp3文件
-                [songs addObject:[SYSong songWithFileName:line inDir:playList.volumeTitle]];//mp3文件添加进暂存数组
+                SYSong *song = [SYSong songWithFileName:line inDir:playList.volumeTitle];
+                [songs addObject:song];//mp3文件添加进暂存数组
             }
         }
     }
@@ -73,7 +77,8 @@
     playLists.playingIndex = 0;
     playLists.playLists = [listArray copy];
     
-    if([playLists save]) return playLists;
+    [playLists save];
+    if([playLists load]) return playLists;
     else return nil;
 }
 /** 从字典创建对象 */
@@ -109,7 +114,27 @@
             update = YES;
         }
     }
+    [self fetchLRCs];
     return update;
+}
+/** 获取所有LRC文件 */
+-(void)fetchLRCs{
+    for (SYPlaylist *list in self.playLists) {
+        for (SYSong *song in list.songs) {
+            if (song.lrcPath.length == 0) {
+                [song fetchLRCToDir:list.volumeTitle complete:^(BOOL success) {
+                    if (success) {
+                        SYLog(@"Success at %@ - %@",list.volumeTitle,song.name);
+                        [self fetchLRCs];
+                    }else{
+                        SYLog(@"Failed at %@ - %@",list.volumeTitle,song.name);
+                    }
+                }];
+                return;
+            }
+        }
+    }
+    [self save];
 }
 /** 正在播放的列表 */
 -(SYPlaylist *)playingList{

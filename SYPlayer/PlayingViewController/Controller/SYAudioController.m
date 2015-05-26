@@ -40,18 +40,38 @@
     return self;
 }
 
--(void)play{
+/** 开始播放 */
+-(void)startPlay{
     SYPlaylist *list = self.volumes.playLists[self.volumes.playingIndex];
     SYSong *model = list.songs[list.playingIndex];
     
     if(model == nil) return;
-
+    
     NSString *urlStr;
     if (model.localPath.length > 0) {
         urlStr = model.localPath;
     }else if(model.url.length > 0){
         urlStr = model.url;
     }else{
+        [model fetchURL:^(BOOL success) {
+            if (success) {
+                if ([self.sydelegate respondsToSelector:@selector(SYAudioControllerFetchURLSuccess:)]) {
+                    [self.sydelegate SYAudioControllerFetchURLSuccess:self];
+                }
+                [self.volumes save];
+                [self startPlay];
+            }else{
+                if ([self.sydelegate respondsToSelector:@selector(SYAudioControllerFetchURLFailed:)]) {
+                    [self.sydelegate SYAudioControllerFetchURLFailed:self];
+                }
+            }
+        }];
+        if ([self.sydelegate respondsToSelector:@selector(SYAudioControllerFetchingURL:)]) {
+            [self.sydelegate SYAudioControllerFetchingURL:self];
+        }
+        if (self.isPlaying) {
+            [self changePlayPauseStatus];
+        }
         return;
     }
     
@@ -64,8 +84,9 @@
     }
     
     self.url = url;
-    [super play];
+    [self play];
 }
+
 -(void)dealloc{
     SYLog(@"%@ dealloc",NSStringFromClass([self class]));
 }
@@ -79,7 +100,7 @@
 /** 播放暂停控制 */
 -(void)changePlayPauseStatus{
     if (self.stopped) {
-        [self play];
+        [self startPlay];
     }else{
         [self pause];
     }
@@ -103,6 +124,8 @@
             }
             case kFsAudioStreamPaused:
             {
+                [weakSelf.progressUpdateTimer invalidate];
+                weakSelf.progressUpdateTimer = nil;
                 SYLog(@"Paused");
                 audioController.playing = NO;
                 if ([weakSelf.sydelegate respondsToSelector:@selector(SYAudioControllerPause:)]) {
@@ -122,7 +145,7 @@
             case kFsAudioStreamPlaybackCompleted:
                 NSLog(@"kFsAudioStreamPlaybackCompleted");
                 [volumes playingList].playingIndex ++;
-                [audioController play];
+                [audioController startPlay];
                 if ([weakSelf.sydelegate respondsToSelector:@selector(SYAudioControllerPlaybackComplete:)]) {
                     [weakSelf.sydelegate SYAudioControllerPlaybackComplete:weakSelf];
                 }

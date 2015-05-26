@@ -15,7 +15,7 @@
 
 @interface SYSong ()
 /** 开始下载 */
-@property (strong, nonatomic) MKNetworkOperation *downloadOperation;
+//@property (strong, nonatomic) MKNetworkOperation *downloadOperation;
 @end
 
 @implementation SYSong
@@ -58,35 +58,53 @@
 
 /** 检查本地文件路径是否有更新 YES:有更新 NO:无更新 */
 -(BOOL)updeteCheckInDir:(NSString *)dir{
-    if ([[NSFileManager defaultManager] fileExistsAtPath:self.localPath]) {
-        return NO;
-    }
-    
-    /** 文件不存在，按照dir目录查找 */
-    NSString *name = [self.name stringByAppendingString:@".mp3"];
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSString *sPath = [[[bundle resourcePath] stringByAppendingPathComponent:dir] stringByAppendingPathComponent:name];//查找resource目录
-    if(![[NSFileManager defaultManager]fileExistsAtPath:sPath]){
-        sPath = [[catchePath stringByAppendingPathComponent:dir] stringByAppendingPathComponent:name];//查找沙盒Document目录
-        if(![[NSFileManager defaultManager] fileExistsAtPath:sPath])
-        {
-            sPath = @"";
+    BOOL ret = NO;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:self.localPath]){
+        /** 文件不存在，按照dir目录查找 */
+        NSString *name = [self.name stringByAppendingString:@".mp3"];
+        NSBundle *bundle = [NSBundle mainBundle];
+        NSString *sPath = [[[bundle resourcePath] stringByAppendingPathComponent:dir] stringByAppendingPathComponent:name];//查找resource目录
+        if(![[NSFileManager defaultManager]fileExistsAtPath:sPath]){
+            sPath = [[catchePath stringByAppendingPathComponent:dir] stringByAppendingPathComponent:name];//查找沙盒Document目录
+            if(![[NSFileManager defaultManager] fileExistsAtPath:sPath])
+            {
+                sPath = @"";
+            }
+        }
+        
+        if (sPath.length > 0) {
+            self.downloading = NO;
+            self.downloadProgress = 1;
+        }
+        if(![self.localPath isEqualToString:sPath]){
+            self.localPath = sPath;
+            ret = YES;
         }
     }
     
-    if (sPath.length > 0) {
-        self.downloading = NO;
-        self.downloadProgress = 1;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:self.lrcPath]){
+        /** 文件不存在，按照dir目录查找 */
+        NSString *name = [self.name stringByAppendingString:@".lrc"];
+        NSBundle *bundle = [NSBundle mainBundle];
+        NSString *sPath = [[[bundle resourcePath] stringByAppendingPathComponent:dir] stringByAppendingPathComponent:name];//查找resource目录
+        if(![[NSFileManager defaultManager]fileExistsAtPath:sPath]){
+            sPath = [[catchePath stringByAppendingPathComponent:dir] stringByAppendingPathComponent:name];//查找沙盒目录
+            if(![[NSFileManager defaultManager] fileExistsAtPath:sPath])
+            {
+                sPath = @"";
+            }
+        }
+        
+        if(![self.lrcPath isEqualToString:sPath]){
+            self.lrcPath = sPath;
+            ret = YES;
+        }
     }
-    if(![self.localPath isEqualToString:sPath]){
-        self.localPath = sPath;
-        return YES;
-    }else{
-        return NO;
-    }
+    
+    return ret;
 }
 
--(void)prepareDownloadToFile:(NSString *)dirPath onDownloading:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock
+-(void)prepareDownloadToFile:(NSString *)dirPath onDownloading:(void(^)(float progress))downloadingBlock onComplete:(void(^)(BOOL success))completeBlock
 {
     if ([self.url isEqualToString:@""]) {
         [MIBServer getLogonMD5WithName:@"wangwu" password:@"ww" fileName:self.name onComplete:^(NSString *fileURL) {
@@ -103,7 +121,7 @@
     }
 }
 
--(void)startDownloadToFile:(NSString *)dirPath onDownloading:(MIBSongDownloadingBlock)downloadingBlock onComplete:(MIBSongDownloadCompleteBlock)completeBlock
+-(void)startDownloadToFile:(NSString *)dirPath onDownloading:(void(^)(float progress))downloadingBlock onComplete:(void(^)(BOOL success))completeBlock
 {
     __weak SYSong * weakSelf = self;
     
@@ -117,13 +135,13 @@
     }
     NSString *downloadPath = [[dirPath stringByAppendingPathComponent:self.name] stringByAppendingString:@".mp3.download"];
     
-    self.downloadOperation = [[[MKDownloader alloc] init] downloadFatAssFileFrom:urlStr toFile:downloadPath];
-    [self.downloadOperation onDownloadProgressChanged:^(double progress) {
+    MKNetworkOperation *downloadOperation = [[MKDownloader sharedDownloader] downloadFatAssFileFrom:urlStr toFile:downloadPath];
+    [downloadOperation onDownloadProgressChanged:^(double progress) {
         self.downloadProgress = progress;
         downloadingBlock(progress);
     }];
     
-    [self.downloadOperation addCompletionHandler:^(MKNetworkOperation *completedOperation) {
+    [downloadOperation addCompletionHandler:^(MKNetworkOperation *completedOperation) {
         //重命名文件
         NSString *mp3Path = [downloadPath stringByReplacingOccurrencesOfString:@".download" withString:@""];
         [[NSFileManager defaultManager] copyItemAtPath:downloadPath toPath:mp3Path error:nil];
@@ -135,7 +153,7 @@
             //下载LRC文件
             NSString *lrcURL = [urlStr stringByReplacingOccurrencesOfString:@".mp3" withString:@".lrc"];
             NSString *lrcPath = [mp3Path stringByReplacingOccurrencesOfString:@".mp3" withString:@".lrc"];
-            weakSelf.downloadOperation = [[[MKDownloader alloc] init] downloadFatAssFileFrom:lrcURL toFile:lrcPath];
+            MKNetworkOperation *downloadOperation = [[MKDownloader sharedDownloader] downloadFatAssFileFrom:lrcURL toFile:lrcPath];
             completeBlock(YES);
         } else {
             completeBlock(NO);
@@ -143,6 +161,48 @@
     } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
         weakSelf.downloadProgress = 0;
         weakSelf.downloading = NO;
+        completeBlock(NO);
+    }];
+}
+
+/** 获取URL */
+-(void)fetchURL:(void(^)(BOOL success))completeBlock{
+    __weak typeof (self) weakSelf = self;
+    [MIBServer fetchURLWithFileName:self.name onComplete:^(NSString *fileURL) {
+        weakSelf.url = fileURL;
+        completeBlock(fileURL != nil);
+    }];
+}
+
+/** 获取LRC */
+-(void)fetchLRCToDir:(NSString *)dir complete:(void(^)(BOOL success))completeBlock{
+    static MKNetworkOperation *downloadOperation;
+    
+    //下载LRC文件
+    NSString *lrcURL = [[self.url stringByReplacingOccurrencesOfString:@".mp3" withString:@".lrc"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    NSString *lrcRoot = [catchePath stringByAppendingPathComponent:dir];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:lrcRoot]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:lrcRoot withIntermediateDirectories:NO attributes:nil error:nil];
+    }
+    NSString *lrcPath = [[lrcRoot stringByAppendingPathComponent:self.name] stringByAppendingString:@".lrc.download"];
+    
+    downloadOperation = [[MKDownloader sharedDownloader] downloadFatAssFileFrom:lrcURL toFile:lrcPath];
+    
+    __weak typeof(self) wealSelf = self;
+    [downloadOperation addCompletionHandler:^(MKNetworkOperation *completedOperation) {
+        //重命名文件
+        wealSelf.lrcPath = [lrcPath stringByReplacingOccurrencesOfString:@".lrc.download" withString:@".lrc"];
+        [[NSFileManager defaultManager] copyItemAtPath:lrcPath toPath:wealSelf.lrcPath error:nil];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:wealSelf.lrcPath]) {
+            [[NSFileManager defaultManager] removeItemAtPath:lrcPath error:nil];
+            completeBlock(YES);
+        }else{
+            self.lrcPath = nil;
+            completeBlock(NO);
+        }
+    } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
+        wealSelf.lrcPath = nil;
         completeBlock(NO);
     }];
 }
@@ -177,20 +237,10 @@
     return _downloading;
 }
 
-#warning url获取此处有待完善
 -(NSString *)url{
     if (_url == nil) {
         _url = @"";
-        __weak typeof (self) weakSelf = self;
-        [MIBServer getLogonMD5WithName:@"wangwu" password:@"ww" fileName:self.name onComplete:^(NSString *fileURL) {
-            if (fileURL == nil)
-            {
-                return;
-            }
-            weakSelf.url = fileURL;
-        }];
     }
     return _url;
 }
-
 @end

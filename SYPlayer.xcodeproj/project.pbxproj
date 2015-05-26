@@ -80,22 +80,11 @@
 		521F03131B1407640098928E /* talkroom_sasasa.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 521F02D21B1407640098928E /* talkroom_sasasa.mp3 */; };
 		521F03141B1407640098928E /* talkroom_up.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 521F02D31B1407640098928E /* talkroom_up.mp3 */; };
 		521F03151B1407640098928E /* time_limit.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 521F02D41B1407640098928E /* time_limit.mp3 */; };
-		521F03161B1407640098928E /* 001&002－Excuse Me.lrc in Resources */ = {isa = PBXBuildFile; fileRef = 521F02D61B1407640098928E /* 001&002－Excuse Me.lrc */; };
-		521F03171B1407640098928E /* 001&002－Excuse Me.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 521F02D71B1407640098928E /* 001&002－Excuse Me.mp3 */; };
-		521F03181B1407640098928E /* 003&004－Sorry, Sir.lrc in Resources */ = {isa = PBXBuildFile; fileRef = 521F02D81B1407640098928E /* 003&004－Sorry, Sir.lrc */; };
-		521F03191B1407640098928E /* 003&004－Sorry, Sir.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 521F02D91B1407640098928E /* 003&004－Sorry, Sir.mp3 */; };
-		521F031A1B1407640098928E /* 01－A Puma at Large.lrc in Resources */ = {isa = PBXBuildFile; fileRef = 521F02DB1B1407640098928E /* 01－A Puma at Large.lrc */; };
-		521F031B1B1407640098928E /* 01－A Puma at Large.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 521F02DC1B1407640098928E /* 01－A Puma at Large.mp3 */; };
-		521F031C1B1407640098928E /* 02－Thirteen Equals One.lrc in Resources */ = {isa = PBXBuildFile; fileRef = 521F02DD1B1407640098928E /* 02－Thirteen Equals One.lrc */; };
-		521F031D1B1407640098928E /* 02－Thirteen Equals One.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 521F02DE1B1407640098928E /* 02－Thirteen Equals One.mp3 */; };
-		521F031E1B1407640098928E /* 01－A Private Conversation.lrc in Resources */ = {isa = PBXBuildFile; fileRef = 521F02E01B1407640098928E /* 01－A Private Conversation.lrc */; };
-		521F031F1B1407640098928E /* 01－A Private Conversation.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 521F02E11B1407640098928E /* 01－A Private Conversation.mp3 */; };
-		521F03201B1407640098928E /* 02－Breakfast or Lunch.lrc in Resources */ = {isa = PBXBuildFile; fileRef = 521F02E21B1407640098928E /* 02－Breakfast or Lunch.lrc */; };
-		521F03211B1407640098928E /* 02－Breakfast or Lunch.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 521F02E31B1407640098928E /* 02－Breakfast or Lunch.mp3 */; };
-		521F03221B1407640098928E /* 01－Finding Fossil Man.lrc in Resources */ = {isa = PBXBuildFile; fileRef = 521F02E51B1407640098928E /* 01－Finding Fossil Man.lrc */; };
-		521F03231B1407640098928E /* 01－Finding Fossil Man.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 521F02E61B1407640098928E /* 01－Finding Fossil Man.mp3 */; };
-		521F03241B1407640098928E /* 02－Spare That Spider.lrc in Resources */ = {isa = PBXBuildFile; fileRef = 521F02E71B1407640098928E /* 02－Spare That Spider.lrc */; };
-		521F03251B1407640098928E /* 02－Spare That Spider.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 521F02E81B1407640098928E /* 02－Spare That Spider.mp3 */; };
+		521F035A1B1437CA0098928E /* SYDropdownAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 521F03591B1437CA0098928E /* SYDropdownAlert.m */; };
+		521F057B1B1476F40098928E /* 第二册 in Resources */ = {isa = PBXBuildFile; fileRef = 521F05771B1476F40098928E /* 第二册 */; };
+		521F057C1B1476F40098928E /* 第三册 in Resources */ = {isa = PBXBuildFile; fileRef = 521F05781B1476F40098928E /* 第三册 */; };
+		521F057D1B1476F40098928E /* 第四册 in Resources */ = {isa = PBXBuildFile; fileRef = 521F05791B1476F40098928E /* 第四册 */; };
+		521F057E1B1476F40098928E /* 第一册 in Resources */ = {isa = PBXBuildFile; fileRef = 521F057A1B1476F40098928E /* 第一册 */; };
 		522424041AE5B91200795868 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424031AE5B91200795868 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		522424061AE5B92E00795868 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424051AE5B92E00795868 /* CoreLocation.framework */; };
 		522424081AE5B94000795868 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424071AE5B94000795868 /* QuartzCore.framework */; };
@@ -226,22 +215,12 @@
 		521F02D21B1407640098928E /* talkroom_sasasa.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = talkroom_sasasa.mp3; sourceTree = "<group>"; };
 		521F02D31B1407640098928E /* talkroom_up.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = talkroom_up.mp3; sourceTree = "<group>"; };
 		521F02D41B1407640098928E /* time_limit.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = time_limit.mp3; sourceTree = "<group>"; };
-		521F02D61B1407640098928E /* 001&002－Excuse Me.lrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "001&002－Excuse Me.lrc"; sourceTree = "<group>"; };
-		521F02D71B1407640098928E /* 001&002－Excuse Me.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "001&002－Excuse Me.mp3"; sourceTree = "<group>"; };
-		521F02D81B1407640098928E /* 003&004－Sorry, Sir.lrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "003&004－Sorry, Sir.lrc"; sourceTree = "<group>"; };
-		521F02D91B1407640098928E /* 003&004－Sorry, Sir.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "003&004－Sorry, Sir.mp3"; sourceTree = "<group>"; };
-		521F02DB1B1407640098928E /* 01－A Puma at Large.lrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "01－A Puma at Large.lrc"; sourceTree = "<group>"; };
-		521F02DC1B1407640098928E /* 01－A Puma at Large.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "01－A Puma at Large.mp3"; sourceTree = "<group>"; };
-		521F02DD1B1407640098928E /* 02－Thirteen Equals One.lrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "02－Thirteen Equals One.lrc"; sourceTree = "<group>"; };
-		521F02DE1B1407640098928E /* 02－Thirteen Equals One.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "02－Thirteen Equals One.mp3"; sourceTree = "<group>"; };
-		521F02E01B1407640098928E /* 01－A Private Conversation.lrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "01－A Private Conversation.lrc"; sourceTree = "<group>"; };
-		521F02E11B1407640098928E /* 01－A Private Conversation.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "01－A Private Conversation.mp3"; sourceTree = "<group>"; };
-		521F02E21B1407640098928E /* 02－Breakfast or Lunch.lrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "02－Breakfast or Lunch.lrc"; sourceTree = "<group>"; };
-		521F02E31B1407640098928E /* 02－Breakfast or Lunch.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "02－Breakfast or Lunch.mp3"; sourceTree = "<group>"; };
-		521F02E51B1407640098928E /* 01－Finding Fossil Man.lrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "01－Finding Fossil Man.lrc"; sourceTree = "<group>"; };
-		521F02E61B1407640098928E /* 01－Finding Fossil Man.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "01－Finding Fossil Man.mp3"; sourceTree = "<group>"; };
-		521F02E71B1407640098928E /* 02－Spare That Spider.lrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "02－Spare That Spider.lrc"; sourceTree = "<group>"; };
-		521F02E81B1407640098928E /* 02－Spare That Spider.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "02－Spare That Spider.mp3"; sourceTree = "<group>"; };
+		521F03581B1437CA0098928E /* SYDropdownAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYDropdownAlert.h; sourceTree = "<group>"; };
+		521F03591B1437CA0098928E /* SYDropdownAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYDropdownAlert.m; sourceTree = "<group>"; };
+		521F05771B1476F40098928E /* 第二册 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "第二册"; sourceTree = "<group>"; };
+		521F05781B1476F40098928E /* 第三册 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "第三册"; sourceTree = "<group>"; };
+		521F05791B1476F40098928E /* 第四册 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "第四册"; sourceTree = "<group>"; };
+		521F057A1B1476F40098928E /* 第一册 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "第一册"; sourceTree = "<group>"; };
 		522424031AE5B91200795868 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		522424051AE5B92E00795868 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		522424071AE5B94000795868 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -356,6 +335,8 @@
 				521F024A1B1404360098928E /* MIBServer.m */,
 				521F024B1B1404360098928E /* MKDownloader.h */,
 				521F024C1B1404360098928E /* MKDownloader.m */,
+				521F03581B1437CA0098928E /* SYDropdownAlert.h */,
+				521F03591B1437CA0098928E /* SYDropdownAlert.m */,
 			);
 			path = tools;
 			sourceTree = "<group>";
@@ -493,6 +474,10 @@
 		521F02A31B1407640098928E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				521F05771B1476F40098928E /* 第二册 */,
+				521F05781B1476F40098928E /* 第三册 */,
+				521F05791B1476F40098928E /* 第四册 */,
+				521F057A1B1476F40098928E /* 第一册 */,
 				521F02A41B1407640098928E /* AppDelegate.h */,
 				521F02A51B1407640098928E /* AppDelegate.m */,
 				521F02A61B1407640098928E /* Gloable.c */,
@@ -503,10 +488,6 @@
 				521F02C51B1407640098928E /* plan.txt */,
 				521F02AB1B1407640098928E /* mic */,
 				521F02C61B1407640098928E /* sound */,
-				521F02D51B1407640098928E /* 第一册 */,
-				521F02DA1B1407640098928E /* 第三册 */,
-				521F02DF1B1407640098928E /* 第二册 */,
-				521F02E41B1407640098928E /* 第四册 */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -561,50 +542,6 @@
 				521F02D41B1407640098928E /* time_limit.mp3 */,
 			);
 			path = sound;
-			sourceTree = "<group>";
-		};
-		521F02D51B1407640098928E /* 第一册 */ = {
-			isa = PBXGroup;
-			children = (
-				521F02D61B1407640098928E /* 001&002－Excuse Me.lrc */,
-				521F02D71B1407640098928E /* 001&002－Excuse Me.mp3 */,
-				521F02D81B1407640098928E /* 003&004－Sorry, Sir.lrc */,
-				521F02D91B1407640098928E /* 003&004－Sorry, Sir.mp3 */,
-			);
-			path = "第一册";
-			sourceTree = "<group>";
-		};
-		521F02DA1B1407640098928E /* 第三册 */ = {
-			isa = PBXGroup;
-			children = (
-				521F02DB1B1407640098928E /* 01－A Puma at Large.lrc */,
-				521F02DC1B1407640098928E /* 01－A Puma at Large.mp3 */,
-				521F02DD1B1407640098928E /* 02－Thirteen Equals One.lrc */,
-				521F02DE1B1407640098928E /* 02－Thirteen Equals One.mp3 */,
-			);
-			path = "第三册";
-			sourceTree = "<group>";
-		};
-		521F02DF1B1407640098928E /* 第二册 */ = {
-			isa = PBXGroup;
-			children = (
-				521F02E01B1407640098928E /* 01－A Private Conversation.lrc */,
-				521F02E11B1407640098928E /* 01－A Private Conversation.mp3 */,
-				521F02E21B1407640098928E /* 02－Breakfast or Lunch.lrc */,
-				521F02E31B1407640098928E /* 02－Breakfast or Lunch.mp3 */,
-			);
-			path = "第二册";
-			sourceTree = "<group>";
-		};
-		521F02E41B1407640098928E /* 第四册 */ = {
-			isa = PBXGroup;
-			children = (
-				521F02E51B1407640098928E /* 01－Finding Fossil Man.lrc */,
-				521F02E61B1407640098928E /* 01－Finding Fossil Man.mp3 */,
-				521F02E71B1407640098928E /* 02－Spare That Spider.lrc */,
-				521F02E81B1407640098928E /* 02－Spare That Spider.mp3 */,
-			);
-			path = "第四册";
 			sourceTree = "<group>";
 		};
 		52B6CC3E1A9BF53D00E043C0 = {
@@ -749,25 +686,23 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				521F03211B1407640098928E /* 02－Breakfast or Lunch.mp3 in Resources */,
 				521F03121B1407640098928E /* talkroom_press.mp3 in Resources */,
 				521F030E1B1407640098928E /* shake_sound_male.mp3 in Resources */,
 				521F02EB1B1407640098928E /* LaunchScreen.xib in Resources */,
+				521F057B1B1476F40098928E /* 第二册 in Resources */,
 				521F03071B1407640098928E /* plan.txt in Resources */,
 				521F02EC1B1407640098928E /* Main.storyboard in Resources */,
+				521F057D1B1476F40098928E /* 第四册 in Resources */,
 				521F03151B1407640098928E /* time_limit.mp3 in Resources */,
 				521F03141B1407640098928E /* talkroom_up.mp3 in Resources */,
 				521F03011B1407640098928E /* speaker2@3x.png in Resources */,
-				521F031F1B1407640098928E /* 01－A Private Conversation.mp3 in Resources */,
 				521F030B1B1407640098928E /* sent_message.mp3 in Resources */,
 				521F030A1B1407640098928E /* qrcode_completed.mp3 in Resources */,
 				521F030F1B1407640098928E /* shakelucky_firework_sound.mp3 in Resources */,
-				521F03201B1407640098928E /* 02－Breakfast or Lunch.lrc in Resources */,
 				521F02FC1B1407640098928E /* speaker0@2x.png in Resources */,
 				521F02EF1B1407640098928E /* mic0@3x.png in Resources */,
 				521F03101B1407640098928E /* talkroom_begin.mp3 in Resources */,
 				521F03081B1407640098928E /* after_upload_voice.mp3 in Resources */,
-				521F03241B1407640098928E /* 02－Spare That Spider.lrc in Resources */,
 				521F03041B1407640098928E /* speaker4@2x.png in Resources */,
 				521F030D1B1407640098928E /* shake_nomatch.mp3 in Resources */,
 				521F02F11B1407640098928E /* mic1@3x.png in Resources */,
@@ -775,39 +710,29 @@
 				521F02F61B1407640098928E /* mic4@2x.png in Resources */,
 				521F02F71B1407640098928E /* mic4@3x.png in Resources */,
 				521F03061B1407640098928E /* nec_mp3_file_list.txt in Resources */,
+				521F057C1B1476F40098928E /* 第三册 in Resources */,
 				521F03131B1407640098928E /* talkroom_sasasa.mp3 in Resources */,
-				521F03171B1407640098928E /* 001&002－Excuse Me.mp3 in Resources */,
 				521F02691B14056C0098928E /* VolumeList.plist in Resources */,
 				521F02FF1B1407640098928E /* speaker1@3x.png in Resources */,
-				521F03221B1407640098928E /* 01－Finding Fossil Man.lrc in Resources */,
-				521F031E1B1407640098928E /* 01－A Private Conversation.lrc in Resources */,
-				521F03231B1407640098928E /* 01－Finding Fossil Man.mp3 in Resources */,
 				521F02FB1B1407640098928E /* mic6@3x.png in Resources */,
 				521F02FE1B1407640098928E /* speaker1@2x.png in Resources */,
-				521F03251B1407640098928E /* 02－Spare That Spider.mp3 in Resources */,
 				521F030C1B1407640098928E /* shake_match.mp3 in Resources */,
 				521F02F21B1407640098928E /* mic2@2x.png in Resources */,
-				521F03191B1407640098928E /* 003&004－Sorry, Sir.mp3 in Resources */,
-				521F031A1B1407640098928E /* 01－A Puma at Large.lrc in Resources */,
 				521F02F41B1407640098928E /* mic3@2x.png in Resources */,
 				521F03031B1407640098928E /* speaker3@3x.png in Resources */,
 				52B6CC581A9BF53D00E043C0 /* Images.xcassets in Resources */,
 				521F02F91B1407640098928E /* mic5@3x.png in Resources */,
-				521F03161B1407640098928E /* 001&002－Excuse Me.lrc in Resources */,
-				521F031B1B1407640098928E /* 01－A Puma at Large.mp3 in Resources */,
 				521F02F51B1407640098928E /* mic3@3x.png in Resources */,
 				521F02F81B1407640098928E /* mic5@2x.png in Resources */,
 				521F02FD1B1407640098928E /* speaker0@3x.png in Resources */,
 				521F02F31B1407640098928E /* mic2@3x.png in Resources */,
 				521F03001B1407640098928E /* speaker2@2x.png in Resources */,
 				521F03051B1407640098928E /* speaker4@3x.png in Resources */,
+				521F057E1B1476F40098928E /* 第一册 in Resources */,
 				521F03091B1407640098928E /* play_completed.mp3 in Resources */,
 				521F029E1B1406600098928E /* SYPlayerConsole.xib in Resources */,
-				521F031C1B1407640098928E /* 02－Thirteen Equals One.lrc in Resources */,
 				521F02EE1B1407640098928E /* mic0@2x.png in Resources */,
-				521F031D1B1407640098928E /* 02－Thirteen Equals One.mp3 in Resources */,
 				521F02F01B1407640098928E /* mic1@2x.png in Resources */,
-				521F03181B1407640098928E /* 003&004－Sorry, Sir.lrc in Resources */,
 				521F02FA1B1407640098928E /* mic6@2x.png in Resources */,
 				521F03021B1407640098928E /* speaker3@2x.png in Resources */,
 			);
@@ -875,6 +800,7 @@
 				521F029A1B1406600098928E /* SYLrcMaskView.m in Sources */,
 				521F02961B1406600098928E /* SYPlaylists.m in Sources */,
 				521F029C1B1406600098928E /* SYBackGroundScroll.m in Sources */,
+				521F035A1B1437CA0098928E /* SYDropdownAlert.m in Sources */,
 				521F02501B1404360098928E /* NSString+Tools.m in Sources */,
 				521F029F1B1406600098928E /* SYPlayListTableView.m in Sources */,
 				52B6CC4D1A9BF53D00E043C0 /* main.m in Sources */,
