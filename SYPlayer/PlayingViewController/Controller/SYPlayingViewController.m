@@ -7,6 +7,7 @@
 //
 #warning 收藏页功能
 #warning 重设字体，字号，颜色，重设皮肤颜色功能
+#import <MediaPlayer/MediaPlayer.h>
 #import "SYPlayingViewController.h"
 #import "SYTitleButton.h"
 #import "SYPlayerConsole.h"
@@ -19,7 +20,6 @@
 #import "Reachability.h"
 #import "UIAlertView+Blocks.h"
 #import "FSPlaylistItem.h"
-#import <MediaPlayer/MediaPlayer.h>
 #import "MobClick.h"
 #import "GDTMobBannerView.h"
 #import "SYRecordView.h"
@@ -27,6 +27,7 @@
 #import "SYPlaylist.h"
 #import "SYPlaylists.h"
 #import "SYPlayListTableView.h"
+#import "SYMediaInfo.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -239,7 +240,6 @@ typedef void (^SYDownloadCompletion)();
     /** 播放器 */
     self.audioController = [SYAudioController sharedAudioController];
     self.audioController.sydelegate = self;
-    [self setupAudioController];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -442,13 +442,11 @@ typedef void (^SYDownloadCompletion)();
 -(void)playerConsoleNext:(SYPlayerConsole *)console{
     [self.volumes playingList].playingIndex ++;
     [self playModel];
-    self.titleListBtn.Opened = NO;
 }
 /** 上一首 */
 -(void)playerConsolePrev:(SYPlayerConsole *)console{
     [self.volumes playingList].playingIndex --;
     [self playModel];
-    self.titleListBtn.Opened = NO;
 }
 /** 拖动进度条 */
 -(void)playerConsoleProgressChanged:(SYPlayerConsole *)console {
@@ -460,13 +458,9 @@ typedef void (^SYDownloadCompletion)();
 }
 /** 播放/暂停状态改变 */
 -(void)playerConsolePlayingStatusChanged:(SYPlayerConsole *)console{
-    if (self.audioController.stopped) {
-        [self.audioController play];
-    }else{
-        [self.audioController pause];
-    }
+    [self.audioController changePlayPauseStatus];
 }
-/** 退出键按下 */
+/** 展示隐藏列表 */
 -(void)playerConsoleListClick:(SYPlayerConsole *)console{
     self.titleListBtn.Opened = !self.titleListBtn.Opened;
 }
@@ -631,9 +625,9 @@ typedef void (^SYDownloadCompletion)();
 }
 
 #pragma mark - SYAudioController
--(void)SYAudioControllerTimerUpdate:(SYAudioController *)audiocontroller{
+-(void)SYAudioControllerTimerUpdate:(SYAudioController *)audioController{
     self.seeking = YES;
-    if (self.audioController.activeStream.continuous) {
+    if (audioController.activeStream.continuous) {
         //        self.playerConsole.timeProgressInSecond = 0;
         //        self.playerConsole.timeTotalInSecond = 0;
     } else {
@@ -647,7 +641,25 @@ typedef void (^SYDownloadCompletion)();
         self.lrcView.timeProgressInSecond = cur.playbackTimeInSeconds;
     }
 }
-#pragma mark - setup audiocontroller
+-(void)SYAudioControllerPlaying:(SYAudioController *)audioController{
+    [self updateStatus];
+    self.titleListBtn.Opened = NO;
+}
+-(void)SYAudioControllerPause:(SYAudioController *)audioController{
+    
+    self.playerConsole.playing = NO;
+}
+-(void)SYAudioControllerStop:(SYAudioController *)audioController{
+    
+    self.playerConsole.playing = NO;
+}
+-(void)SYAudioControllerPlaybackComplete:(SYAudioController *)audioController{
+    
+}
+-(void)SYAudioController:(SYAudioController *)audioController mediaInfoLoaded:(SYMediaInfo *)info{
+    SYLog(@"mediaInfoLoaded:%@",[info toDict]);
+}
+#pragma mark - setup audioController
 
 -(BOOL)playModel
 {
@@ -680,133 +692,9 @@ typedef void (^SYDownloadCompletion)();
     NSString *t_evnt = [NSMutableString stringWithFormat:@"Song:%@",[self.volumes playingSong].name];
     [MobClick event:@"Playing" label:t_evnt];
     
-    [self updateStatus];
-    
     [self.audioController play];
     
     return YES;
-}
-
--(void)setupAudioController{
-    /** 设定audioPlayer工况处理 */
-    __weak typeof(self) weakSelf = self;
-    self.audioController.onStateChange = ^(FSAudioStreamState state) {
-        SYAudioController *audioController = [SYAudioController sharedAudioController];
-        SYPlaylists *volumes = audioController.volumes;
-        switch (state) {
-            case kFsAudioStreamPlaying:
-            {
-                SYLog(@"Playing");
-                audioController.playing = YES;
-                
-                weakSelf.playerConsole.playing = YES;
-                break;
-            }
-            case kFsAudioStreamPaused:
-            {
-                SYLog(@"Paused");
-                audioController.playing = NO;
-                
-                weakSelf.playerConsole.playing = NO;
-                break;
-            }
-            case kFsAudioStreamStopped:
-                SYLog(@"Stopped");
-                audioController.stopped = YES;
-                
-                weakSelf.playerConsole.playing = NO;
-                
-                break;
-            case kFsAudioStreamPlaybackCompleted:
-                NSLog(@"kFsAudioStreamPlaybackCompleted");
-                [volumes playingList].playingIndex ++;
-                [audioController play];
-                break;
-            case kFsAudioStreamBuffering:
-                break;
-            case kFsAudioStreamFailed:
-                NSLog(@"kFsAudioStreamFailed");
-                break;
-            case kFsAudioStreamSeeking:
-                break;
-            case kFsAudioStreamRetrievingURL:
-                NSLog(@"kFsAudioStreamRetrievingURL");
-                break;
-            case kFsAudioStreamRetryingStarted:
-                NSLog(@"kFsAudioStreamRetryingStarted");
-                break;
-            case kFsAudioStreamRetryingSucceeded:
-                NSLog(@"kFsAudioStreamRetryingSucceeded");
-                break;
-            case kFsAudioStreamRetryingFailed:
-                NSLog(@"kFsAudioStreamRetryingFailed");
-                break;
-            default:
-                break;
-        }
-    };
-    
-    self.audioController.onFailure = ^(FSAudioStreamError error, NSString *errorDescription) {
-        NSString *errorCategory;
-        
-        switch (error) {
-            case kFsAudioStreamErrorOpen:
-                errorCategory = @"Cannot open the audio stream: ";
-                break;
-            case kFsAudioStreamErrorStreamParse:
-                errorCategory = @"Cannot read the audio stream: ";
-                break;
-            case kFsAudioStreamErrorNetwork:
-                errorCategory = @"Network failed: cannot play the audio stream: ";
-                break;
-            case kFsAudioStreamErrorUnsupportedFormat:
-                errorCategory = @"Unsupported format: ";
-                break;
-            case kFsAudioStreamErrorStreamBouncing:
-                errorCategory = @"Network failed: cannot get enough data to play: ";
-                break;
-            default:
-                errorCategory = @"Unknown error occurred: ";
-                break;
-        }
-        
-        NSString *formattedError = [NSString stringWithFormat:@"%@ %@", errorCategory, errorDescription];
-        NSLog(@"%@",formattedError);
-    };
-    
-    self.audioController.onMetaDataAvailable = ^(NSDictionary *metaData) {
-        NSMutableString *streamInfo = [[NSMutableString alloc] init];
-        
-        //        [weakSelf determineStationNameWithMetaData:metaData];
-        
-        Class playingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
-        
-        if (playingInfoCenter) {
-            NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
-            
-            if (metaData[@"MPMediaItemPropertyTitle"]) {
-                songInfo[MPMediaItemPropertyTitle] = metaData[@"MPMediaItemPropertyTitle"];
-            } else if (metaData[@"StreamTitle"]) {
-                songInfo[MPMediaItemPropertyTitle] = metaData[@"StreamTitle"];
-            }
-            
-            if (metaData[@"MPMediaItemPropertyArtist"]) {
-                songInfo[MPMediaItemPropertyArtist] = metaData[@"MPMediaItemPropertyArtist"];
-            }
-#warning 锁屏控制功能不好用
-            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:songInfo];
-        }
-        
-        if (metaData[@"MPMediaItemPropertyArtist"] &&
-            metaData[@"MPMediaItemPropertyTitle"]) {
-            [streamInfo appendString:metaData[@"MPMediaItemPropertyTitle"]];
-        } else if (metaData[@"StreamTitle"]) {
-            [streamInfo appendString:metaData[@"StreamTitle"]];
-        }
-        
-        weakSelf.playerConsole.statusText = streamInfo;
-        
-    };
 }
 
 #pragma mark - dealloc

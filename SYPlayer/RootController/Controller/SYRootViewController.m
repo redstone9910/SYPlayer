@@ -109,8 +109,11 @@
     SYCircleModel *p = self.circles[indexPath.item];
     
     SYPlayingViewController *sVc = [[SYPlayingViewController alloc] init];
-    self.volumes.playingIndex = p.volumeIndex - 1;
-    [self.volumes save];
+    if (self.volumes.playingIndex != p.volumeIndex - 1) {
+        self.volumes.playingIndex = p.volumeIndex - 1;
+        [[SYAudioController sharedAudioController] stop];
+        [self.volumes save];
+    }
     
     [self presentViewController:sVc animated:YES completion:^{
     }];

@@ -13,7 +13,7 @@
 #import "SYPlaylists.h"
 
 @interface AppDelegate ()
-@property (nonatomic,strong) SYAudioController * audioController;
+@property (nonatomic,strong) FSAudioController * audioController;
 @end
 
 @implementation AppDelegate
@@ -25,6 +25,16 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     SYRootViewController *rootController = [[SYRootViewController alloc] init];
+    
+    FSAudioController *audioController = [[FSAudioController alloc] init];
+    NSString *local = @"/Users/yinyanhui/Desktop/01－Finding Fossil Man.mp3";
+    NSURL *localURL = [NSURL fileURLWithPath:local];
+    NSString *web = @"http://www.xyuan360.com/download/NCE4-%E7%BE%8E%E9%9F%B3-(MP3+LRC)/10%EF%BC%8DSilicon%20Valley.mp3";
+    NSURL *webURL = [NSURL URLWithString:web];
+    audioController.url = localURL;
+    [audioController play];
+    self.audioController = audioController;
+    return YES;
     
     self.window.rootViewController = rootController;
     [self.window makeKeyAndVisible];

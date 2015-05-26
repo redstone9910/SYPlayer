@@ -9,10 +9,16 @@
 #import "FSAudioController.h"
 @class SYPlaylists;
 @class SYAudioController;
+@class SYMediaInfo;
 
 @protocol SYAudioControllerDelegate <NSObject>
 @optional
--(void)SYAudioControllerTimerUpdate:(SYAudioController *)audiocontroller;
+-(void)SYAudioControllerTimerUpdate:(SYAudioController *)audioController;
+-(void)SYAudioControllerPlaying:(SYAudioController *)audioController;
+-(void)SYAudioControllerPause:(SYAudioController *)audioController;
+-(void)SYAudioControllerStop:(SYAudioController *)audioController;
+-(void)SYAudioControllerPlaybackComplete:(SYAudioController *)audioController;
+-(void)SYAudioController:(SYAudioController *)audioController mediaInfoLoaded:(SYMediaInfo *)info;
 @end
 
 @interface SYAudioController : FSAudioController
@@ -24,5 +30,10 @@
 @property (nonatomic,strong) SYPlaylists * volumes;
 /** 单例 */
 +(instancetype)sharedAudioController;
+
+/** 播放暂停控制 */
+-(void)changePlayPauseStatus;
+
+/** 代理 */
 @property (nonatomic,weak) id<SYAudioControllerDelegate> sydelegate;
 @end
