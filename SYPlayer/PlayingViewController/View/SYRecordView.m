@@ -262,6 +262,7 @@ typedef enum recordStatus{
     float fontSize = self.statusImage.bounds.size.height * fontSizeScale;
     self.recordStatus.font = [UIFont systemFontOfSize:fontSize];
     
+    NSString *leadingText = @"跟读模式:";
     switch (_status) {
         case recordStatusPlayingNone:
             self.alpha = alphaUnavailable;
@@ -282,7 +283,7 @@ typedef enum recordStatus{
             self.recordProgress.progress = 0;
             
             self.recordStatus.text = self.statusArray[self.status];
-            [SYDropdownAlert showText:self.statusArray[self.status]];
+            [SYDropdownAlert showText:[leadingText stringByAppendingString:self.statusArray[self.status]]];
             break;
         case recordStatusRecording:
             self.alpha = alphaAvailable;
@@ -291,7 +292,7 @@ typedef enum recordStatus{
             [self.statusImage startAnimating];
             
             self.recordStatus.text = @"";
-            [SYDropdownAlert showText:self.statusArray[self.status]];
+            [SYDropdownAlert showText:[leadingText stringByAppendingString:self.statusArray[self.status]]];
             break;
         case recordStatusPlayingRecord:
             self.alpha = alphaAvailable;
@@ -300,7 +301,7 @@ typedef enum recordStatus{
             [self.statusImage startAnimating];
             
             self.recordStatus.text = @"";
-            [SYDropdownAlert showText:self.statusArray[self.status]];
+            [SYDropdownAlert showText:[leadingText stringByAppendingString:self.statusArray[self.status]]];
             break;
         default:
             break;

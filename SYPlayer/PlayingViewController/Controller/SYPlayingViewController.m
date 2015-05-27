@@ -185,7 +185,7 @@ typedef void (^SYDownloadCompletion)();
     [self.view addConstraints:@[cnsB5,cnsL5,cnsR5]];
     NSLayoutConstraint *cnsH5 = [NSLayoutConstraint constraintWithItem:self.bannerView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:50];
     [self.bannerView addConstraints:@[cnsH5]];
-//    [self reLayoutSubviewsWithAdHeight:50];//设定广告条高度为0并重新布局
+    [self reLayoutSubviewsWithAdHeight:0];//设定广告条高度为0并重新布局
     
     /** 控制台 */
     self.playerConsole = [SYPlayerConsole playerConsole];
@@ -676,6 +676,9 @@ typedef void (^SYDownloadCompletion)();
 }
 -(void)SYAudioControllerPlaybackComplete:(SYAudioController *)audioController{
     
+}
+-(void)SYAudioControllerBuffering:(SYAudioController *)audioController{
+    [SYDropdownAlert showText:@"正在缓冲..."];
 }
 -(void)SYAudioController:(SYAudioController *)audioController mediaInfoLoaded:(SYMediaInfo *)info{
 //    SYLog(@"mediaInfoLoaded:%@",[info toDict]);

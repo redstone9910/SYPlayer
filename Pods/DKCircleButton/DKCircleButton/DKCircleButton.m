@@ -180,7 +180,7 @@
     circleShape.fillColor = [UIColor clearColor].CGColor;
     circleShape.opacity = 0;
     circleShape.strokeColor = self.borderColor.CGColor;
-    circleShape.lineWidth = 2.0;
+    circleShape.lineWidth = 0.5;
     
     [self.superview.layer addSublayer:circleShape];
     

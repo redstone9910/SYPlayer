@@ -19,6 +19,7 @@
 -(void)SYAudioControllerPause:(SYAudioController *)audioController;
 -(void)SYAudioControllerStop:(SYAudioController *)audioController;
 -(void)SYAudioControllerSeeking:(SYAudioController *)audioController;
+-(void)SYAudioControllerBuffering:(SYAudioController *)audioController;
 -(void)SYAudioControllerPlaybackComplete:(SYAudioController *)audioController;
 -(void)SYAudioController:(SYAudioController *)audioController mediaInfoLoaded:(SYMediaInfo *)info;
 -(void)SYAudioControllerFetchingURL:(SYAudioController *)audioController;

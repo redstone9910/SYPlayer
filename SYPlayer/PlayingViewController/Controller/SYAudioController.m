@@ -161,6 +161,10 @@
                 }
                 break;
             case kFsAudioStreamBuffering:
+                if ([weakSelf.sydelegate respondsToSelector:@selector(SYAudioControllerBuffering:)]) {
+                    [weakSelf.sydelegate SYAudioControllerBuffering:weakSelf];
+                }
+                SYLog(@"kFsAudioStreamBuffering");
                 break;
             case kFsAudioStreamFailed:
                 SYLog(@"kFsAudioStreamFailed");

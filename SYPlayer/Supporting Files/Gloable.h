@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 #define catchePath [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches"]
-#define SYLog(...) NSLog(__VA_ARGS__)
+#define SYLog(...) //NSLog(__VA_ARGS__)
 #define lightGreenColor [UIColor colorWithRed:0 / 255 green: 210.0 / 255 blue: 91.0 / 255 alpha:1]
 /** 最后一句歌词长度 */
 #define defaultInterval 5

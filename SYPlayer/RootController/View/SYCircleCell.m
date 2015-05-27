@@ -52,6 +52,7 @@
     /** centerButton约束关系 */
     self.centerButton = [[DKCircleButton alloc] init];
     self.centerButton.borderColor = self.defaultColor;
+    self.centerButton.borderSize = 1.0;
     [self.centerButton setTitleColor:self.defaultColor forState:UIControlStateNormal];
     [self.centerButton addTarget:self action:@selector(buttonDidClick) forControlEvents:UIControlEventTouchUpInside];
     
@@ -85,8 +86,8 @@
 //    }];
 //    [fontArray writeToFile:[catchePath stringByAppendingPathComponent:@"font.plist"] atomically:YES];
     
-    self.centerLabel.font = [UIFont fontWithName:@"Iowan Old Style" size:self.contentView.bounds.size.height * self.titleFontSize];
-    self.centerButton.titleLabel.font = [UIFont fontWithName:@"Iowan Old Style" size:self.contentView.bounds.size.height * buttonLabelFontSize];
+    self.centerLabel.font = [UIFont fontWithName:@"Bodoni 72" size:self.contentView.bounds.size.height * self.titleFontSize];
+    self.centerButton.titleLabel.font = [UIFont fontWithName:@"Bodoni 72" size:self.contentView.bounds.size.height * buttonLabelFontSize];
 }
 #pragma mark - property
 -(void)setModel:(SYCircleModel *)model{
@@ -104,7 +105,7 @@
 }
 -(void)setTitleFontSize:(float)titleFontSize{
     _titleFontSize = titleFontSize;
-    self.centerLabel.font = [UIFont fontWithName:@"Iowan Old Style" size:self.contentView.bounds.size.height * self.titleFontSize];
+    self.centerLabel.font = [UIFont fontWithName:@"Bodoni 72" size:self.contentView.bounds.size.height * self.titleFontSize];
 }
 #pragma mark - private
 -(void)buttonDidClick{
