@@ -1,28 +1,73 @@
 PODS:
-  - FreeStreamer (2.12.9):
+  - AFNetworking (2.5.4):
+    - AFNetworking/NSURLConnection (= 2.5.4)
+    - AFNetworking/NSURLSession (= 2.5.4)
+    - AFNetworking/Reachability (= 2.5.4)
+    - AFNetworking/Security (= 2.5.4)
+    - AFNetworking/Serialization (= 2.5.4)
+    - AFNetworking/UIKit (= 2.5.4)
+  - AFNetworking/NSURLConnection (2.5.4):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.5.4):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.5.4)
+  - AFNetworking/Security (2.5.4)
+  - AFNetworking/Serialization (2.5.4)
+  - AFNetworking/UIKit (2.5.4):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
+  - DKCircleButton (1.1)
+  - FMDB (2.5):
+    - FMDB/standard (= 2.5)
+  - FMDB/common (2.5)
+  - FMDB/standard (2.5):
+    - FMDB/common
+  - FreeStreamer (2.12.11):
     - Reachability (~> 3.0)
+  - FXBlurView (1.6.3)
   - MBProgressHUD (0.9.1)
+  - MJExtension (2.1.0)
   - MKNetworkKit (0.87):
     - Reachability (~> 3.1.0)
   - Reachability (3.1.1)
+  - REFrostedViewController (2.4.8)
+  - RKDropdownAlert (0.3.0)
   - SDWebImage (3.7.2):
     - SDWebImage/Core (= 3.7.2)
   - SDWebImage/Core (3.7.2)
   - UIAlertView-Blocks (1.0)
 
 DEPENDENCIES:
+  - AFNetworking
+  - DKCircleButton
+  - FMDB (~> 2.5)
   - FreeStreamer (~> 2.12.5)
+  - FXBlurView
   - MBProgressHUD (~> 0.9.1)
+  - MJExtension
   - MKNetworkKit
+  - REFrostedViewController (~> 2.4.8)
+  - RKDropdownAlert
   - SDWebImage (~> 3.7.2)
   - UIAlertView-Blocks
 
 SPEC CHECKSUMS:
-  FreeStreamer: ed90a09e6a9db752a469722c5bfa549b81f0b539
+  AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
+  DKCircleButton: 62564c9debae08ad77dabb8d9658dfeb5520f2c4
+  FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
+  FreeStreamer: 37e0c8fe1e9fa6ced7349a9b01aaac81b013a814
+  FXBlurView: c6d23f3d35af2c6282296a2930f61c6e2c788d01
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
+  MJExtension: d4fd481247b262b59cf8cdf5815661cff460aaa2
   MKNetworkKit: 60ad3c83b62183e40ba75ce772c9427c25b520de
   Reachability: dd9aa4fb6667b9f787690a74f53cb7634ce99893
+  REFrostedViewController: a893b4979ba1f200c547aef9ff4c3fd5a18f5923
+  RKDropdownAlert: f4b3364c251829ad439dc666836a1f2dad26f4c7
   SDWebImage: 71b7cdc1d1721d6a82ed62889030225f2c249e29
   UIAlertView-Blocks: 7904744fca618afbd2ec646608924f5e69d5acd1
 
-COCOAPODS: 0.35.0
+COCOAPODS: 0.37.1
