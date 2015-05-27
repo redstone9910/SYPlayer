@@ -11,6 +11,7 @@
 
 @implementation SYDropdownAlert
 +(void)showText:(NSString *)text{
+    SYLog(text);
     [self title:nil message:text backgroundColor:lightGreenColor textColor:[UIColor whiteColor] time:10];
 }
 @end

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+@class FXBlurView;
 
 @interface SYPlayListTableView : UITableView
 @property (nonatomic,assign) long selectedRow;

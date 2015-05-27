@@ -7,6 +7,7 @@
 //
 
 #import "SYPlayListTableView.h"
+#import "FXBlurView.h"
 #import "Gloable.h"
 
 @interface SYPlayListTableView()
@@ -51,4 +52,6 @@
     UITableViewCell *currCell = [self cellForRowAtIndexPath:_selectedIndexPath];
     [currCell setSelected:YES];
 }
+
+#pragma mark - property
 @end

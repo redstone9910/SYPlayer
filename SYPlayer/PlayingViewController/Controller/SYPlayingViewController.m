@@ -29,6 +29,7 @@
 #import "SYPlayListTableView.h"
 #import "SYMediaInfo.h"
 #import "SYDropdownAlert.h"
+#import "FXBlurView.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -216,11 +217,11 @@ typedef void (^SYDownloadCompletion)();
     
     /** 歌曲列表 */
     self.playListTable = [[SYPlayListTableView alloc] init];
-    self.playListTable.rowHeight = 30;
+    self.playListTable.rowHeight = 35;
+    self.playListTable.tableHeaderView = [[UIView alloc] init];
     self.playListTable.delegate = self;
     self.playListTable.dataSource = self;
-    self.playListTable.backgroundColor = [UIColor blackColor];
-    self.playListTable.alpha = 0.6;
+    self.playListTable.backgroundColor = [UIColor clearColor];
     
     [self.view addSubview:self.playListTable];
     self.playListTable.translatesAutoresizingMaskIntoConstraints = NO;
@@ -244,7 +245,6 @@ typedef void (^SYDownloadCompletion)();
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
-    self.lrcView.lrcFile = [self.volumes playingSong].lrcPath;
     [self updateStatus];
 }
 
@@ -342,15 +342,14 @@ typedef void (^SYDownloadCompletion)();
 -(void)updateStatus{
     SYSong *song = [self.volumes playingSong];
     self.playerConsole.playing = self.audioController.isPlaying;
-    self.playerConsole.stopped = self.audioController.stopped;
     
     NSArray *ary = [song.name componentsSeparatedByString:@"－"];
     NSString *str = [ary firstObject];
     self.titleListBtn.titleText = [NSString stringWithFormat:@"%@-%@",[self.volumes playingList].volumeTitle,str];
-    self.titleListBtn.Opened = NO;
     
     self.playListTable.selectedRow = [self.volumes playingList].playingIndex;
     
+    self.lrcView.lrcFile = [self.volumes playingSong].lrcPath;
 }
 #pragma mark - IBAction
 
@@ -439,12 +438,12 @@ typedef void (^SYDownloadCompletion)();
 /** 下一首 */
 -(void)playerConsoleNext:(SYPlayerConsole *)console{
     [self.volumes playingList].playingIndex ++;
-    [self playModel];
+    [self.audioController startPlay];
 }
 /** 上一首 */
 -(void)playerConsolePrev:(SYPlayerConsole *)console{
     [self.volumes playingList].playingIndex --;
-    [self playModel];
+    [self.audioController startPlay];
 }
 /** 拖动进度条 */
 -(void)playerConsoleProgressChanged:(SYPlayerConsole *)console {
@@ -473,11 +472,14 @@ typedef void (^SYDownloadCompletion)();
 /** 录音模式改变 */
 -(void)playerConsoleRecordingStatusChanged:(SYPlayerConsole *)console
 {
-    [self seekToNewTime:0];
+    if (!self.audioController.playing) {
+        [self.audioController changePlayPauseStatus];
+    }
     if (console.recording) {
         self.lrcView.playMode = lrcPlayModeSingleSentence;
         [self popOutRecorder:YES];
         self.recordView.animating = NO;
+        [SYDropdownAlert showText:@"跟读模式 请稍候..."];
     }else{
         self.lrcView.playMode = lrcPlayModeWhole;
         [self popOutRecorder:NO];
@@ -487,6 +489,7 @@ typedef void (^SYDownloadCompletion)();
             self.recordView.animating = NO;
             [self.recordView stop];
         }];
+        [SYDropdownAlert dismissAllAlert];
     }
 }
 #pragma mark - SYLrcViewDelegate
@@ -503,6 +506,7 @@ typedef void (^SYDownloadCompletion)();
 /** 一句播完 */
 -(void)lrcView:(SYLrcView *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence time:(float)time
 {
+//    [SYDropdownAlert dismissAllAlert];
     NSString *title = [self.volumes playingSong].name;
     
     self.playerConsole.playing = NO;
@@ -553,7 +557,13 @@ typedef void (^SYDownloadCompletion)();
 {
     for (NSLayoutConstraint *cst in self.view.constraints) {
         if ((cst.firstItem == self.playListTable) && (cst.firstAttribute == NSLayoutAttributeBottom)) {
-            cst.constant = playListBtn.isOpened ? 0 : -(self.playerConsole.frame.origin.y - self.playListTable.frame.origin.y);
+            if (playListBtn.isOpened) {
+                cst.constant = 0;
+                self.lrcView.clearMode = YES;
+            }else{
+                cst.constant = -(self.playerConsole.frame.origin.y - self.playListTable.frame.origin.y);
+                self.lrcView.clearMode = NO;
+            }
             [UIView animateWithDuration:0.3 animations:^{
                 [self.view layoutIfNeeded];
             }];
@@ -563,6 +573,7 @@ typedef void (^SYDownloadCompletion)();
 }
 
 #pragma mark - playListTable DataSource
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return [self.volumes playingList].songs.count;
@@ -582,7 +593,7 @@ typedef void (^SYDownloadCompletion)();
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.volumes playingList].playingIndex = indexPath.row;
-    [self playModel];
+    [self.audioController startPlay];
 }
 
 #pragma mark - SYSongCellDelegate
@@ -640,10 +651,20 @@ typedef void (^SYDownloadCompletion)();
         self.lrcView.timeProgressInSecond = cur.playbackTimeInSeconds;
     }
 }
--(void)SYAudioControllerPlaying:(SYAudioController *)audioController{
-    [SYDropdownAlert dismissAllAlert];
+-(void)SYAudioControllerWillPlay:(SYAudioController *)audioController{
     [self updateStatus];
+    NSString *t_evnt = [NSMutableString stringWithFormat:@"Song:%@",[self.volumes playingSong].name];
+    [MobClick event:@"Playing" label:t_evnt];
+    
+    self.playerConsole.stopped = YES;
+    [SYDropdownAlert showText:@"正在缓冲..."];
     self.titleListBtn.Opened = NO;
+}
+-(void)SYAudioControllerPlaying:(SYAudioController *)audioController{
+    self.playerConsole.playing = self.audioController.isPlaying;
+    if (!self.playerConsole.recording) {
+        [SYDropdownAlert dismissAllAlert];
+    }
 }
 -(void)SYAudioControllerPause:(SYAudioController *)audioController{
     
@@ -657,16 +678,16 @@ typedef void (^SYDownloadCompletion)();
     
 }
 -(void)SYAudioController:(SYAudioController *)audioController mediaInfoLoaded:(SYMediaInfo *)info{
-    SYLog(@"mediaInfoLoaded:%@",[info toDict]);
+//    SYLog(@"mediaInfoLoaded:%@",[info toDict]);
 }
 -(void)SYAudioControllerFetchingURL:(SYAudioController *)audioController{
-    [SYDropdownAlert showText:@"FechingURL..."];
+    [SYDropdownAlert showText:@"正在获取URL..."];
 }
 -(void)SYAudioControllerFetchURLFailed:(SYAudioController *)audioController{
-    [SYDropdownAlert showText:@"FecheURLFailed"];
+    [SYDropdownAlert showText:@"获取URL失败"];
 }
 -(void)SYAudioControllerFetchURLSuccess:(SYAudioController *)audioController{
-    [SYDropdownAlert showText:@"FecheURLSuccess"];
+    [SYDropdownAlert showText:@"获取URL成功"];
     [self updateStatus];
 }
 #pragma mark - setup audioController
@@ -699,11 +720,6 @@ typedef void (^SYDownloadCompletion)();
 //        self.lrcView.lrcFile = nil;
 //        self.titleListBtn.Opened = YES;
 //    }
-    NSString *t_evnt = [NSMutableString stringWithFormat:@"Song:%@",[self.volumes playingSong].name];
-    [MobClick event:@"Playing" label:t_evnt];
-    
-    self.lrcView.lrcFile = [self.volumes playingSong].lrcPath;
-    [self updateStatus];
     [self.audioController startPlay];
     
     return YES;

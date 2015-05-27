@@ -85,6 +85,8 @@
         NSLayoutConstraint *cnsR = [NSLayoutConstraint constraintWithItem:self.lrcScroll attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1 constant:0];
         [self addConstraints:@[cnsT,cnsB,cnsL,cnsR]];
     }
+    
+    self.clearMode = NO;
 }
 
 /** 分离时间和歌词 */
@@ -186,7 +188,7 @@
         currentLabel.font = self.lrcCurrentFont;
         currentLabel.textColor = lightGreenColor;
         self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, currentLabel.frame.origin.y - firstLabel.frame.origin.y);
-        [self.lrcScroll addMask];
+        [self.lrcScroll addMask:self.clearMode animateDuration:0];
     } completion:^(BOOL finished) {
         
     }];
@@ -320,7 +322,7 @@
         float labelY = lastLabel.frame.origin.y + lastLabel.frame.size.height;
         self.lrcScroll.contentSize = CGSizeMake(0, labelY + self.lrcScroll.bounds.size.height * (1 - lrcOffset));
     }
-    [self.lrcScroll addMask];
+    [self.lrcScroll addMask:self.clearMode animateDuration:0.3];
 }
 -(UIScrollView *)lrcScroll{
     if (_lrcScroll == nil) {
@@ -333,7 +335,10 @@
     }
     return _lrcScroll;
 }
-
+-(void)setClearMode:(BOOL)clearMode{
+    _clearMode = clearMode;
+    [self.lrcScroll addMask:_clearMode animateDuration:0.3];
+}
 #pragma mark - UIScrollViewDelegate
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView

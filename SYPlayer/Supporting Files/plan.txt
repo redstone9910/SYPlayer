@@ -1,11 +1,4 @@
-1.本地给定请求根URL:
-http://www.xyuan360.com/logon.php
-2.发送MD5加密文件名验证请求，正确则返回下载地址URL(exp. http://www.xyuan360.com/downloads/xxxx.mp3)
-此处需要服务器端按照文件名-MD5对应列表检索出文件名，并搜索对应文件的路径。
-3.开始下载
-
-1.根据model的url判断并设定playlistItem的URL，title
-
+2015-05-27 09:13:09.948 SYPlayer[1463:318481] 09:13:09.948 ERROR:     [0x196e98310] AVAudioSession.mm:646: -[AVAudioSession setActive:withOptions:error:]: Deactivating an audio session that has running I/O. All I/O should be stopped or paused prior to deactivating the audio session.
 
 if (metaData[@"StreamUrl"] && [metaData[@"StreamUrl"] length] > 0) {
 //            weakSelf.stationURL = [NSURL URLWithString:metaData[@"StreamUrl"]];

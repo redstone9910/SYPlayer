@@ -22,7 +22,7 @@
     
     CGFloat colors [] = {
         0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 1.0,
+        0.0, 0.0, 0.0, self.maxAlpha,
         0.0, 0.0, 0.0, 0.0,
     };
     CGFloat locations[] = {
@@ -52,4 +52,13 @@
     CGContextDrawPath(context, kCGPathStroke);
 }
 
+-(void)setMaxAlpha:(float)maxAlpha{
+    _maxAlpha = maxAlpha;
+    if (_maxAlpha > 1) {
+        _maxAlpha = 1;
+    }else if (_maxAlpha < 0){
+        _maxAlpha = 0;
+    }
+    [self setNeedsDisplay];
+}
 @end

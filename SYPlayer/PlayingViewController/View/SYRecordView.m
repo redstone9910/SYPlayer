@@ -11,6 +11,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "FSAudioController.h"
 #import "EVCircularProgressView.h"
+#import "SYDropdownAlert.h"
 
 #define statusPlayingOriginText @"播放原文"
 #define statusRecordingText @"请大声朗读!"
@@ -140,7 +141,6 @@ typedef enum recordStatus{
     //NSLayoutAttributeTrailing对齐
     NSLayoutConstraint *cnsTrailing3 = [NSLayoutConstraint constraintWithItem:self.recordStatus attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.statusImage attribute:NSLayoutAttributeTrailing multiplier:1 constant:0];
     [self addConstraint:cnsTrailing3];
-    
 }
 -(void)layoutSubviews
 {
@@ -154,7 +154,7 @@ typedef enum recordStatus{
     self.recordSentence.text = sentence;
     self.timeTotal = duration;
     self.timeProgress = 0;
-    self.status = recordStatusPlayingOrigin;
+//    self.status = recordStatusPlayingOrigin;
     
     return YES;
 }
@@ -259,6 +259,9 @@ typedef enum recordStatus{
         _status = recordStatusPlayingNone;
     }
     
+    float fontSize = self.statusImage.bounds.size.height * fontSizeScale;
+    self.recordStatus.font = [UIFont systemFontOfSize:fontSize];
+    
     switch (_status) {
         case recordStatusPlayingNone:
             self.alpha = alphaUnavailable;
@@ -267,6 +270,9 @@ typedef enum recordStatus{
             self.statusImage.image = nil;
             self.timeTotal = 0;
             self.recordProgress.progress = 0;
+            
+            self.recordStatus.text = self.statusArray[self.status];
+            [SYDropdownAlert dismissAllAlert];
             break;
         case recordStatusPlayingOrigin:
             self.alpha = alphaUnavailable;
@@ -274,26 +280,32 @@ typedef enum recordStatus{
             self.statusImage.animationImages = nil;
             self.statusImage.image = [UIImage imageNamed:@"mic1"];
             self.recordProgress.progress = 0;
+            
+            self.recordStatus.text = self.statusArray[self.status];
+            [SYDropdownAlert showText:self.statusArray[self.status]];
             break;
         case recordStatusRecording:
             self.alpha = alphaAvailable;
             self.statusImage.animationImages = self.micImages;
             self.statusImage.animationDuration = 4.0 / 6;
             [self.statusImage startAnimating];
+            
+            self.recordStatus.text = @"";
+            [SYDropdownAlert showText:self.statusArray[self.status]];
             break;
         case recordStatusPlayingRecord:
             self.alpha = alphaAvailable;
             self.statusImage.animationImages = self.speakerImages;
             self.statusImage.animationDuration = 4.0 / 6;
             [self.statusImage startAnimating];
+            
+            self.recordStatus.text = @"";
+            [SYDropdownAlert showText:self.statusArray[self.status]];
             break;
         default:
             break;
     }
-    
-    float fontSize = self.statusImage.bounds.size.height * fontSizeScale;
-    self.recordStatus.font = [UIFont systemFontOfSize:fontSize];
-    self.recordStatus.text = self.statusArray[self.status];
+    SYLog(@"recordStatus:%@",self.statusArray[self.status]);
 }
 -(void)setTimeProgress:(float)timeProgress
 {
@@ -395,7 +407,7 @@ typedef enum recordStatus{
 
 - (BOOL)startRecord {
     AVAudioSession *session = [AVAudioSession sharedInstance];
-    [session setCategory:AVAudioSessionCategoryRecord error:nil];
+    [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
     
     self.recordPath = [catchePath stringByAppendingPathComponent:@"test.aac"];
     NSURL *url = [NSURL fileURLWithPath:self.recordPath];

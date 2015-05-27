@@ -455,7 +455,9 @@
 -(void)setPlaying:(BOOL)playing
 {
     _playing = playing;
-    if(self.isPlaying) self.stopped = NO;
+    if(self.isPlaying){
+        self.stopped = NO;
+    }
     
     NSString *currentImage;
     if (self.isPlaying) {
@@ -472,7 +474,7 @@
     _stopped = stopped;
     if (self.isStopped) {
         self.timeTotalInSecond = 0;
-//        self.playBtn.enabled = NO;
+        self.playBtn.enabled = NO;
     }else if(!self.recording){
         self.playBtn.enabled = YES;
     }

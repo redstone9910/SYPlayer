@@ -84,6 +84,11 @@
     }
     
     self.url = url;
+    
+    if ([self.sydelegate respondsToSelector:@selector(SYAudioControllerWillPlay:)]) {
+        [self.sydelegate SYAudioControllerWillPlay:self];
+    }
+    self.playing = NO;
     [self play];
 }
 
@@ -124,8 +129,6 @@
             }
             case kFsAudioStreamPaused:
             {
-                [weakSelf.progressUpdateTimer invalidate];
-                weakSelf.progressUpdateTimer = nil;
                 SYLog(@"Paused");
                 audioController.playing = NO;
                 if ([weakSelf.sydelegate respondsToSelector:@selector(SYAudioControllerPause:)]) {
@@ -143,31 +146,36 @@
                 
                 break;
             case kFsAudioStreamPlaybackCompleted:
-                NSLog(@"kFsAudioStreamPlaybackCompleted");
+                SYLog(@"kFsAudioStreamPlaybackCompleted");
                 [volumes playingList].playingIndex ++;
                 [audioController startPlay];
                 if ([weakSelf.sydelegate respondsToSelector:@selector(SYAudioControllerPlaybackComplete:)]) {
                     [weakSelf.sydelegate SYAudioControllerPlaybackComplete:weakSelf];
                 }
                 break;
+            case kFsAudioStreamSeeking:
+                [weakSelf.progressUpdateTimer invalidate];
+                weakSelf.progressUpdateTimer = nil;
+                if ([weakSelf.sydelegate respondsToSelector:@selector(SYAudioControllerSeeking:)]) {
+                    [weakSelf.sydelegate SYAudioControllerSeeking:weakSelf];
+                }
+                break;
             case kFsAudioStreamBuffering:
                 break;
             case kFsAudioStreamFailed:
-                NSLog(@"kFsAudioStreamFailed");
-                break;
-            case kFsAudioStreamSeeking:
+                SYLog(@"kFsAudioStreamFailed");
                 break;
             case kFsAudioStreamRetrievingURL:
-                NSLog(@"kFsAudioStreamRetrievingURL");
+                SYLog(@"kFsAudioStreamRetrievingURL");
                 break;
             case kFsAudioStreamRetryingStarted:
-                NSLog(@"kFsAudioStreamRetryingStarted");
+                SYLog(@"kFsAudioStreamRetryingStarted");
                 break;
             case kFsAudioStreamRetryingSucceeded:
-                NSLog(@"kFsAudioStreamRetryingSucceeded");
+                SYLog(@"kFsAudioStreamRetryingSucceeded");
                 break;
             case kFsAudioStreamRetryingFailed:
-                NSLog(@"kFsAudioStreamRetryingFailed");
+                SYLog(@"kFsAudioStreamRetryingFailed");
                 break;
             default:
                 break;

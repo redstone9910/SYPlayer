@@ -20,8 +20,6 @@ typedef enum lrcPlayMode
 -(void)lrcViewProgressChanged:(SYLrcView *)lrcView;
 /** 单句模式暂停 */
 -(void)lrcView:(SYLrcView *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence time:(float)time;
-/** 单句模式播放完 */
-//-(void)lrcView:(SYLrcView *)lrcView finishPlaying:
 @end
 
 @interface SYLrcView : UIView
@@ -34,7 +32,9 @@ typedef enum lrcPlayMode
 /** 跳转到下一句(单句模式需要手动调用) */
 -(NSString *)nextSentence:(float)time;
 /** 背景图片Scroll */
-@property (strong, nonatomic) UIScrollView *backgroundScroll;
+@property (weak, nonatomic) UIScrollView *backgroundScroll;
+@property (nonatomic,assign) BOOL clearMode;
+
 /** 创建新LRC View */
 +(instancetype) lrcView;
 /** 代理 */

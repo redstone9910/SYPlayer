@@ -10,4 +10,5 @@
 #import <UIKit/UIKit.h>
 
 @interface SYLrcMaskLayer : CALayer
+@property (nonatomic,assign) float maxAlpha;
 @end

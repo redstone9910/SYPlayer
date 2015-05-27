@@ -47,7 +47,7 @@
     return self;
 }
 -(void)customInit{
-    self.selectedBackgroundView = [[UIView alloc] init];
+//    self.selectedBackgroundView = [[UIView alloc] init];
     self.backgroundColor = [UIColor clearColor];
     
     [self.contentView addSubview:self.playBtn];
@@ -120,8 +120,8 @@
     }
 }
 
--(void)setSelected:(BOOL)selected{
-    [super setSelected:selected];
+-(void)setSelected:(BOOL)selected animated:(BOOL)animated{
+//    [super setSelected:selected animated:animated];
     UIColor *textColor = selected ? lightGreenColor : [UIColor whiteColor];
     self.songNameLabel.textColor = textColor;
 }
@@ -131,6 +131,7 @@
         _playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_playBtn setImage:[UIImage imageNamed:@"colorStyle_nowPlaying"] forState:UIControlStateNormal];
         [_playBtn setImage:[UIImage imageNamed:@"colorStyle_nowPause"] forState:UIControlStateDisabled];
+        _playBtn.hidden = YES;
     }
     return _playBtn;
 }
@@ -138,6 +139,7 @@
     if (_songNameLabel == nil) {
         _songNameLabel = [[UILabel alloc] init];
         _songNameLabel.textColor = [UIColor whiteColor];
+        _songNameLabel.font = [UIFont systemFontOfSize:15];
     }
     return _songNameLabel;
 }
@@ -147,6 +149,7 @@
         _downloadBtn.titleLabel.textColor = [UIColor whiteColor];
         _downloadBtn.titleLabel.font = [UIFont systemFontOfSize:12];
         [_downloadBtn addTarget:self action:@selector(downloadBtnClick) forControlEvents:UIControlEventTouchUpInside];
+        _downloadBtn.hidden = YES;
     }
     return _downloadBtn;
 }
