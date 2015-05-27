@@ -931,7 +931,7 @@
 					"$(PROJECT_DIR)/SYPlayer/Other/UMENG",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c8fad193-7195-4b48-af74-d00727e08f12";
+				PROVISIONING_PROFILE = "5edd6086-761c-4369-8d86-f44c65e5dda5";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -953,7 +953,7 @@
 					"$(PROJECT_DIR)/SYPlayer/Other/UMENG",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c8fad193-7195-4b48-af74-d00727e08f12";
+				PROVISIONING_PROFILE = "e1e8fcaa-344f-4b93-bd1e-fdd3a71eee01";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
