@@ -1,21 +1,21 @@
 //
-//  SYPlayListTableView.m
+//  SYAlbumTableView.m
 //  SYPlayer
 //
 //  Created by YinYanhui on 15-5-25.
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
 
-#import "SYPlayListTableView.h"
+#import "SYAlbumTableView.h"
 #import "FXBlurView.h"
 #import "Gloable.h"
 
-@interface SYPlayListTableView()
+@interface SYAlbumTableView()
 @property (nonatomic,strong) NSIndexPath * prevIndexPath;
 @property (nonatomic,strong) NSIndexPath * selectedIndexPath;
 @end
 
-@implementation SYPlayListTableView
+@implementation SYAlbumTableView
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {

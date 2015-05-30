@@ -273,11 +273,11 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="albumTable" destination="Isy-O0-gFF" id="tWw-cq-ZXG"/>
                         <outlet property="downloadBtn" destination="M2p-mn-i0z" id="Brx-Wm-7ww"/>
                         <outlet property="favoriteBtn" destination="8DQ-ul-sep" id="iGC-g3-WQg"/>
                         <outlet property="gdtAdView" destination="9R3-QO-hGp" id="aBi-ZG-V22"/>
                         <outlet property="lrcUIView" destination="DDY-LN-cYY" id="MGE-te-G1W"/>
-                        <outlet property="playListTable" destination="Isy-O0-gFF" id="tWw-cq-ZXG"/>
                         <outlet property="playerConsoleView" destination="SvA-Mo-9Rm" id="B9b-O8-e4q"/>
                         <outlet property="titleBtnView" destination="iCW-rf-jSI" id="Gfd-aq-FSr"/>
                     </connections>

@@ -1,5 +1,5 @@
 //
-//  SYPlayListTableView.h
+//  SYAlbumTableView.h
 //  SYPlayer
 //
 //  Created by YinYanhui on 15-5-25.
@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 @class FXBlurView;
 
-@interface SYPlayListTableView : UITableView
+@interface SYAlbumTableView : UITableView
 @property (nonatomic,assign) long selectedRow;
 @end

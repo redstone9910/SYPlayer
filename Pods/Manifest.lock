@@ -40,6 +40,8 @@ PODS:
     - SDWebImage/Core (= 3.7.2)
   - SDWebImage/Core (3.7.2)
   - UIAlertView-Blocks (1.0)
+  - YTKKeyValueStore (0.1.2):
+    - FMDB (~> 2.0)
 
 DEPENDENCIES:
   - AFNetworking
@@ -54,6 +56,7 @@ DEPENDENCIES:
   - RKDropdownAlert
   - SDWebImage (~> 3.7.2)
   - UIAlertView-Blocks
+  - YTKKeyValueStore
 
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
@@ -69,5 +72,6 @@ SPEC CHECKSUMS:
   RKDropdownAlert: f4b3364c251829ad439dc666836a1f2dad26f4c7
   SDWebImage: 71b7cdc1d1721d6a82ed62889030225f2c249e29
   UIAlertView-Blocks: 7904744fca618afbd2ec646608924f5e69d5acd1
+  YTKKeyValueStore: 4d002941540dd5108fa23009b71e0f2f937f7a0f
 
 COCOAPODS: 0.37.1

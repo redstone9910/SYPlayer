@@ -7,7 +7,7 @@
 //
 
 #import "FSAudioController.h"
-@class SYPlaylists;
+@class SYAuthor;
 @class SYAudioController;
 @class SYMediaInfo;
 
@@ -35,7 +35,7 @@
 /** 停止 */
 @property (nonatomic,assign) BOOL stopped;
 /** 播放列表 */
-@property (nonatomic,strong) SYPlaylists * volumes;
+@property (nonatomic,strong) SYAuthor * author;
 /** 单例 */
 +(instancetype)sharedAudioController;
 

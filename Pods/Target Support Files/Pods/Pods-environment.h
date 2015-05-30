@@ -138,3 +138,9 @@
 #define COCOAPODS_VERSION_MINOR_UIAlertView_Blocks 0
 #define COCOAPODS_VERSION_PATCH_UIAlertView_Blocks 0
 
+// YTKKeyValueStore
+#define COCOAPODS_POD_AVAILABLE_YTKKeyValueStore
+#define COCOAPODS_VERSION_MAJOR_YTKKeyValueStore 0
+#define COCOAPODS_VERSION_MINOR_YTKKeyValueStore 1
+#define COCOAPODS_VERSION_PATCH_YTKKeyValueStore 2
+

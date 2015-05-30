@@ -18,7 +18,7 @@
 @interface SYSongCell : UITableViewCell
 /** 通过tableView缓存池创建 */
 +(instancetype) cellWithTableView:(UITableView *)tableView;
-@property (nonatomic,strong) SYSong *playListData;
+@property (nonatomic,strong) SYSong *song;
 /** 代理 */
 @property (nonatomic,weak) id<SYSongCellDelegate> delegate;
 

@@ -7,10 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SYModel.h"
 
-@interface SYSong : NSObject
-/** 歌曲名 */
-@property (nonatomic,copy) NSString *name;
+@interface SYSong : SYModel
 /** 下载进度:0.0~1.0 */
 @property (nonatomic,assign) float downloadProgress;
 /** 是否下载中 */
@@ -26,8 +25,6 @@
 +(SYSong *)songWithFileName:(NSString *)name inDir:(NSString *)dir;
 /** 通过字典初始化 */
 +(instancetype) songModelWithDict:(NSDictionary*)dict;
-/** 模型转字典 */
--(NSDictionary *)toDict;
 /** 检查本地文件路径是否有更新 YES:有更新 NO:无更新 */
 -(BOOL)updeteCheckInDir:(NSString *)dir;
 

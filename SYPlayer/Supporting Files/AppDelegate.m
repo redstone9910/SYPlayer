@@ -10,7 +10,7 @@
 #import "MobClick.h"
 #import "SYRootViewController.h"
 #import "SYAudioController.h"
-#import "SYPlaylists.h"
+#import "SYAuthor.h"
 
 @interface AppDelegate ()
 @property (nonatomic,strong) SYAudioController * audioController;

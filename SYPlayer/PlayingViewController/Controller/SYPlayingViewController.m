@@ -19,14 +19,13 @@
 #import "UIImageView+WebCache.h"
 #import "Reachability.h"
 #import "UIAlertView+Blocks.h"
-#import "FSPlaylistItem.h"
 #import "MobClick.h"
 #import "GDTMobBannerView.h"
 #import "SYRecordView.h"
 #include "SYBackGroundScroll.h"
-#import "SYPlaylist.h"
-#import "SYPlaylists.h"
-#import "SYPlayListTableView.h"
+#import "SYAlbum.h"
+#import "SYAuthor.h"
+#import "SYAlbumTableView.h"
 #import "SYMediaInfo.h"
 #import "SYDropdownAlert.h"
 #import "FXBlurView.h"
@@ -69,7 +68,7 @@ typedef void (^SYDownloadCompletion)();
 @property (nonatomic,strong) SYPlayerConsole * playerConsole;
 /** 歌词显示 */
 @property (nonatomic,strong) SYLrcView *lrcView;
-@property (strong, nonatomic) SYPlayListTableView *playListTable;
+@property (strong, nonatomic) SYAlbumTableView *albumTable;
 /** 广点通 */
 @property (nonatomic,strong) GDTMobBannerView * bannerView;
 /** 录音面板 */
@@ -92,7 +91,7 @@ typedef void (^SYDownloadCompletion)();
 /** 正在下载队列中 */
 //@property (nonatomic,assign) BOOL downloading;
 
-@property (nonatomic,strong) SYPlaylists * volumes;
+@property (nonatomic,strong) SYAuthor * author;
 @end
 
 @implementation SYPlayingViewController
@@ -101,7 +100,7 @@ typedef void (^SYDownloadCompletion)();
     
     self.view.backgroundColor = [UIColor clearColor];
     
-    NSMutableString *t_evnt = [NSMutableString stringWithFormat:@"Volume:%@",[self.volumes playingList].volumeTitle];
+    NSMutableString *t_evnt = [NSMutableString stringWithFormat:@"Volume:%@",[self.author playingAlbum].name];
     [MobClick event:@"Enter" label:t_evnt];
 
     [self.view addSubview:self.backgroundScroll];
@@ -114,8 +113,8 @@ typedef void (^SYDownloadCompletion)();
     }
     
     /** 标题栏 */
-    self.titleListBtn = [SYTitleButton playListButton];
-    self.titleListBtn.titleText = [self.volumes playingList].volumeTitle;
+    self.titleListBtn = [SYTitleButton titleButton];
+    self.titleListBtn.titleText = [self.author playingAlbum].name;
     [self.view addSubview:self.titleListBtn];
     self.titleListBtn.translatesAutoresizingMaskIntoConstraints = NO;
     
@@ -216,21 +215,31 @@ typedef void (^SYDownloadCompletion)();
     [self.view addConstraints:@[cnsT3,cnsB3,cnsL3,cnsR3]];
     
     /** 歌曲列表 */
-    self.playListTable = [[SYPlayListTableView alloc] init];
-    self.playListTable.rowHeight = 35;
-    self.playListTable.tableHeaderView = [[UIView alloc] init];
-    self.playListTable.delegate = self;
-    self.playListTable.dataSource = self;
-    self.playListTable.backgroundColor = [UIColor clearColor];
+    self.albumTable = [[SYAlbumTableView alloc] init];
+    self.albumTable.rowHeight = 35;
+    self.albumTable.tableHeaderView = [[UIView alloc] init];
+    self.albumTable.delegate = self;
+    self.albumTable.dataSource = self;
+    self.albumTable.backgroundColor = [UIColor clearColor];
     
-    [self.view addSubview:self.playListTable];
-    self.playListTable.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.albumTable];
+    self.albumTable.translatesAutoresizingMaskIntoConstraints = NO;
     
-    NSLayoutConstraint *cnsT4 = [NSLayoutConstraint constraintWithItem:self.playListTable attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-    NSLayoutConstraint *cnsB4 = [NSLayoutConstraint constraintWithItem:self.playListTable attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.playerConsole attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    NSLayoutConstraint *cnsL4 = [NSLayoutConstraint constraintWithItem:self.playListTable attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-    NSLayoutConstraint *cnsR4 = [NSLayoutConstraint constraintWithItem:self.playListTable attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+    NSLayoutConstraint *cnsT4 = [NSLayoutConstraint constraintWithItem:self.albumTable attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    NSLayoutConstraint *cnsB4 = [NSLayoutConstraint constraintWithItem:self.albumTable attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.playerConsole attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    NSLayoutConstraint *cnsL4 = [NSLayoutConstraint constraintWithItem:self.albumTable attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    NSLayoutConstraint *cnsR4 = [NSLayoutConstraint constraintWithItem:self.albumTable attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
     [self.view addConstraints:@[cnsT4,cnsB4,cnsL4,cnsR4]];
+    
+    /** 录音面板 */
+    [self.view addSubview:self.recordView];
+    self.recordView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.recordView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.recordView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.recordView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeWidth multiplier:0.6 constant:0]];
+    NSLayoutConstraint *cns = [NSLayoutConstraint constraintWithItem:self.recordView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.recordView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0];
+    [self.recordView addConstraint:cns];
     
     /** 按钮移到最前 */
     [self.view bringSubviewToFront:self.titleListBtn];
@@ -291,14 +300,14 @@ typedef void (^SYDownloadCompletion)();
 /** 下载 */
 -(void)downloadToDir:(NSString *)dirPath onModel:(SYSong *)model withCompletionBlock:(SYDownloadCompletion)completionBlock
 {
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.volumes playingList].playingIndex inSection:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.author playingAlbum].playingIndex inSection:0];
     
     __weak typeof(self) weakSelf = self;
     [model prepareDownloadToFile:dirPath onDownloading:^(float progress) {
-        SYSongCell *cell = (SYSongCell *)[weakSelf.playListTable cellForRowAtIndexPath:indexPath];
-        cell.playListData = model;
+        SYSongCell *cell = (SYSongCell *)[weakSelf.albumTable cellForRowAtIndexPath:indexPath];
+        cell.song = model;
     } onComplete:^(BOOL complete) {
-        [weakSelf.playListTable reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:NO];
+        [weakSelf.albumTable reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:NO];
         if (complete) {
             completionBlock();
         } else {
@@ -340,16 +349,16 @@ typedef void (^SYDownloadCompletion)();
     }
 }
 -(void)updateStatus{
-    SYSong *song = [self.volumes playingSong];
+    SYSong *song = [self.author playingSong];
     self.playerConsole.playing = self.audioController.isPlaying;
     
     NSArray *ary = [song.name componentsSeparatedByString:@"－"];
     NSString *str = [ary firstObject];
-    self.titleListBtn.titleText = [NSString stringWithFormat:@"%@-%@",[self.volumes playingList].volumeTitle,str];
+    self.titleListBtn.titleText = [NSString stringWithFormat:@"%@-%@",[self.author playingAlbum].name,str];
     
-    self.playListTable.selectedRow = [self.volumes playingList].playingIndex;
+    self.albumTable.selectedRow = [self.author playingAlbum].playingIndex;
     
-    self.lrcView.lrcFile = [self.volumes playingSong].lrcPath;
+    self.lrcView.lrcFile = [self.author playingSong].lrcPath;
 }
 #pragma mark - IBAction
 
@@ -368,7 +377,7 @@ typedef void (^SYDownloadCompletion)();
 //        }
 //    }
 //    if (downloadModel != nil) {
-//        NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playList.volumeTitle];
+//        NSString *dirPath = [catchePath stringByAppendingPathComponent:self.album.name];
 //        RIButtonItem *okButtonItem = [RIButtonItem itemWithLabel:@"下载" action:^{
 //            [weakSelf downloadWithWifiCheckToDir:dirPath onModel:downloadModel withCompletionBlock:^{
 //                weakSelf.downloading = YES;
@@ -404,17 +413,6 @@ typedef void (^SYDownloadCompletion)();
         _recordView = [SYRecordView recordView];
         [_recordView stop];
         
-        [self.view addSubview:_recordView];
-        
-        _recordView.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
-        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
-        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeWidth multiplier:0.6 constant:0]];
-        
-        NSLayoutConstraint *cns = [NSLayoutConstraint constraintWithItem:_recordView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:_recordView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0];
-        [_recordView addConstraint:cns];
-        
     }
     return _recordView;
 }
@@ -427,22 +425,22 @@ typedef void (^SYDownloadCompletion)();
     return _backgroundScroll;
 }
 
--(SYPlaylists *)volumes{
-    if (_volumes == nil) {
-        _volumes = [SYAudioController sharedAudioController].volumes;
+-(SYAuthor *)author{
+    if (_author == nil) {
+        _author = [SYAudioController sharedAudioController].author;
     }
-    return _volumes;
+    return _author;
 }
 #pragma mark - SYPlayerConsoleDelegate
 
 /** 下一首 */
 -(void)playerConsoleNext:(SYPlayerConsole *)console{
-    [self.volumes playingList].playingIndex ++;
+    [self.author playingAlbum].playingIndex ++;
     [self.audioController startPlay];
 }
 /** 上一首 */
 -(void)playerConsolePrev:(SYPlayerConsole *)console{
-    [self.volumes playingList].playingIndex --;
+    [self.author playingAlbum].playingIndex --;
     [self.audioController startPlay];
 }
 /** 拖动进度条 */
@@ -507,7 +505,7 @@ typedef void (^SYDownloadCompletion)();
 -(void)lrcView:(SYLrcView *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence time:(float)time
 {
 //    [SYDropdownAlert dismissAllAlert];
-    NSString *title = [self.volumes playingSong].name;
+    NSString *name = [self.author playingSong].name;
     
     self.playerConsole.playing = NO;
     [self playerConsolePlayingStatusChanged:self.playerConsole];
@@ -518,7 +516,7 @@ typedef void (^SYDownloadCompletion)();
     [self.recordView startRecordCompletion:^(NSString *recordPath) {
         weakSelf.playerConsole.playing = YES;
         [weakSelf playerConsolePlayingStatusChanged:self.playerConsole];
-        [weakSelf.recordView loadSentence:sentence volumeTitle:title duration:inteval];
+        [weakSelf.recordView loadSentence:sentence songName:(NSString *)name duration:inteval];
         
         [lrcView nextSentence:time];
         
@@ -553,15 +551,15 @@ typedef void (^SYDownloadCompletion)();
 }
 #pragma mark - SYTitleButtonDelegate
 /** 播放列表展开/关闭 */
--(void)playListButtonBtnClicked:(SYTitleButton *)playListBtn
+-(void)titleButtonBtnClicked:(SYTitleButton *)titleButton
 {
     for (NSLayoutConstraint *cst in self.view.constraints) {
-        if ((cst.firstItem == self.playListTable) && (cst.firstAttribute == NSLayoutAttributeBottom)) {
-            if (playListBtn.isOpened) {
+        if ((cst.firstItem == self.albumTable) && (cst.firstAttribute == NSLayoutAttributeBottom)) {
+            if (titleButton.isOpened) {
                 cst.constant = 0;
                 self.lrcView.clearMode = YES;
             }else{
-                cst.constant = -(self.playerConsole.frame.origin.y - self.playListTable.frame.origin.y);
+                cst.constant = -(self.playerConsole.frame.origin.y - self.albumTable.frame.origin.y);
                 self.lrcView.clearMode = NO;
             }
             [UIView animateWithDuration:0.3 animations:^{
@@ -572,37 +570,37 @@ typedef void (^SYDownloadCompletion)();
     }
 }
 
-#pragma mark - playListTable DataSource
+#pragma mark - albumTable DataSource
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.volumes playingList].songs.count;
+    return [self.author playingAlbum].songs.count;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     SYSongCell *cell = [SYSongCell cellWithTableView:tableView];
-    SYSong *model = [self.volumes playingList].songs[indexPath.row];
+    SYSong *model = [self.author playingAlbum].songs[indexPath.row];
 
-    cell.playListData = model;
+    cell.song = model;
     cell.delegate = self;
     
     return cell;
 }
 
-#pragma mark - playListTableDelegate
+#pragma mark - albumTableDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self.volumes playingList].playingIndex = indexPath.row;
+    [self.author playingAlbum].playingIndex = indexPath.row;
     [self.audioController startPlay];
 }
 
 #pragma mark - SYSongCellDelegate
 -(void)songCellDownloadBtnClick:(SYSongCell *)cell
 {
-//    NSIndexPath *indexPath = [self.playListTable indexPathForCell:cell];
+//    NSIndexPath *indexPath = [self.albumTable indexPathForCell:cell];
 //    SYSong *model = self.songModelArrary[indexPath.row];
 //    
-//    NSString *dirPath = [catchePath stringByAppendingPathComponent:self.playList.volumeTitle];
+//    NSString *dirPath = [catchePath stringByAppendingPathComponent:self.album.name];
 //    if (model.downloading == NO) {
 //        [self downloadWithWifiCheckToDir:dirPath onModel:model withCompletionBlock:^{
 //        }];
@@ -653,7 +651,7 @@ typedef void (^SYDownloadCompletion)();
 }
 -(void)SYAudioControllerWillPlay:(SYAudioController *)audioController{
     [self updateStatus];
-    NSString *t_evnt = [NSMutableString stringWithFormat:@"Song:%@",[self.volumes playingSong].name];
+    NSString *t_evnt = [NSMutableString stringWithFormat:@"Song:%@",[self.author playingSong].name];
     [MobClick event:@"Playing" label:t_evnt];
     
     self.playerConsole.stopped = YES;
@@ -701,7 +699,7 @@ typedef void (^SYDownloadCompletion)();
 //    if (model.downloading == NO) {
 //        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"取消"];
 //        RIButtonItem *okItem = [RIButtonItem itemWithLabel:@"下载" action:^{
-//            NSString *dirPath = [catchePath stringByAppendingPathComponent:weakSelf.playList.volumeTitle];
+//            NSString *dirPath = [catchePath stringByAppendingPathComponent:weakSelf.album.name];
 //            [weakSelf downloadWithWifiCheckToDir:dirPath onModel:model withCompletionBlock:^{
 //            }];
 //        }];
@@ -736,7 +734,7 @@ typedef void (^SYDownloadCompletion)();
     self.bannerView.currentViewController = nil;
     self.bannerView = nil;
     
-    [self.volumes save];
+    [self.author save];
     SYLog(@"%@ dealloc",NSStringFromClass([self class]));
 }
 @end

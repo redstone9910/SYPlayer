@@ -10,9 +10,9 @@
 
 @interface SYCircleModel : NSObject
 /** 第x册 */
-@property (nonatomic,copy) NSString * volumeTitle;
+@property (nonatomic,copy) NSString * name;
 /** 册编号 */
-@property (nonatomic,assign) long volumeIndex;
+@property (nonatomic,assign) long aindex;
 
 +(instancetype)circleMoelWithDict:(NSDictionary *)dict;
 -(instancetype)initModelWithDict:(NSDictionary *)dict;

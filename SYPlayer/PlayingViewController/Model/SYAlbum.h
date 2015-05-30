@@ -1,5 +1,5 @@
 //
-//  SYPlaylist.h
+//  SYAlbum.h
 //  SYPlayer
 //
 //  Created by YinYanhui on 15-4-2.
@@ -7,13 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SYModel.h"
 
 @class SYSong;
-@interface SYPlaylist : NSObject
-/** 第x册 */
-@property (nonatomic,copy) NSString * volumeTitle;
+@interface SYAlbum : SYModel
 /** 册编号 */
-@property (nonatomic,assign) long volumeIndex;
+@property (nonatomic,assign) long aindex;
 /** SYSong Array 播放列表 */
 @property (nonatomic,strong) NSArray * songs;
 /** 正在播放 */
@@ -22,9 +21,7 @@
 @property (nonatomic,assign) long prevIndex;
 
 /** 通过字典创建 */
-+(instancetype)playListWithDict:(NSDictionary *)dict;
-/** 模型转字典 */
--(NSDictionary *)toDict;
++(instancetype)albumWithDict:(NSDictionary *)dict;
 
 /** 检查列表中文件本地路径是否有更新 */
 -(BOOL)updateCheck;

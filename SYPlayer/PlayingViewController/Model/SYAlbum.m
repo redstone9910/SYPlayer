@@ -1,35 +1,30 @@
 //
-//  SYPlaylist.m
+//  SYAlbum.m
 //  SYPlayer
 //
 //  Created by YinYanhui on 15-4-2.
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
 
-#import "SYPlaylist.h"
+#import "SYAlbum.h"
 #import "Gloable.h"
 #import "SYSong.h"
-#import "MJExtension.h"
 
-@interface SYPlaylist ()
+@interface SYAlbum ()
 @end
 
 static NSOperationQueue * queue;
 
-@implementation SYPlaylist
+@implementation SYAlbum
 /** songs 数组类型为 SYSong */
 + (NSDictionary *)objectClassInArray
 {
     return @{@"songs" : [SYSong class]};
 }
 /** 通过字典创建 */
-+(instancetype)playListWithDict:(NSDictionary *)dict
++(instancetype)albumWithDict:(NSDictionary *)dict
 {
-    return[self objectWithKeyValues:dict];
-}
-/** 模型转字典 */
--(NSDictionary *)toDict{
-    return [self keyValues];
+    return [self instanceWithDict:dict];
 }
 
 /** 检查列表中文件本地路径是否有更新 */
@@ -45,17 +40,17 @@ static NSOperationQueue * queue;
     }
     BOOL update = NO;
     for (SYSong *song in self.songs) {
-        if ([song updeteCheckInDir:self.volumeTitle]) {
+        if ([song updeteCheckInDir:self.name]) {
             update = YES;
         }
         if (song.url.length == 0) {
             [queue addOperationWithBlock:^{
                 [song fetchURL:^(BOOL success) {
                     if (success) {
-//                        SYLog(@"%@-%@ success",self.volumeTitle,song.name);
+//                        SYLog(@"%@-%@ success",self.name,song.name);
                     }else{
                         
-                        SYLog(@"%@-%@ failed",self.volumeTitle,song.name);
+                        SYLog(@"%@-%@ failed",self.name,song.name);
                     }
                 }];
             }];
