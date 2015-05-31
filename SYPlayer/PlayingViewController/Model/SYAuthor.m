@@ -22,7 +22,6 @@
 {
     return @{@"albums" : [SYAlbum class]};
 }
-
 /** 通过文件列表创建列表Plist文件 */
 +(SYAuthor *)authorWithMp3FileList:(NSString *)file{
     return [self authorWithMp3FileList:file toPath:nil];
@@ -50,11 +49,11 @@
     int index = 1;
     for (NSString *line in lineArray) {
         if ([line hasPrefix:@"第"] && [line hasSuffix:@"册"]) {//册标题
-            if (album.name != nil) //新一册开始
+            if (album.name.length) //新一册开始
             {
                 album.aindex = index ++;
                 album.songs = [songs copy];
-                album.super_id = 1;
+                album.super_id = author.self_id;
                 songs = [NSMutableArray array];//创建新文件名数组
                 
                 [listArray addObject:album];//上一册添加进plist文件
@@ -75,7 +74,7 @@
     }
     album.aindex = index ++;
     album.songs = [songs copy];
-    album.super_id = 1;
+    album.super_id = author.self_id;
     [listArray addObject:album];//上一册添加进plist文件
     
     author.playingIndex = 0;
@@ -93,19 +92,22 @@
 -(instancetype)init{
     if (self = [super init]) {
         self.path = [NSString string];
+        self.super_id = 1;
+        self.self_id = 1;
     }
     return self;
 }
 /** 保存到文件 */
 -(BOOL)save{
-    [SYCatcheTool insertData:self];
-    return [[self toDict] writeToFile:self.path atomically:YES];
+    return [SYCatcheTool insertData:self];
+//    return [[self toDict] writeToFile:self.path atomically:YES];
 }
 /** 从文件加载 */
 -(BOOL)load{
-    NSArray *datas = [SYCatcheTool loadData:self];
+    NSArray *datas = [SYCatcheTool loadData:self super_id:self.super_id];
     SYAuthor *author = [datas lastObject];
-    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:self.path];
+    NSDictionary *dict = [author toDict];
+//    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:self.path];
     if (dict == nil) {
         return NO;
     }

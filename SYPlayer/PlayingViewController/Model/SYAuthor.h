@@ -25,7 +25,7 @@
 +(SYAuthor *)authorWithMp3FileList:(NSString *)file;
 
 /** 实例化对象并从字典初始化 */
-+(instancetype)authorWithDict:(NSDictionary *)dict;\
++(instancetype)authorWithDict:(NSDictionary *)dict;
 /** 保存到文件 */
 -(BOOL)save;
 /** 从文件加载 */

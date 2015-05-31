@@ -15,5 +15,5 @@
 /** 插入 */
 +(BOOL)insertData:(id)data;
 /** 读取记录 */
-+(NSArray *)loadData:(id) data;
++(NSArray *)loadData:(id) data super_id:(long)super_id;
 @end

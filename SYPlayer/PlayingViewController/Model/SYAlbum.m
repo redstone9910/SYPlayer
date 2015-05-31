@@ -6,8 +6,9 @@
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
 
-#import "SYAlbum.h"
 #import "Gloable.h"
+#import "SYAuthor.h"
+#import "SYAlbum.h"
 #import "SYSong.h"
 
 @interface SYAlbum ()
@@ -26,7 +27,12 @@ static NSOperationQueue * queue;
 {
     return [self instanceWithDict:dict];
 }
-
+/** 初始化 */
+-(instancetype)init{
+    if (self = [super init]) {
+    }
+    return self;
+}
 /** 检查列表中文件本地路径是否有更新 */
 -(BOOL)updateCheck
 {

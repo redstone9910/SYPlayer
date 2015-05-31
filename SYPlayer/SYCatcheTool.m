@@ -54,11 +54,12 @@ static FMDatabaseQueue *_queue;
             if ([value isKindOfClass:[NSArray class]]) {
                 subDatas = value;
                 subKey = key;
-                break;
+                [dict removeObjectForKey:key];
             }
-        }
-        if (subKey) {
-            [dict removeObjectForKey:subKey];
+            
+            if ([key isEqualToString:@"self_id"]) {
+                [dict removeObjectForKey:key];
+            }
         }
         
         NSString *sql = [self assembleInsertSql:data];
@@ -90,13 +91,14 @@ static FMDatabaseQueue *_queue;
     return NO;
 }
 
-+(NSArray *)loadData:(id)data{
++(NSArray *)loadData:(id) data super_id:(long)super_id{
     [self assertTable:data];
     
     NSMutableArray *retArrary = [NSMutableArray array];
     [_queue inDatabase:^(FMDatabase *db) {
         FMResultSet *rs = nil;
-        NSString *queryStr = [NSString stringWithFormat:@"select * from %@;", NSStringFromClass([data class])];
+        NSDictionary *dict = [data toDict];
+        NSString *queryStr = [NSString stringWithFormat:@"select * from %@ where super_id = %ld;", NSStringFromClass([data class]), super_id];
         rs = [db executeQuery:queryStr];
         
         while (rs.next) {
@@ -109,12 +111,12 @@ static FMDatabaseQueue *_queue;
             
             if ([data isKindOfClass:[SYAuthor class]]) {
                 SYAuthor *sdata = [SYAuthor instanceWithDict:dict];
-                NSArray *subDatas = [self loadData:[[SYAlbum alloc] init]];
+                NSArray *subDatas = [self loadData:[[SYAlbum alloc] init] super_id:sdata.self_id];
                 sdata.albums = subDatas;
                 [retArrary addObject:sdata];
             }else if ([data isKindOfClass:[SYAlbum class]]) {
                 SYAlbum *sdata = [SYAlbum instanceWithDict:dict];
-                NSArray *subDatas = [self loadData:[[SYSong alloc] init]];
+                NSArray *subDatas = [self loadData:[[SYSong alloc] init] super_id:sdata.self_id];
                 sdata.songs = subDatas;
                 [retArrary addObject:sdata];
             }else if ([data isKindOfClass:[SYSong class]]) {
@@ -140,7 +142,7 @@ static FMDatabaseQueue *_queue;
     for(int i=0;i<[columns count];i++){
         NSString *columnName = [columns objectAtIndex:i];// 列名
         id obj = dict[columnName];
-        if (![obj isKindOfClass:[NSArray class]]) {
+        if (![obj isKindOfClass:[NSArray class]] && ![columnName isEqualToString:@"self_id"]) {
             [middle appendString:columnName];
             [middle appendString:@","];
             
@@ -165,7 +167,7 @@ static FMDatabaseQueue *_queue;
     for(int i=0;i<[columns count];i++){
         NSString *columnName = [columns objectAtIndex:i];// 列名
         id obj = dict[columnName];
-        if (![obj isKindOfClass:[NSArray class]]) {
+        if ((![obj isKindOfClass:[NSArray class]]) && !([columnName isEqualToString:@"self_id"]) && !([columnName isEqualToString:@"super_id"])) {
             [params appendString:@","];
             [params appendString:columnName];
             [params appendString:@" "];
@@ -176,9 +178,24 @@ static FMDatabaseQueue *_queue;
             }
         }
     }
-//        params = [[params substringFromIndex:1] copy];
+    params = [[params substringFromIndex:1] copy];
     
-    NSString *sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (id INTEGER PRIMARY KEY AUTOINCREMENT %@);",NSStringFromClass([tableObj class]),params];
+    NSString *super_table;
+    if ([tableObj isKindOfClass:[SYAuthor class]]) {
+        super_table = @"";
+    }else if ([tableObj isKindOfClass:[SYAlbum class]]) {
+        super_table = NSStringFromClass([SYAuthor class]);
+    }else if ([tableObj isKindOfClass:[SYSong class]]) {
+        super_table = NSStringFromClass([SYAlbum class]);
+    }
+    if (super_table.length) {
+        super_table = [NSString stringWithFormat:@"super_id REFERENCES %@(self_id),",super_table];
+    }else{
+        super_table = [NSString stringWithFormat:@"super_id ,"];
+    }
+    NSString *self_table = NSStringFromClass([tableObj class]);
+
+    NSString *sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (self_id INTEGER PRIMARY KEY AUTOINCREMENT,%@ %@);",self_table, super_table,params];
     return sql;
 }
 +(NSDictionary *)dictCheck:(id)tableObj{

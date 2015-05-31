@@ -6,6 +6,8 @@
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
 
+#import "SYAuthor.h"
+#import "SYAlbum.h"
 #import "SYSong.h"
 #import "MIBServer.h"
 #import "MKDownloader.h"
@@ -41,6 +43,7 @@
 {
     return [self instanceWithDict:dict];
 }
+/** 初始化 */
 -(instancetype)init{
     if (self = [super init]) {
         self.localPath = [NSString string];
@@ -49,7 +52,6 @@
     }
     return self;
 }
-
 /** 检查本地文件路径是否有更新 YES:有更新 NO:无更新 */
 -(BOOL)updeteCheckInDir:(NSString *)dir{
     BOOL ret = NO;
