@@ -34,6 +34,9 @@
         destPath = [catchePath stringByAppendingPathComponent:destPath];
     }
     SYAuthor *author = [[SYAuthor alloc] init];
+    author.playingIndex = 0;
+    author.name = @"新概念英语";
+    
     author.path = destPath;
     if ([author load]) {
         author.path = destPath;
@@ -46,14 +49,14 @@
     NSMutableArray *listArray = [NSMutableArray array];//plist文件
     SYAlbum *album = [[SYAlbum alloc] init];
     NSMutableArray *songs = [NSMutableArray array];//暂存文件名列表
-    int index = 1;
+    long index = 1;
     for (NSString *line in lineArray) {
         if ([line hasPrefix:@"第"] && [line hasSuffix:@"册"]) {//册标题
             if (album.name.length) //新一册开始
             {
                 album.aindex = index ++;
                 album.songs = [songs copy];
-                album.super_id = author.self_id;
+                album.authorName = author.name;
                 songs = [NSMutableArray array];//创建新文件名数组
                 
                 [listArray addObject:album];//上一册添加进plist文件
@@ -67,20 +70,18 @@
         {
             if ([line hasSuffix:@"mp3"]) {//mp3文件
                 SYSong *song = [SYSong songWithFileName:line inDir:album.name];
-                song.super_id = listArray.count + 1;
+                song.authorName = author.name;
+                song.albumName = album.name;
                 [songs addObject:song];//mp3文件添加进暂存数组
             }
         }
     }
     album.aindex = index ++;
     album.songs = [songs copy];
-    album.super_id = author.self_id;
+    album.authorName = author.name;
     [listArray addObject:album];//上一册添加进plist文件
     
-    author.playingIndex = 0;
     author.albums = [listArray copy];
-    author.name = @"新概念英语";
-    
     [author save];
     if([author load]) return author;
     else return nil;
@@ -92,7 +93,6 @@
 -(instancetype)init{
     if (self = [super init]) {
         self.path = [NSString string];
-        self.super_id = 1;
         self.self_id = 1;
     }
     return self;
@@ -104,7 +104,7 @@
 }
 /** 从文件加载 */
 -(BOOL)load{
-    NSArray *datas = [SYCatcheTool loadData:self super_id:self.super_id];
+    NSArray *datas = [SYCatcheTool loadAuthor:self];
     SYAuthor *author = [datas lastObject];
     NSDictionary *dict = [author toDict];
 //    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:self.path];

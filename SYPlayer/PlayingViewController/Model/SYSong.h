@@ -20,6 +20,10 @@
 @property (nonatomic,copy) NSString *url;
 /** LRC文件路径 */
 @property (nonatomic,copy) NSString *lrcPath;
+/** 专辑名 */
+@property (nonatomic,copy) NSString *albumName;
+/** 歌手名 */
+@property (nonatomic,copy) NSString *authorName;
 
 /** 查找MP3文件并创建对象 */
 +(SYSong *)songWithFileName:(NSString *)name inDir:(NSString *)dir;
@@ -34,4 +38,9 @@
 -(void)fetchURL:(void(^)(BOOL success))completeBlock;
 /** 获取LRC */
 -(void)fetchLRCToDir:(NSString *)dir complete:(void(^)(BOOL success))completeBlock;
+
+/** 保存到文件 */
+-(BOOL)save;
+/** 从文件加载 */
+-(BOOL)load;
 @end

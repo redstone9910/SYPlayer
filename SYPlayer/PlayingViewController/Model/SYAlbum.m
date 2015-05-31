@@ -10,6 +10,8 @@
 #import "SYAuthor.h"
 #import "SYAlbum.h"
 #import "SYSong.h"
+#import "SYCatcheTool.h"
+#import "MJExtension.h"
 
 @interface SYAlbum ()
 @end
@@ -32,6 +34,21 @@ static NSOperationQueue * queue;
     if (self = [super init]) {
     }
     return self;
+}
+/** 保存到文件 */
+-(BOOL)save{
+    return [SYCatcheTool insertData:self];
+}
+/** 从文件加载 */
+-(BOOL)load{
+    NSArray *datas = [SYCatcheTool loadAlbum:self];
+    SYAlbum *author = [datas lastObject];
+    NSDictionary *dict = [author toDict];
+    if (dict == nil) {
+        return NO;
+    }
+    [self setKeyValues:dict];
+    return YES;
 }
 /** 检查列表中文件本地路径是否有更新 */
 -(BOOL)updateCheck

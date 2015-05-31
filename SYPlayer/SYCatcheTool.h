@@ -15,5 +15,7 @@
 /** 插入 */
 +(BOOL)insertData:(id)data;
 /** 读取记录 */
-+(NSArray *)loadData:(id) data super_id:(long)super_id;
++(NSArray *)loadAuthor:(SYAuthor *) data;
++(NSArray *)loadAlbum:(SYAlbum *) data;
++(NSArray *)loadSong:(SYSong *) data;
 @end

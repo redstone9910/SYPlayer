@@ -17,6 +17,4 @@
 +(instancetype)instanceWithDict:(NSDictionary *)dict;
 /** self_id主键 */
 @property (nonatomic,assign) long self_id;
-/** super_id外键 */
-@property (nonatomic,assign) long super_id;
 @end

@@ -62,15 +62,20 @@ static FMDatabaseQueue *_queue;
             }
         }
         
-        NSString *sql = [self assembleInsertSql:data];
+        NSString *insertSql = [self assembleInsertSql:data];
+        NSString *updateSql = [self assembleUpdateSql:data];
         
         [_queue inDatabase:^(FMDatabase *db) {
             FMResultSet *rs = nil;
             NSString *queryStr = [NSString stringWithFormat:@"select * from %@ where %@ = \"%@\";", NSStringFromClass([data class]), @"name", dict[@"name"]];
             rs = [db executeQuery:queryStr];
             
-            if (!rs.next) {
-                [db executeUpdate:sql withParameterDictionary:dict];
+            if (rs.next) {
+//                @"update %@ set age = ? where name = ?;"
+                [db executeUpdate:updateSql withParameterDictionary:dict];
+            }else{
+//                @"insert into %@ (%@) values (%@);"
+                [db executeUpdate:insertSql withParameterDictionary:dict];
             }
             [rs close];
         }];
@@ -91,16 +96,15 @@ static FMDatabaseQueue *_queue;
     return NO;
 }
 
-+(NSArray *)loadData:(id) data super_id:(long)super_id{
++(NSArray *)loadAuthor:(SYAuthor *)data{
     [self assertTable:data];
     
-    NSMutableArray *retArrary = [NSMutableArray array];
+    NSString *queryStr = [NSString stringWithFormat:@"select * from %@;", NSStringFromClass([data class])];
+    __block NSMutableArray *retArray = [NSMutableArray array];
+    
     [_queue inDatabase:^(FMDatabase *db) {
         FMResultSet *rs = nil;
-        NSDictionary *dict = [data toDict];
-        NSString *queryStr = [NSString stringWithFormat:@"select * from %@ where super_id = %ld;", NSStringFromClass([data class]), super_id];
         rs = [db executeQuery:queryStr];
-        
         while (rs.next) {
             NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:[data toDict]];
             NSArray *keys = [dict allKeys];
@@ -109,28 +113,101 @@ static FMDatabaseQueue *_queue;
                 dict[key] = r;
             }
             
-            if ([data isKindOfClass:[SYAuthor class]]) {
-                SYAuthor *sdata = [SYAuthor instanceWithDict:dict];
-                NSArray *subDatas = [self loadData:[[SYAlbum alloc] init] super_id:sdata.self_id];
-                sdata.albums = subDatas;
-                [retArrary addObject:sdata];
-            }else if ([data isKindOfClass:[SYAlbum class]]) {
-                SYAlbum *sdata = [SYAlbum instanceWithDict:dict];
-                NSArray *subDatas = [self loadData:[[SYSong alloc] init] super_id:sdata.self_id];
-                sdata.songs = subDatas;
-                [retArrary addObject:sdata];
-            }else if ([data isKindOfClass:[SYSong class]]) {
-                SYSong *sdata = [SYSong instanceWithDict:dict];
-                [retArrary addObject:sdata];
-            }
+            SYAuthor *sdata = [SYAuthor instanceWithDict:dict];
+            SYAlbum *subData = [[SYAlbum alloc] init];
+            subData.authorName = sdata.name;
+            NSArray *subDatas = [self loadAlbum:subData];
+            sdata.albums = subDatas;
+            [retArray addObject:sdata];
         }
         [rs close];
     }];
     [_queue close];
-    
-    return [retArrary copy];
+    return [retArray copy];
 }
 
++(NSArray *)loadAlbum:(SYAlbum *)data{
+    [self assertTable:data];
+    NSString *queryStr = [NSString stringWithFormat:@"select * from %@ where authorName = \"%@\";", NSStringFromClass([data class]), data.authorName];
+    __block NSMutableArray *retArray = [NSMutableArray array];
+    
+    [_queue inDatabase:^(FMDatabase *db) {
+        FMResultSet *rs = nil;
+        rs = [db executeQuery:queryStr];
+        while (rs.next) {
+            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:[data toDict]];
+            NSArray *keys = [dict allKeys];
+            for (NSString *key in keys) {
+                id r = [rs objectForColumnName:key];
+                dict[key] = r;
+            }
+            
+            SYAlbum *sdata = [SYAlbum instanceWithDict:dict];
+            SYSong *subData = [[SYSong alloc] init];
+            subData.authorName = sdata.authorName;
+            subData.albumName = sdata.name;
+            NSArray *subDatas = [self loadSong:subData];
+            sdata.songs = subDatas;
+            [retArray addObject:sdata];
+        }
+        [rs close];
+    }];
+    [_queue close];
+    return [retArray copy];
+}
+
++(NSArray *)loadSong:(SYSong *)data{
+    [self assertTable:data];
+    NSString *queryStr = [NSString stringWithFormat:@"select * from %@ where authorName = \"%@\" AND albumName = \"%@\";", NSStringFromClass([data class]), data.authorName, data.albumName];
+    __block NSMutableArray *retArray = [NSMutableArray array];
+    
+    [_queue inDatabase:^(FMDatabase *db) {
+        FMResultSet *rs = nil;
+        rs = [db executeQuery:queryStr];
+        while (rs.next) {
+            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:[data toDict]];
+            NSArray *keys = [dict allKeys];
+            for (NSString *key in keys) {
+                id r = [rs objectForColumnName:key];
+                dict[key] = r;
+            }
+            
+            SYSong *sdata = [SYSong instanceWithDict:dict];
+            [retArray addObject:sdata];
+        }
+        [rs close];
+    }];
+    [_queue close];
+    return [retArray copy];
+}
+
+/** 返回格式：@"update %@ set %@ %@;" */
++(NSString*) assembleUpdateSql:(id)tableObj
+{
+    NSDictionary *dict = [self dictCheck:tableObj];
+    NSArray *columns = [dict allKeys];
+    
+    NSMutableString *middle = [NSMutableString new];
+    NSString *suffix = [NSString new];
+    for(int i=0;i<[columns count];i++){
+        NSString *columnName = [columns objectAtIndex:i];// 列名
+        id obj = dict[columnName];
+        if (![obj isKindOfClass:[NSArray class]] && ![columnName isEqualToString:@"self_id"]) {
+            [middle appendString:[NSString stringWithFormat:@"%@ = :%@,", columnName, columnName]];
+        }
+    }
+    middle = [[middle substringToIndex:middle.length - 1] copy];
+    SYModel *model = (SYModel *)tableObj;
+    suffix = [model.name copy];
+    if (suffix.length) {
+        suffix = [NSString stringWithFormat:@" where name = \"%@\" ",suffix];
+    }else{
+        suffix = @"";
+    }
+    
+    NSString *sql = [NSString stringWithFormat:@"update %@ set %@ %@;",NSStringFromClass([tableObj class]),middle,suffix];
+    return sql;
+}
 /** 返回格式：insert into table_name (c1,c2,c3) values (:a,:b,:c); */
 +(NSString*) assembleInsertSql:(id)tableObj
 {
@@ -158,7 +235,21 @@ static FMDatabaseQueue *_queue;
     return sql;
 }
 /** 返回格式：CREATE TABLE IF NOT EXISTS SYAuthor (id INTEGER PRIMARY KEY AUTOINCREMENT ,name TEXT,path TEXT,playingIndex INTEGER); */
-+(NSString*) assembleTableSql:(id)tableObj
++(NSString*) assembleTableSql:(id)data
+{
+    NSString *table = NSStringFromClass([data class]);
+    NSString *superTable = @"";
+    if ([data isKindOfClass:[SYAlbum class]]) {
+        superTable = [NSString stringWithFormat:@"authorName REFERENCES %@(name) ON DELETE CASCADE ON UPDATE NO ACTION,",NSStringFromClass([SYAuthor class])];
+    }else if ([data isKindOfClass:[SYSong class]]) {
+        superTable = [NSString stringWithFormat:@"authorName REFERENCES %@(name),albumName REFERENCES %@(name) ON DELETE CASCADE ON UPDATE NO ACTION,",NSStringFromClass([SYAuthor class]),NSStringFromClass([SYAlbum class])];
+    }
+    NSString *params = [self assembleParams:data];
+    NSString *assertTableSql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (self_id INTEGER PRIMARY KEY AUTOINCREMENT,%@ %@);", table,superTable,params];
+    return assertTableSql;
+}
+/** 返回格式：name TEXT,path TEXT,playingIndex INTEGER */
++(NSString*) assembleParams:(id)tableObj
 {
     NSDictionary *dict = [self dictCheck:tableObj];
     NSArray *columns = [dict allKeys];
@@ -167,7 +258,7 @@ static FMDatabaseQueue *_queue;
     for(int i=0;i<[columns count];i++){
         NSString *columnName = [columns objectAtIndex:i];// 列名
         id obj = dict[columnName];
-        if ((![obj isKindOfClass:[NSArray class]]) && !([columnName isEqualToString:@"self_id"]) && !([columnName isEqualToString:@"super_id"])) {
+        if ((![obj isKindOfClass:[NSArray class]]) && !([columnName isEqualToString:@"self_id"]) && !([columnName isEqualToString:@"authorName"]) && !([columnName isEqualToString:@"albumName"])) {
             [params appendString:@","];
             [params appendString:columnName];
             [params appendString:@" "];
@@ -178,25 +269,8 @@ static FMDatabaseQueue *_queue;
             }
         }
     }
-    params = [[params substringFromIndex:1] copy];
     
-    NSString *super_table;
-    if ([tableObj isKindOfClass:[SYAuthor class]]) {
-        super_table = @"";
-    }else if ([tableObj isKindOfClass:[SYAlbum class]]) {
-        super_table = NSStringFromClass([SYAuthor class]);
-    }else if ([tableObj isKindOfClass:[SYSong class]]) {
-        super_table = NSStringFromClass([SYAlbum class]);
-    }
-    if (super_table.length) {
-        super_table = [NSString stringWithFormat:@"super_id REFERENCES %@(self_id),",super_table];
-    }else{
-        super_table = [NSString stringWithFormat:@"super_id ,"];
-    }
-    NSString *self_table = NSStringFromClass([tableObj class]);
-
-    NSString *sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (self_id INTEGER PRIMARY KEY AUTOINCREMENT,%@ %@);",self_table, super_table,params];
-    return sql;
+    return [[params substringFromIndex:1] copy];
 }
 +(NSDictionary *)dictCheck:(id)tableObj{
     if ([tableObj isKindOfClass:[NSDictionary class]]) {
