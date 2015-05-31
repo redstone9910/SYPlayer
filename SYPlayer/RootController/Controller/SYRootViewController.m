@@ -8,12 +8,12 @@
 
 #import "SYRootViewController.h"
 #import "SYPlayingViewController.h"
-#import "SYPlaylist.h"
+#import "SYAlbum.h"
 #import "MobClick.h"
 #import "SYCircleCell.h"
 #import "SYCircleModel.h"
 #import "SYCollectionViewLayout.h"
-#import "SYPlaylists.h"
+#import "SYAuthor.h"
 #import "SYAudioController.h"
 #import "Gloable.h"
 
@@ -71,7 +71,7 @@
 }
 
 -(void)dealloc{
-    [self.volumes save];
+    [self.author save];
     SYLog(@"%@ dealloc",NSStringFromClass([self class]));
 }
 #pragma - mark UICollectionViewDataSource
@@ -101,7 +101,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     SYCircleModel *p = self.circles[indexPath.item];
-    NSLog(@"点击了---%@", p.volumeTitle);
+    NSLog(@"点击了---%@", p.name);
 }
 #pragma mark - SYCircleCellDelegate
 -(void)circleCellDidClick:(SYCircleCell *)cell{
@@ -109,10 +109,10 @@
     SYCircleModel *p = self.circles[indexPath.item];
     
     SYPlayingViewController *sVc = [[SYPlayingViewController alloc] init];
-    if (self.volumes.playingIndex != p.volumeIndex - 1) {
-        self.volumes.playingIndex = p.volumeIndex - 1;
+    if (self.author.playingIndex != p.aindex - 1) {
+        self.author.playingIndex = p.aindex - 1;
         [[SYAudioController sharedAudioController] stop];
-        [self.volumes save];
+        [self.author save];
     }
     
     [self presentViewController:sVc animated:YES completion:^{
@@ -121,10 +121,10 @@
 #pragma mark - property
 -(NSArray *)circles{
     if (_circles == nil) {
-        NSArray *playListArray = self.volumes.playLists;
+        NSArray *albumArray = self.author.albums;
         NSMutableArray *circleArray = [NSMutableArray array];
-        for (SYPlaylist *list in playListArray) {
-            SYCircleModel *model = [SYCircleModel circleMoelWithDict:[list toDict]];
+        for (SYAlbum *album in albumArray) {
+            SYCircleModel *model = [SYCircleModel circleMoelWithDict:[album toDict]];
             [circleArray addObject:model];
         }
         _circles = [circleArray copy];
@@ -132,10 +132,10 @@
     return _circles;
 }
 
--(SYPlaylists *)volumes{
-    if (_volumes == nil) {
-        _volumes = [SYAudioController sharedAudioController].volumes;
+-(SYAuthor *)author{
+    if (_author == nil) {
+        _author = [SYAudioController sharedAudioController].author;
     }
-    return _volumes;
+    return _author;
 }
 @end

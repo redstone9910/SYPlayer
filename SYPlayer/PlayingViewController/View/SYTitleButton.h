@@ -11,7 +11,7 @@
 
 @protocol SYTitleButtonDelegate <NSObject>
 @required
--(void) playListButtonBtnClicked:(SYTitleButton *) playListBtn;
+-(void) titleButtonBtnClicked:(SYTitleButton *) titleButton;
 @end
 
 @interface SYTitleButton : UIView
@@ -20,6 +20,6 @@
 /** 是否已展开 */
 @property (nonatomic,assign,getter=isOpened) BOOL Opened;
 /** 创建新对象 */
-+(instancetype) playListButton;
++(instancetype) titleButton;
 @property (nonatomic,copy) NSString * titleText;
 @end

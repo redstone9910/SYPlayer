@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-@class SYPlaylists;
+@class SYAuthor;
 @interface SYRootViewController : UIViewController
 /** 顶部背景图 */
 @property (nonatomic,strong) UIImageView * backBg;
-@property (nonatomic,strong) SYPlaylists *volumes;
+@property (nonatomic,strong) SYAuthor *author;
 @end

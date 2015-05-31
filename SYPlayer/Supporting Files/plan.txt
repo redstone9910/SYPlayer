@@ -277,23 +277,6 @@ weakSelf.playerConsole.statusText = streamInfo;
 
 [weakSelf.stateLogger logMessageWithTimestamp:[NSString stringWithFormat:@"Meta data received: %@", streamInfo]];
 };
-*/
-
-//    NSMutableArray *playListItemArray = [[NSMutableArray alloc] init];
-//    for (SYSong *model in self.songModelArrary) {
-//        FSPlaylistItem *item = [[FSPlaylistItem alloc] init];
-//
-//        item.title = model.name;
-//        NSString *urlStr = [model.url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//        if ([urlStr hasPrefix:@"/"]) {
-//            urlStr = [@"file://" stringByAppendingPathComponent:urlStr];
-//        }
-//        NSURL *url = [NSURL URLWithString:urlStr];
-//        item.url = url;
-//        [playListItemArray addObject:item];
-//    }
-//    [self.audioController playFromPlaylist:[playListItemArray copy]];
-
 
 139.129.13.56
 

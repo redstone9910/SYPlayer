@@ -18,7 +18,7 @@
 
 @implementation SYTitleButton
 
-+(instancetype) playListButton
++(instancetype) titleButton
 {
     return [[self alloc] init];
 }
@@ -93,8 +93,8 @@
 //        self.titleArrow.transform = CGAffineTransformMakeRotation((self.isOpened ? 179.9 : 0) * M_PI / 180);
     }];
     
-    if ([self.delegate respondsToSelector:@selector(playListButtonBtnClicked:)]) {
-        [self.delegate playListButtonBtnClicked:self];
+    if ([self.delegate respondsToSelector:@selector(titleButtonBtnClicked:)]) {
+        [self.delegate titleButtonBtnClicked:self];
     }
 }
 

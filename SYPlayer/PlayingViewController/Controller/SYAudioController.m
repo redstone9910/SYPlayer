@@ -8,7 +8,7 @@
 
 #import <MediaPlayer/MediaPlayer.h>
 #import "SYAudioController.h"
-#import "SYPlaylists.h"
+#import "SYAuthor.h"
 #import "Gloable.h"
 #import "SYMediaInfo.h"
 
@@ -42,8 +42,8 @@
 
 /** 开始播放 */
 -(void)startPlay{
-    SYPlaylist *list = self.volumes.playLists[self.volumes.playingIndex];
-    SYSong *model = list.songs[list.playingIndex];
+    SYAlbum *album = self.author.albums[self.author.playingIndex];
+    SYSong *model = album.songs[album.playingIndex];
     
     if(model == nil) return;
     
@@ -58,7 +58,7 @@
                 if ([self.sydelegate respondsToSelector:@selector(SYAudioControllerFetchURLSuccess:)]) {
                     [self.sydelegate SYAudioControllerFetchURLSuccess:self];
                 }
-                [self.volumes save];
+                [self.author save];
                 [self startPlay];
             }else{
                 if ([self.sydelegate respondsToSelector:@selector(SYAudioControllerFetchURLFailed:)]) {
@@ -115,7 +115,7 @@
     __weak typeof(self) weakSelf = self;
     self.onStateChange = ^(FSAudioStreamState state) {
         SYAudioController *audioController = weakSelf;
-        SYPlaylists *volumes = weakSelf.volumes;
+        SYAuthor *author = weakSelf.author;
         switch (state) {
             case kFsAudioStreamPlaying:
             {
@@ -147,7 +147,7 @@
                 break;
             case kFsAudioStreamPlaybackCompleted:
                 SYLog(@"kFsAudioStreamPlaybackCompleted");
-                [volumes playingList].playingIndex ++;
+                [author playingAlbum].playingIndex ++;
                 [audioController startPlay];
                 if ([weakSelf.sydelegate respondsToSelector:@selector(SYAudioControllerPlaybackComplete:)]) {
                     [weakSelf.sydelegate SYAudioControllerPlaybackComplete:weakSelf];
@@ -250,12 +250,12 @@
 }
 
 #pragma mark - property
--(SYPlaylists *)volumes{
-    if (_volumes == nil) {
+-(SYAuthor *)author{
+    if (_author == nil) {
         NSString *fileListAll = [[NSBundle mainBundle] pathForResource:@"nec_mp3_file_list" ofType:@"txt"];
-        _volumes = [SYPlaylists playListsWithMp3FileList:fileListAll];
+        _author = [SYAuthor authorWithMp3FileList:fileListAll];
     }
-    return _volumes;
+    return _author;
 }
 -(void)setPlaying:(BOOL)playing{
     _playing = playing;
@@ -281,7 +281,7 @@
 //        NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
 //        songInfo[MPMediaItemPropertyTitle] = model.name;
 //        songInfo[MPMediaItemPropertyArtist] = @"新概念英语";
-//        songInfo[MPMediaItemPropertyAlbumTitle] = self.playList.volumeTitle;
+//        songInfo[MPMediaItemPropertyAlbumTitle] = self.album.name;
 //        [songInfo setObject: albumArt forKey:MPMediaItemPropertyArtwork ];
 //        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:songInfo];
 

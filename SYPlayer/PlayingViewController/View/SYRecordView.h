@@ -15,7 +15,7 @@ typedef void(^recordCompletion)(NSString *recordPath);
 /** 创建新对象 */
 +(instancetype)recordView;
 /** 加载句子 */
--(BOOL)loadSentence:(NSString *)sentence volumeTitle:(NSString *)title duration:(float)duration;
+-(BOOL)loadSentence:(NSString *)sentence songName:(NSString *)name duration:(float)duration;
 /** 开始播放原音 */
 -(void)startPlayCompletion:(playCompletion)block;
 /** 开始录音 */

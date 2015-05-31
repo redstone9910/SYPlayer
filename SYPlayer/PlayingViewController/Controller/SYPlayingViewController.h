@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-@class SYPlaylist;
-@class SYPlaylists;
+@class SYAlbum;
+@class SYAuthor;
 @class FSStreamConfiguration;
 
 @interface SYPlayingViewController : UIViewController

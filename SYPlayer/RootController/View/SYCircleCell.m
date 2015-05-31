@@ -93,8 +93,8 @@
 -(void)setModel:(SYCircleModel *)model{
     _model = model;
     
-    [self.centerButton setTitle:[NSString stringWithFormat:@"%ld",self.model.volumeIndex] forState:UIControlStateNormal];
-    self.centerLabel.text = self.model.volumeTitle;
+    [self.centerButton setTitle:[NSString stringWithFormat:@"%ld",self.model.aindex] forState:UIControlStateNormal];
+    self.centerLabel.text = self.model.name;
 }
 -(void)setDefaultColor:(UIColor *)defaultColor{
     _defaultColor = defaultColor;

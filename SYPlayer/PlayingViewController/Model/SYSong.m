@@ -6,12 +6,13 @@
 //  Copyright (c) 2015年 YinYanhui. All rights reserved.
 //
 
+#import "SYAuthor.h"
+#import "SYAlbum.h"
 #import "SYSong.h"
 #import "MIBServer.h"
 #import "MKDownloader.h"
 #import "AFNetworking.h"
 #import "Gloable.h"
-#import "MJExtension.h"
 
 @interface SYSong ()
 /** 开始下载 */
@@ -40,22 +41,17 @@
 /** 通过字典创建 */
 +(instancetype)songModelWithDict:(NSDictionary *)dict
 {
-    return [self objectWithKeyValues:dict];
+    return [self instanceWithDict:dict];
 }
-/** 通过字典初始化 */
--(instancetype)initWithDict:(NSDictionary *)dict
-{
+/** 初始化 */
+-(instancetype)init{
     if (self = [super init]) {
-        [self setValuesForKeysWithDictionary:dict];
+        self.localPath = [NSString string];
+        self.url = [NSString string];
+        self.lrcPath = [NSString string];
     }
     return self;
 }
-/** model转dic */
--(NSDictionary *)toDict
-{
-    return [self keyValues];
-}
-
 /** 检查本地文件路径是否有更新 YES:有更新 NO:无更新 */
 -(BOOL)updeteCheckInDir:(NSString *)dir{
     BOOL ret = NO;

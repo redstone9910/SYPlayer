@@ -25,7 +25,7 @@
 /** 通过tableView缓存池创建 */
 +(instancetype)cellWithTableView:(UITableView *)tableView
 {
-    NSString *ID = @"playListCell";
+    NSString *ID = @"songCell";
     
     SYSongCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
     if (cell == nil) {
@@ -90,10 +90,10 @@
 
 #pragma mark - property
 /** 设定数据并更新Cell */
--(void)setPlayListData:(SYSong *)playListData
+-(void)setSong:(SYSong *)song
 {
-    _playListData = playListData;
-    SYSong *data = self.playListData;
+    _song = song;
+    SYSong *data = self.song;
 
     self.songNameLabel.text = data.name;
     
