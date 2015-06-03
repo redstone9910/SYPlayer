@@ -13,7 +13,7 @@
 
 @interface SYCatcheTool : NSObject
 /** 插入 */
-+(BOOL)insertData:(id)data;
++(BOOL)insertData:(id)data withSubdatas:(BOOL)withSubdatas;
 /** 读取记录 */
 +(NSArray *)loadAuthor:(SYAuthor *) data;
 +(NSArray *)loadAlbum:(SYAlbum *) data;

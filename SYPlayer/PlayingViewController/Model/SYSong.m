@@ -58,7 +58,7 @@
 }
 /** 保存到文件 */
 -(BOOL)save{
-    return [SYCatcheTool insertData:self];
+    return [SYCatcheTool insertData:self withSubdatas:NO];
 }
 /** 从文件加载 */
 -(BOOL)load{

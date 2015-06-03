@@ -29,6 +29,13 @@
     self.window.rootViewController = rootController;
     [self.window makeKeyAndVisible];
     
+    NSString *nce_root = @"nce_root.db";
+    NSString *srcPath = [[NSBundle mainBundle] pathForResource:nce_root ofType:nil];
+    NSString *descPath = [[NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches"] stringByAppendingPathComponent:nce_root];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:descPath]) {
+        [[NSFileManager defaultManager] copyItemAtPath:srcPath toPath:descPath error:nil];
+    }
+    
     return YES;
 }
 

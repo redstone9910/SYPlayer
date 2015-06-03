@@ -12,19 +12,20 @@
 #import "SYAuthor.h"
 #import "SYAlbum.h"
 #import "SYSong.h"
+#import "SYOperationQueue.h"
 
 @implementation SYCatcheTool
 
-static FMDatabaseQueue *_queue;
+static FMDatabaseQueue *databaseQueue;
+//static NSOperationQueue * operationQueue;
 /** 检查或新建数据库 */
 + (void)assertBase
 {
-    // 0.获得沙盒中的数据库文件名
-    NSString *path = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"nce_root.sqlite"];
+    NSString *path = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"nce_root.db"];
     
-    _queue = [FMDatabaseQueue databaseQueueWithPath:path];
+    databaseQueue = [FMDatabaseQueue databaseQueueWithPath:path];
     
-    [_queue close];
+    [databaseQueue close];
 }
 
 +(BOOL)assertTable:(id)obj{
@@ -32,16 +33,16 @@ static FMDatabaseQueue *_queue;
     if (sql) {
         [self assertBase];
         
-        [_queue inDatabase:^(FMDatabase *db) {
+        [databaseQueue inDatabase:^(FMDatabase *db) {
             [db executeUpdate:sql];
         }];
-        [_queue close];
+        [databaseQueue close];
         return YES;
     }
     return NO;
 }
 
-+(BOOL)insertData:(id)data{
++(BOOL)insertData:(id)data withSubdatas:(BOOL)withSubdatas{
     if ([self assertTable:data]) {
         NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:[data toDict]];
         
@@ -65,28 +66,42 @@ static FMDatabaseQueue *_queue;
         NSString *insertSql = [self assembleInsertSql:data];
         NSString *updateSql = [self assembleUpdateSql:data];
         
-        [_queue inDatabase:^(FMDatabase *db) {
-            FMResultSet *rs = nil;
-            NSString *queryStr = [NSString stringWithFormat:@"select * from %@ where %@ = \"%@\";", NSStringFromClass([data class]), @"name", dict[@"name"]];
-            rs = [db executeQuery:queryStr];
+        NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+            SYModel *model = data;
+            NSLog(@"start %@",model.name);
             
-            if (rs.next) {
-//                @"update %@ set age = ? where name = ?;"
-                [db executeUpdate:updateSql withParameterDictionary:dict];
-            }else{
-//                @"insert into %@ (%@) values (%@);"
-                [db executeUpdate:insertSql withParameterDictionary:dict];
-            }
-            [rs close];
+            [databaseQueue inDatabase:^(FMDatabase *db) {
+                FMResultSet *rs = nil;
+                NSString *queryStr = [NSString stringWithFormat:@"select * from %@ where %@ = \"%@\";", NSStringFromClass([data class]), @"name", dict[@"name"]];
+                rs = [db executeQuery:queryStr];
+                
+                if (rs.next) {
+                    [db executeUpdate:updateSql withParameterDictionary:dict];
+                }else{
+                    [db executeUpdate:insertSql withParameterDictionary:dict];
+                }
+                [rs close];
+            }];
+            [databaseQueue close];
+            
+            NSLog(@"finish %@",model.name);
         }];
-        [_queue close];
+        SYOperationQueue * operationQueue = [SYOperationQueue sharedOperationQueue];
+        [operationQueue addOperation:operation];
+//        @synchronized(operationQueue){
+//            NSBlockOperation *lastOpertion = [operationQueue.operations lastObject];
+//            if (lastOpertion) {
+//                [operation addDependency:lastOpertion];
+//            }
+//            [operationQueue addOperation:operation];
+//        }
         
-        if (subDatas) {
+        if (subDatas && withSubdatas){
             for (id subData in subDatas) {
                 if ([data isKindOfClass:[SYAuthor class]]) {
-                    [self insertData:[SYAlbum instanceWithDict:subData]];
+                    [self insertData:[SYAlbum instanceWithDict:subData] withSubdatas:YES];
                 }else if ([data isKindOfClass:[SYAlbum class]]) {
-                    [self insertData:[SYSong instanceWithDict:subData]];
+                    [self insertData:[SYSong instanceWithDict:subData] withSubdatas:YES];
                 }
             }
         }
@@ -102,7 +117,8 @@ static FMDatabaseQueue *_queue;
     NSString *queryStr = [NSString stringWithFormat:@"select * from %@;", NSStringFromClass([data class])];
     __block NSMutableArray *retArray = [NSMutableArray array];
     
-    [_queue inDatabase:^(FMDatabase *db) {
+    [databaseQueue inDatabase:^(FMDatabase *db) {
+//        NSLog(@"loadAuthor");
         FMResultSet *rs = nil;
         rs = [db executeQuery:queryStr];
         while (rs.next) {
@@ -114,15 +130,22 @@ static FMDatabaseQueue *_queue;
             }
             
             SYAuthor *sdata = [SYAuthor instanceWithDict:dict];
-            SYAlbum *subData = [[SYAlbum alloc] init];
-            subData.authorName = sdata.name;
-            NSArray *subDatas = [self loadAlbum:subData];
-            sdata.albums = subDatas;
+//            SYAlbum *subData = [[SYAlbum alloc] init];
+//            subData.authorName = sdata.name;
+//            NSArray *subDatas = [self loadAlbum:subData];
+//            sdata.albums = subDatas;
             [retArray addObject:sdata];
         }
         [rs close];
     }];
-    [_queue close];
+    [databaseQueue close];
+    
+    for (SYAuthor *sdata in retArray) {
+        SYAlbum *subData = [[SYAlbum alloc] init];
+        subData.authorName = sdata.name;
+        NSArray *subDatas = [self loadAlbum:subData];
+        sdata.albums = subDatas;
+    }
     return [retArray copy];
 }
 
@@ -131,7 +154,8 @@ static FMDatabaseQueue *_queue;
     NSString *queryStr = [NSString stringWithFormat:@"select * from %@ where authorName = \"%@\";", NSStringFromClass([data class]), data.authorName];
     __block NSMutableArray *retArray = [NSMutableArray array];
     
-    [_queue inDatabase:^(FMDatabase *db) {
+    [databaseQueue inDatabase:^(FMDatabase *db) {
+//        NSLog(@"loadAlbum");
         FMResultSet *rs = nil;
         rs = [db executeQuery:queryStr];
         while (rs.next) {
@@ -143,16 +167,24 @@ static FMDatabaseQueue *_queue;
             }
             
             SYAlbum *sdata = [SYAlbum instanceWithDict:dict];
-            SYSong *subData = [[SYSong alloc] init];
-            subData.authorName = sdata.authorName;
-            subData.albumName = sdata.name;
-            NSArray *subDatas = [self loadSong:subData];
-            sdata.songs = subDatas;
+//            SYSong *subData = [[SYSong alloc] init];
+//            subData.authorName = sdata.authorName;
+//            subData.albumName = sdata.name;
+//            NSArray *subDatas = [self loadSong:subData];
+//            sdata.songs = subDatas;
             [retArray addObject:sdata];
         }
         [rs close];
     }];
-    [_queue close];
+    [databaseQueue close];
+    
+    for (SYAlbum *sdata in retArray) {
+        SYSong *subData = [[SYSong alloc] init];
+        subData.authorName = sdata.authorName;
+        subData.albumName = sdata.name;
+        NSArray *subDatas = [self loadSong:subData];
+        sdata.songs = subDatas;
+    }
     return [retArray copy];
 }
 
@@ -161,7 +193,8 @@ static FMDatabaseQueue *_queue;
     NSString *queryStr = [NSString stringWithFormat:@"select * from %@ where authorName = \"%@\" AND albumName = \"%@\";", NSStringFromClass([data class]), data.authorName, data.albumName];
     __block NSMutableArray *retArray = [NSMutableArray array];
     
-    [_queue inDatabase:^(FMDatabase *db) {
+    [databaseQueue inDatabase:^(FMDatabase *db) {
+//        NSLog(@"loadSong");
         FMResultSet *rs = nil;
         rs = [db executeQuery:queryStr];
         while (rs.next) {
@@ -177,7 +210,7 @@ static FMDatabaseQueue *_queue;
         }
         [rs close];
     }];
-    [_queue close];
+    [databaseQueue close];
     return [retArray copy];
 }
 

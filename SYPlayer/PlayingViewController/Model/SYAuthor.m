@@ -40,6 +40,13 @@
     author.path = destPath;
     if ([author load]) {
         author.path = destPath;
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if ([author updateCheck]) {
+                [author save];
+//                [author load];
+            }
+        });
         return author;
     }
     
@@ -82,9 +89,13 @@
     [listArray addObject:album];//上一册添加进plist文件
     
     author.albums = [listArray copy];
-    [author save];
-    if([author load]) return author;
-    else return nil;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if ([author updateCheck]) {
+            [author save];
+            [author load];
+        }
+    });
+    return author;
 }
 /** 从字典创建对象 */
 +(instancetype)authorWithDict:(NSDictionary *)dict{
@@ -99,7 +110,7 @@
 }
 /** 保存到文件 */
 -(BOOL)save{
-    return [SYCatcheTool insertData:self];
+    return [SYCatcheTool insertData:self withSubdatas:YES];
 //    return [[self toDict] writeToFile:self.path atomically:YES];
 }
 /** 从文件加载 */
@@ -113,9 +124,6 @@
     }
     [self setKeyValues:dict];
     
-    if ([self updateCheck]) {
-        [self save];
-    }
     return YES;
 }
 /** 检查文件本地路径是否有更新 */
