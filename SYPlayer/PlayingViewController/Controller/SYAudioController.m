@@ -58,7 +58,7 @@
                 if ([self.sydelegate respondsToSelector:@selector(SYAudioControllerFetchURLSuccess:)]) {
                     [self.sydelegate SYAudioControllerFetchURLSuccess:self];
                 }
-                [self.author save];
+                [self.author.playingSong save];
                 [self startPlay];
             }else{
                 if ([self.sydelegate respondsToSelector:@selector(SYAudioControllerFetchURLFailed:)]) {

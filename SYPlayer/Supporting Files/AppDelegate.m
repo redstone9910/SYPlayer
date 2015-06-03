@@ -25,18 +25,16 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     SYRootViewController *rootController = [[SYRootViewController alloc] init];
-    
-//    SYAudioController *audioController = [SYAudioController sharedAudioController];
-//    NSString *local = @"/Users/yinyanhui/Desktop/01－Finding Fossil Man.mp3";
-//    NSURL *localURL = [NSURL fileURLWithPath:local];
-//    NSString *web = @"http://www.xyuan360.com/download/NCE2-%E7%BE%8E%E9%9F%B3-(MP3+LRC)/07%EF%BC%8DToo%20Late.mp3";
-//    NSURL *webURL = [NSURL URLWithString:web];
-//    audioController.url = webURL;
-//    [audioController play];
-//    return YES;
-    
+
     self.window.rootViewController = rootController;
     [self.window makeKeyAndVisible];
+    
+    NSString *nce_root = @"nce_root.db";
+    NSString *srcPath = [[NSBundle mainBundle] pathForResource:nce_root ofType:nil];
+    NSString *descPath = [[NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches"] stringByAppendingPathComponent:nce_root];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:descPath]) {
+        [[NSFileManager defaultManager] copyItemAtPath:srcPath toPath:descPath error:nil];
+    }
     
     return YES;
 }

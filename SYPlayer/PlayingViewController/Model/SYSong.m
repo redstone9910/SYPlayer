@@ -13,6 +13,10 @@
 #import "MKDownloader.h"
 #import "AFNetworking.h"
 #import "Gloable.h"
+#import "SYCatcheTool.h"
+#import "MJExtension.h"
+#import "SYCatcheTool.h"
+#import "MJExtension.h"
 
 @interface SYSong ()
 /** 开始下载 */
@@ -51,6 +55,21 @@
         self.lrcPath = [NSString string];
     }
     return self;
+}
+/** 保存到文件 */
+-(BOOL)save{
+    return [SYCatcheTool insertData:self withSubdatas:NO];
+}
+/** 从文件加载 */
+-(BOOL)load{
+    NSArray *datas = [SYCatcheTool loadSong:self];
+    SYSong *author = [datas lastObject];
+    NSDictionary *dict = [author toDict];
+    if (dict == nil) {
+        return NO;
+    }
+    [self setKeyValues:dict];
+    return YES;
 }
 /** 检查本地文件路径是否有更新 YES:有更新 NO:无更新 */
 -(BOOL)updeteCheckInDir:(NSString *)dir{

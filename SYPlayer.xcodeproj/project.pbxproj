@@ -48,6 +48,8 @@
 		521F057C1B1476F40098928E /* 第三册 in Resources */ = {isa = PBXBuildFile; fileRef = 521F05781B1476F40098928E /* 第三册 */; };
 		521F057D1B1476F40098928E /* 第四册 in Resources */ = {isa = PBXBuildFile; fileRef = 521F05791B1476F40098928E /* 第四册 */; };
 		521F057E1B1476F40098928E /* 第一册 in Resources */ = {isa = PBXBuildFile; fileRef = 521F057A1B1476F40098928E /* 第一册 */; };
+		5222CA6E1B1F13100016C4A1 /* SYOperationQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 5222CA6D1B1F13100016C4A1 /* SYOperationQueue.m */; };
+		5222CA711B1F13700016C4A1 /* SYQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 5222CA701B1F13700016C4A1 /* SYQueue.m */; };
 		522424041AE5B91200795868 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424031AE5B91200795868 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		522424061AE5B92E00795868 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424051AE5B92E00795868 /* CoreLocation.framework */; };
 		522424081AE5B94000795868 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424071AE5B94000795868 /* QuartzCore.framework */; };
@@ -152,6 +154,10 @@
 		521F05781B1476F40098928E /* 第三册 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "第三册"; sourceTree = "<group>"; };
 		521F05791B1476F40098928E /* 第四册 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "第四册"; sourceTree = "<group>"; };
 		521F057A1B1476F40098928E /* 第一册 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "第一册"; sourceTree = "<group>"; };
+		5222CA6C1B1F13100016C4A1 /* SYOperationQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYOperationQueue.h; sourceTree = "<group>"; };
+		5222CA6D1B1F13100016C4A1 /* SYOperationQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYOperationQueue.m; sourceTree = "<group>"; };
+		5222CA6F1B1F13700016C4A1 /* SYQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYQueue.h; sourceTree = "<group>"; };
+		5222CA701B1F13700016C4A1 /* SYQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYQueue.m; sourceTree = "<group>"; };
 		522424031AE5B91200795868 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		522424051AE5B92E00795868 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		522424071AE5B94000795868 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -160,6 +166,7 @@
 		5224240D1AE5B96200795868 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		5224240F1AE5B96A00795868 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		524037D01AE539DE00E12A96 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		52B2CB821B1EE12A00CEACF1 /* nce_root.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = nce_root.db; sourceTree = "<group>"; };
 		52B523DB1B17F74E00C76E35 /* mic */ = {isa = PBXFileReference; lastKnownFileType = folder; path = mic; sourceTree = "<group>"; };
 		52B59A691B15DE20000F0816 /* nce_root.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = nce_root.plist; sourceTree = "<group>"; };
 		52B6CC471A9BF53D00E043C0 /* SYPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SYPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -454,12 +461,12 @@
 		52B6CC491A9BF53D00E043C0 /* SYPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				52B6CC4A1A9BF53D00E043C0 /* Supporting Files */,
 				52E4C7EB1B19614900071FE8 /* tools */,
 				521F02A31B1407640098928E /* Supporting Files */,
 				521F026C1B1406600098928E /* PlayingViewController */,
 				521F025A1B14056C0098928E /* RootController */,
 				521F023D1B1404360098928E /* Other */,
-				52B6CC4A1A9BF53D00E043C0 /* Supporting Files */,
 			);
 			path = SYPlayer;
 			sourceTree = "<group>";
@@ -467,6 +474,7 @@
 		52B6CC4A1A9BF53D00E043C0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				52B2CB821B1EE12A00CEACF1 /* nce_root.db */,
 				52B6CC571A9BF53D00E043C0 /* Images.xcassets */,
 				52B6CC4B1A9BF53D00E043C0 /* Info.plist */,
 				52B6CC4C1A9BF53D00E043C0 /* main.m */,
@@ -496,6 +504,10 @@
 			children = (
 				52E4C7ED1B19615D00071FE8 /* SYCatcheTool.h */,
 				52E4C7EC1B19615D00071FE8 /* SYCatcheTool.m */,
+				5222CA6C1B1F13100016C4A1 /* SYOperationQueue.h */,
+				5222CA6D1B1F13100016C4A1 /* SYOperationQueue.m */,
+				5222CA6F1B1F13700016C4A1 /* SYQueue.h */,
+				5222CA701B1F13700016C4A1 /* SYQueue.m */,
 			);
 			name = tools;
 			sourceTree = "<group>";
@@ -662,6 +674,7 @@
 				521F029A1B1406600098928E /* SYLrcMaskView.m in Sources */,
 				521F02961B1406600098928E /* SYAuthor.m in Sources */,
 				521F029C1B1406600098928E /* SYBackGroundScroll.m in Sources */,
+				5222CA6E1B1F13100016C4A1 /* SYOperationQueue.m in Sources */,
 				521F035A1B1437CA0098928E /* SYDropdownAlert.m in Sources */,
 				521F02501B1404360098928E /* NSString+Tools.m in Sources */,
 				521F029F1B1406600098928E /* SYAlbumTableView.m in Sources */,
@@ -676,6 +689,7 @@
 				521F02991B1406600098928E /* SYLrcMaskLayer.m in Sources */,
 				521D95641B19C615007C6661 /* SYModel.m in Sources */,
 				52E4C7EE1B19615D00071FE8 /* SYCatcheTool.m in Sources */,
+				5222CA711B1F13700016C4A1 /* SYQueue.m in Sources */,
 				521F02671B14056C0098928E /* SYRootViewController.m in Sources */,
 				521F02A01B1406600098928E /* SYRecordView.m in Sources */,
 			);

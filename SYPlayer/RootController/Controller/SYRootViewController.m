@@ -112,7 +112,7 @@
     if (self.author.playingIndex != p.aindex - 1) {
         self.author.playingIndex = p.aindex - 1;
         [[SYAudioController sharedAudioController] stop];
-        [self.author save];
+//        [self.author save];
     }
     
     [self presentViewController:sVc animated:YES completion:^{

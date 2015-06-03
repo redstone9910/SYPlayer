@@ -14,11 +14,13 @@
 /** 册编号 */
 @property (nonatomic,assign) long aindex;
 /** SYSong Array 播放列表 */
-@property (nonatomic,strong) NSArray * songs;
+@property (nonatomic,strong) NSArray *songs;
 /** 正在播放 */
 @property (nonatomic,assign) long playingIndex;
 /** 前一首 */
 @property (nonatomic,assign) long prevIndex;
+/** 歌手名 */
+@property (nonatomic,copy) NSString *authorName;
 
 /** 通过字典创建 */
 +(instancetype)albumWithDict:(NSDictionary *)dict;
@@ -28,4 +30,9 @@
 
 /** 正在播放的曲目 */
 -(SYSong *)playingSong;
+
+/** 保存到文件 */
+-(BOOL)save;
+/** 从文件加载 */
+-(BOOL)load;
 @end

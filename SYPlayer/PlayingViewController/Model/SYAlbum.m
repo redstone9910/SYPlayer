@@ -10,11 +10,12 @@
 #import "SYAuthor.h"
 #import "SYAlbum.h"
 #import "SYSong.h"
+#import "SYCatcheTool.h"
+#import "MJExtension.h"
+#import "SYOperationQueue.h"
 
 @interface SYAlbum ()
 @end
-
-static NSOperationQueue * queue;
 
 @implementation SYAlbum
 /** songs 数组类型为 SYSong */
@@ -33,14 +34,24 @@ static NSOperationQueue * queue;
     }
     return self;
 }
+/** 保存到文件 */
+-(BOOL)save{
+    return [SYCatcheTool insertData:self withSubdatas:NO];
+}
+/** 从文件加载 */
+-(BOOL)load{
+    NSArray *datas = [SYCatcheTool loadAlbum:self];
+    SYAlbum *author = [datas lastObject];
+    NSDictionary *dict = [author toDict];
+    if (dict == nil) {
+        return NO;
+    }
+    [self setKeyValues:dict];
+    return YES;
+}
 /** 检查列表中文件本地路径是否有更新 */
 -(BOOL)updateCheck
 {
-    if (queue == nil) {
-        queue = [[NSOperationQueue alloc] init];
-        [queue setMaxConcurrentOperationCount:1];
-    }
-    
     if (self.songs.count < self.playingIndex + 1) {
         return NO;
     }
@@ -49,18 +60,21 @@ static NSOperationQueue * queue;
         if ([song updeteCheckInDir:self.name]) {
             update = YES;
         }
-        if (song.url.length == 0) {
-            [queue addOperationWithBlock:^{
-                [song fetchURL:^(BOOL success) {
-                    if (success) {
-//                        SYLog(@"%@-%@ success",self.name,song.name);
-                    }else{
-                        
-                        SYLog(@"%@-%@ failed",self.name,song.name);
-                    }
-                }];
+        
+        NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+            [song fetchURL:^(BOOL success) {
+                if (success) {
+//                    NSLog(@"insert %@",NSStringFromClass([song class]));
+                    [song save];
+                }else{
+                    
+                    SYLog(@"%@-%@ failed",self.name,song.name);
+                }
             }];
-        }
+        }];
+
+        SYOperationQueue *operationQueue = [SYOperationQueue sharedOperationQueue];
+        [operationQueue addOperation:operation];
     }
 
     return update;
