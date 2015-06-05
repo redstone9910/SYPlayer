@@ -88,13 +88,6 @@ static FMDatabaseQueue *databaseQueue;
         }];
         SYOperationQueue * operationQueue = [SYOperationQueue sharedOperationQueue];
         [operationQueue addOperation:operation];
-//        @synchronized(operationQueue){
-//            NSBlockOperation *lastOpertion = [operationQueue.operations lastObject];
-//            if (lastOpertion) {
-//                [operation addDependency:lastOpertion];
-//            }
-//            [operationQueue addOperation:operation];
-//        }
         
         if (subDatas && withSubdatas){
             for (id subData in subDatas) {
