@@ -29,6 +29,7 @@
 #import "SYMediaInfo.h"
 #import "SYDropdownAlert.h"
 #import "FXBlurView.h"
+#import "SYOperationQueue.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -734,7 +735,9 @@ typedef void (^SYDownloadCompletion)();
     self.bannerView.currentViewController = nil;
     self.bannerView = nil;
     
-    [self.author.playingAlbum save];
+    [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
+        [self.author.playingAlbum save];
+    }];
     SYLog(@"%@ dealloc",NSStringFromClass([self class]));
 }
 @end

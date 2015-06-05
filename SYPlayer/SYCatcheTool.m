@@ -65,11 +65,11 @@ static FMDatabaseQueue *databaseQueue;
         
         NSString *insertSql = [self assembleInsertSql:data];
         NSString *updateSql = [self assembleUpdateSql:data];
-        
-        NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+
+//        [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
             SYModel *model = data;
             NSLog(@"start %@",model.name);
-            
+        
             [databaseQueue inDatabase:^(FMDatabase *db) {
                 FMResultSet *rs = nil;
                 NSString *queryStr = [NSString stringWithFormat:@"select * from %@ where %@ = \"%@\";", NSStringFromClass([data class]), @"name", dict[@"name"]];
@@ -85,9 +85,7 @@ static FMDatabaseQueue *databaseQueue;
             [databaseQueue close];
             
             NSLog(@"finish %@",model.name);
-        }];
-        SYOperationQueue * operationQueue = [SYOperationQueue sharedOperationQueue];
-        [operationQueue addOperation:operation];
+//        }];
         
         if (subDatas && withSubdatas){
             for (id subData in subDatas) {

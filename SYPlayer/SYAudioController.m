@@ -11,6 +11,7 @@
 #import "SYAuthor.h"
 #import "Gloable.h"
 #import "SYMediaInfo.h"
+#import "SYOperationQueue.h"
 
 #define updateInterval 0.1
 
@@ -58,7 +59,9 @@
                 if ([self.sydelegate respondsToSelector:@selector(SYAudioControllerFetchURLSuccess:)]) {
                     [self.sydelegate SYAudioControllerFetchURLSuccess:self];
                 }
-                [self.author.playingSong save];
+                [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
+                    [self.author.playingSong save];
+                }];
                 [self startPlay];
             }else{
                 if ([self.sydelegate respondsToSelector:@selector(SYAudioControllerFetchURLFailed:)]) {

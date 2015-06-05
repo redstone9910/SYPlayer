@@ -12,6 +12,7 @@
 #import "MJExtension.h"
 #import "Gloable.h"
 #import "SYCatcheTool.h"
+#import "SYOperationQueue.h"
 
 @interface SYAuthor ()
 @end
@@ -43,7 +44,9 @@
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if ([author updateCheck]) {
-                [author save];
+                [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
+                    [author save];
+                }];
 //                [author load];
             }
         });
@@ -91,7 +94,9 @@
     author.albums = [listArray copy];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if ([author updateCheck]) {
-            [author save];
+            [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
+                [author save];
+            }];
             [author load];
         }
     });
@@ -154,7 +159,9 @@
             }
         }
     }
-    [self save];
+    [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
+        [self save];
+    }];
 }
 /** 正在播放的列表 */
 -(SYAlbum *)playingAlbum{

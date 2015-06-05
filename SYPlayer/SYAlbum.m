@@ -60,21 +60,20 @@
         if ([song updeteCheckInDir:self.name]) {
             update = YES;
         }
-        
-        NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+
+        [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
             [song fetchURL:^(BOOL success) {
                 if (success) {
 //                    NSLog(@"insert %@",NSStringFromClass([song class]));
-                    [song save];
+                    [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
+                        [song save];
+                    }];
                 }else{
                     
                     SYLog(@"%@-%@ failed",self.name,song.name);
                 }
             }];
         }];
-
-        SYOperationQueue *operationQueue = [SYOperationQueue sharedOperationQueue];
-        [operationQueue addOperation:operation];
     }
 
     return update;
