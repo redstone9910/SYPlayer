@@ -11,6 +11,7 @@
 #import "SYRootViewController.h"
 #import "SYAudioController.h"
 #import "SYAuthor.h"
+#import <Crashlytics/Crashlytics.h>
 
 @interface AppDelegate ()
 @property (nonatomic,strong) SYAudioController * audioController;
@@ -21,6 +22,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    [Crashlytics startWithAPIKey:@"95a455f149ee437632f8d7be182c078e93746625"];
     [MobClick startWithAppkey:@"553501df67e58e0eec0012ca" reportPolicy:BATCH   channelId:@""];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];

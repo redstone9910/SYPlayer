@@ -61,6 +61,7 @@
 		751258931B21D3CA00ABD013 /* libMobClickLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 751258911B21D3CA00ABD013 /* libMobClickLibrary.a */; };
 		7512589A1B21D8AF00ABD013 /* Assets in Resources */ = {isa = PBXBuildFile; fileRef = 751258991B21D8AF00ABD013 /* Assets */; };
 		7512589B1B21E00400ABD013 /* nce_root.db in Resources */ = {isa = PBXBuildFile; fileRef = 751258941B21D58400ABD013 /* nce_root.db */; };
+		759A44731B24317100D7B677 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 759A44721B24317100D7B677 /* Crashlytics.framework */; };
 		CA50C99333C41E2EBAF497B9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6782EEA4628A06A5D583C063 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -172,6 +173,7 @@
 		751258941B21D58400ABD013 /* nce_root.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = nce_root.db; sourceTree = "<group>"; };
 		751258981B21D67600ABD013 /* root.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = root.txt; sourceTree = "<group>"; };
 		751258991B21D8AF00ABD013 /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Assets; sourceTree = "<group>"; };
+		759A44721B24317100D7B677 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		C1BA314FB55BFFFFDDB77F2E /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -190,6 +192,7 @@
 				522424061AE5B92E00795868 /* CoreLocation.framework in Frameworks */,
 				522424041AE5B91200795868 /* AdSupport.framework in Frameworks */,
 				524037D11AE539DE00E12A96 /* libz.dylib in Frameworks */,
+				759A44731B24317100D7B677 /* Crashlytics.framework in Frameworks */,
 				CA50C99333C41E2EBAF497B9 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -216,6 +219,7 @@
 		4729069209311C9BC55374BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				759A44721B24317100D7B677 /* Crashlytics.framework */,
 				5224240F1AE5B96A00795868 /* StoreKit.framework */,
 				5224240D1AE5B96200795868 /* Security.framework */,
 				5224240B1AE5B95500795868 /* CoreTelephony.framework */,
@@ -512,6 +516,7 @@
 				52B6CC441A9BF53D00E043C0 /* Frameworks */,
 				52B6CC451A9BF53D00E043C0 /* Resources */,
 				20D16346E64CA0B13F9B6235 /* Copy Pods Resources */,
+				756127851B242DCD00373CEC /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -620,6 +625,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		756127851B242DCD00373CEC /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run 95a455f149ee437632f8d7be182c078e93746625 e49bc748bc3c694f2b22c61ef726a02996adaccb36c2c5d8a89fd3860bd238d5";
 		};
 		FDB37D870962FD8E7B77DC77 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -784,6 +802,11 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SYPlayer",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = SYPlayer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -807,6 +830,11 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SYPlayer",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = SYPlayer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

@@ -17,6 +17,7 @@
 #import "MJExtension.h"
 #import "SYCatcheTool.h"
 #import "MJExtension.h"
+#import "SYOperationQueue.h"
 
 @interface SYSong ()
 /** 开始下载 */
@@ -116,6 +117,11 @@
         }
     }
     
+    if (ret) {
+        [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
+            [self save];
+        }];
+    }
     return ret;
 }
 
@@ -185,6 +191,11 @@
     __weak typeof (self) weakSelf = self;
     [MIBServer fetchURLWithFileName:self.name onComplete:^(NSString *fileURL) {
         weakSelf.url = fileURL;
+        if (fileURL) {
+            [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
+                [self save];
+            }];
+        }
         completeBlock(fileURL != nil);
     }];
 }

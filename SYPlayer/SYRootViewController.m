@@ -16,6 +16,7 @@
 #import "SYAuthor.h"
 #import "SYAudioController.h"
 #import "Gloable.h"
+#import <Crashlytics/Crashlytics.h>
 
 #define SYCircleCellID @"SYCircleCell"
 
@@ -112,7 +113,7 @@
     if (self.author.playingIndex != p.aindex - 1) {
         self.author.playingIndex = p.aindex - 1;
         [[SYAudioController sharedAudioController] stop];
-//        [self.author save];
+//        [[Crashlytics sharedInstance] crash];
     }
     
     [self presentViewController:sVc animated:YES completion:^{

@@ -42,14 +42,12 @@
     if ([author load]) {
         author.path = destPath;
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            if ([author updateCheck]) {
-                [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
-                    [author save];
-                }];
+        if ([author updateCheck]) {
+            [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
+//                [author save];
+            }];
 //                [author load];
-            }
-        });
+        }
         return author;
     }
     
@@ -92,14 +90,12 @@
     [listArray addObject:album];//上一册添加进plist文件
     
     author.albums = [listArray copy];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if ([author updateCheck]) {
-            [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
-                [author save];
-            }];
-            [author load];
-        }
-    });
+    if ([author updateCheck]) {
+        [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
+            [author save];
+        }];
+        [author load];
+    }
     return author;
 }
 /** 从字典创建对象 */
@@ -144,11 +140,13 @@
 }
 /** 获取所有LRC文件 */
 -(void)fetchLRCs{
+    static BOOL updeted = NO;
     for (SYAlbum *album in self.albums) {
         for (SYSong *song in album.songs) {
             if (song.lrcPath.length == 0) {
                 [song fetchLRCToDir:album.name complete:^(BOOL success) {
                     if (success) {
+                        updeted = YES;
                         SYLog(@"Success at %@ - %@",album.name,song.name);
                         [self fetchLRCs];
                     }else{
@@ -159,9 +157,13 @@
             }
         }
     }
-    [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
-        [self save];
-    }];
+    
+    if (updeted) {
+        updeted = NO;
+        [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
+            [self save];
+        }];
+    }
 }
 /** 正在播放的列表 */
 -(SYAlbum *)playingAlbum{

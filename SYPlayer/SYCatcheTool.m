@@ -66,26 +66,24 @@ static FMDatabaseQueue *databaseQueue;
         NSString *insertSql = [self assembleInsertSql:data];
         NSString *updateSql = [self assembleUpdateSql:data];
 
-//        [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
-            SYModel *model = data;
-            NSLog(@"start %@",model.name);
-        
-            [databaseQueue inDatabase:^(FMDatabase *db) {
-                FMResultSet *rs = nil;
-                NSString *queryStr = [NSString stringWithFormat:@"select * from %@ where %@ = \"%@\";", NSStringFromClass([data class]), @"name", dict[@"name"]];
-                rs = [db executeQuery:queryStr];
-                
-                if (rs.next) {
-                    [db executeUpdate:updateSql withParameterDictionary:dict];
-                }else{
-                    [db executeUpdate:insertSql withParameterDictionary:dict];
-                }
-                [rs close];
-            }];
-            [databaseQueue close];
+//        SYModel *model = data;
+//        NSLog(@"start %@",model.name);
+    
+        [databaseQueue inDatabase:^(FMDatabase *db) {
+            FMResultSet *rs = nil;
+            NSString *queryStr = [NSString stringWithFormat:@"select * from %@ where %@ = \"%@\";", NSStringFromClass([data class]), @"name", dict[@"name"]];
+            rs = [db executeQuery:queryStr];
             
-            NSLog(@"finish %@",model.name);
-//        }];
+            if (rs.next) {
+                [db executeUpdate:updateSql withParameterDictionary:dict];
+            }else{
+                [db executeUpdate:insertSql withParameterDictionary:dict];
+            }
+            [rs close];
+        }];
+        [databaseQueue close];
+        
+//        NSLog(@"finish %@",model.name);
         
         if (subDatas && withSubdatas){
             for (id subData in subDatas) {

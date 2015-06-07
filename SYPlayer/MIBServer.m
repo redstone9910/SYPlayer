@@ -34,9 +34,7 @@
             SYLog(@"%@",connectionError);
         }
         
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            complete(filePath);
-        }];
+        complete(filePath);
     }];
 }
 
@@ -65,9 +63,7 @@
             }
         }
         
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            complete(filePath);
-        }];
+        complete(filePath);
     }];
 }
 +(void)postLogonMD5WithName:(NSString *)userName password:(NSString *)userPWD fileName:(NSString *)fileName onComplete:(MIBCompleteBlock)complete

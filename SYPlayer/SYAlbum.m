@@ -65,9 +65,6 @@
             [song fetchURL:^(BOOL success) {
                 if (success) {
 //                    NSLog(@"insert %@",NSStringFromClass([song class]));
-                    [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
-                        [song save];
-                    }];
                 }else{
                     
                     SYLog(@"%@-%@ failed",self.name,song.name);

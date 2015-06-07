@@ -735,8 +735,9 @@ typedef void (^SYDownloadCompletion)();
     self.bannerView.currentViewController = nil;
     self.bannerView = nil;
     
+    SYAlbum *album = self.author.playingAlbum;
     [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
-        [self.author.playingAlbum save];
+        [album save];
     }];
     SYLog(@"%@ dealloc",NSStringFromClass([self class]));
 }
