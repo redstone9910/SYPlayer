@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		52051A711B25BD8800DC1450 /* SYLrcTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 52051A701B25BD8800DC1450 /* SYLrcTools.m */; };
 		5222CA6E1B1F13100016C4A1 /* SYOperationQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 5222CA6D1B1F13100016C4A1 /* SYOperationQueue.m */; };
 		5222CA711B1F13700016C4A1 /* SYQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 5222CA701B1F13700016C4A1 /* SYQueue.m */; };
 		522424041AE5B91200795868 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522424031AE5B91200795868 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -17,6 +18,8 @@
 		5224240E1AE5B96200795868 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5224240D1AE5B96200795868 /* Security.framework */; };
 		522424101AE5B96A00795868 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5224240F1AE5B96A00795868 /* StoreKit.framework */; };
 		524037D11AE539DE00E12A96 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 524037D01AE539DE00E12A96 /* libz.dylib */; };
+		52765FD91B25014A003C2229 /* SYLrcLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 52765FD81B25014A003C2229 /* SYLrcLine.m */; };
+		52765FDD1B25133E003C2229 /* SYLrcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 52765FDC1B25133E003C2229 /* SYLrcView.m */; };
 		52B6CC4D1A9BF53D00E043C0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B6CC4C1A9BF53D00E043C0 /* main.m */; };
 		52B6CC581A9BF53D00E043C0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52B6CC571A9BF53D00E043C0 /* Images.xcassets */; };
 		52B6CC671A9BF53D00E043C0 /* SYPlayerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B6CC661A9BF53D00E043C0 /* SYPlayerTests.m */; };
@@ -37,7 +40,7 @@
 		751258481B21D11100ABD013 /* SYGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 751258411B21D11100ABD013 /* SYGradientView.m */; };
 		751258491B21D11100ABD013 /* SYLrcMaskLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 751258431B21D11100ABD013 /* SYLrcMaskLayer.m */; };
 		7512584A1B21D11100ABD013 /* SYLrcMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 751258451B21D11100ABD013 /* SYLrcMaskView.m */; };
-		7512584B1B21D11100ABD013 /* SYLrcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 751258471B21D11100ABD013 /* SYLrcView.m */; };
+		7512584B1B21D11100ABD013 /* SYLrc.m in Sources */ = {isa = PBXBuildFile; fileRef = 751258471B21D11100ABD013 /* SYLrc.m */; };
 		751258591B21D16300ABD013 /* SYAlbumTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7512584D1B21D16300ABD013 /* SYAlbumTableView.m */; };
 		7512585A1B21D16300ABD013 /* SYBackGroundScroll.m in Sources */ = {isa = PBXBuildFile; fileRef = 7512584F1B21D16300ABD013 /* SYBackGroundScroll.m */; };
 		7512585B1B21D16300ABD013 /* SYPlayerConsole.m in Sources */ = {isa = PBXBuildFile; fileRef = 751258511B21D16300ABD013 /* SYPlayerConsole.m */; };
@@ -77,6 +80,8 @@
 
 /* Begin PBXFileReference section */
 		3E6801AC50639668D3115AA8 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		52051A6F1B25BD8800DC1450 /* SYLrcTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYLrcTools.h; sourceTree = "<group>"; };
+		52051A701B25BD8800DC1450 /* SYLrcTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcTools.m; sourceTree = "<group>"; };
 		5222CA6C1B1F13100016C4A1 /* SYOperationQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYOperationQueue.h; sourceTree = "<group>"; };
 		5222CA6D1B1F13100016C4A1 /* SYOperationQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYOperationQueue.m; sourceTree = "<group>"; };
 		5222CA6F1B1F13700016C4A1 /* SYQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYQueue.h; sourceTree = "<group>"; };
@@ -89,6 +94,10 @@
 		5224240D1AE5B96200795868 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		5224240F1AE5B96A00795868 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		524037D01AE539DE00E12A96 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		52765FD71B25014A003C2229 /* SYLrcLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYLrcLine.h; sourceTree = "<group>"; };
+		52765FD81B25014A003C2229 /* SYLrcLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcLine.m; sourceTree = "<group>"; };
+		52765FDB1B25133E003C2229 /* SYLrcView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYLrcView.h; sourceTree = "<group>"; };
+		52765FDC1B25133E003C2229 /* SYLrcView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcView.m; sourceTree = "<group>"; };
 		52B6CC471A9BF53D00E043C0 /* SYPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SYPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52B6CC4B1A9BF53D00E043C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52B6CC4C1A9BF53D00E043C0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -126,8 +135,8 @@
 		751258431B21D11100ABD013 /* SYLrcMaskLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcMaskLayer.m; sourceTree = "<group>"; };
 		751258441B21D11100ABD013 /* SYLrcMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYLrcMaskView.h; sourceTree = "<group>"; };
 		751258451B21D11100ABD013 /* SYLrcMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcMaskView.m; sourceTree = "<group>"; };
-		751258461B21D11100ABD013 /* SYLrcView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYLrcView.h; sourceTree = "<group>"; };
-		751258471B21D11100ABD013 /* SYLrcView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrcView.m; sourceTree = "<group>"; };
+		751258461B21D11100ABD013 /* SYLrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYLrc.h; sourceTree = "<group>"; };
+		751258471B21D11100ABD013 /* SYLrc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYLrc.m; sourceTree = "<group>"; };
 		7512584C1B21D16300ABD013 /* SYAlbumTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYAlbumTableView.h; sourceTree = "<group>"; };
 		7512584D1B21D16300ABD013 /* SYAlbumTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYAlbumTableView.m; sourceTree = "<group>"; };
 		7512584E1B21D16300ABD013 /* SYBackGroundScroll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYBackGroundScroll.h; sourceTree = "<group>"; };
@@ -233,6 +242,48 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		52051A6E1B25BD6300DC1450 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				52051A6F1B25BD8800DC1450 /* SYLrcTools.h */,
+				52051A701B25BD8800DC1450 /* SYLrcTools.m */,
+			);
+			name = Tools;
+			sourceTree = "<group>";
+		};
+		52765FD51B2500F7003C2229 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				751258401B21D11100ABD013 /* SYGradientView.h */,
+				751258411B21D11100ABD013 /* SYGradientView.m */,
+				751258421B21D11100ABD013 /* SYLrcMaskLayer.h */,
+				751258431B21D11100ABD013 /* SYLrcMaskLayer.m */,
+				751258441B21D11100ABD013 /* SYLrcMaskView.h */,
+				751258451B21D11100ABD013 /* SYLrcMaskView.m */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		52765FD61B25011F003C2229 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				52765FD71B25014A003C2229 /* SYLrcLine.h */,
+				52765FD81B25014A003C2229 /* SYLrcLine.m */,
+				52765FDB1B25133E003C2229 /* SYLrcView.h */,
+				52765FDC1B25133E003C2229 /* SYLrcView.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		52765FDA1B250D76003C2229 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				751258461B21D11100ABD013 /* SYLrc.h */,
+				751258471B21D11100ABD013 /* SYLrc.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
 		52B6CC3E1A9BF53D00E043C0 = {
 			isa = PBXGroup;
 			children = (
@@ -257,9 +308,9 @@
 			isa = PBXGroup;
 			children = (
 				751258751B21D2B500ABD013 /* Other */,
-				751258631B21D1FD00ABD013 /* SYRootController */,
-				751258301B21D07500ABD013 /* SYPlayingViewController */,
-				751257FB1B21CD7200ABD013 /* SYAudioController */,
+				751258631B21D1FD00ABD013 /* RootController */,
+				751258301B21D07500ABD013 /* PlayingViewController */,
+				751257FB1B21CD7200ABD013 /* AudioController */,
 				52B6CC4A1A9BF53D00E043C0 /* Supporting Files */,
 			);
 			path = SYPlayer;
@@ -323,13 +374,13 @@
 			name = Tools;
 			sourceTree = "<group>";
 		};
-		751257FB1B21CD7200ABD013 /* SYAudioController */ = {
+		751257FB1B21CD7200ABD013 /* AudioController */ = {
 			isa = PBXGroup;
 			children = (
 				751258131B21CEF900ABD013 /* Controller */,
 				751257FC1B21CD9A00ABD013 /* Model */,
 			);
-			name = SYAudioController;
+			name = AudioController;
 			sourceTree = "<group>";
 		};
 		751257FC1B21CD9A00ABD013 /* Model */ = {
@@ -358,26 +409,22 @@
 			name = Controller;
 			sourceTree = "<group>";
 		};
-		751258301B21D07500ABD013 /* SYPlayingViewController */ = {
+		751258301B21D07500ABD013 /* PlayingViewController */ = {
 			isa = PBXGroup;
 			children = (
 				751258331B21D09900ABD013 /* Controller */,
 				751258321B21D09700ABD013 /* View */,
 			);
-			name = SYPlayingViewController;
+			name = PlayingViewController;
 			sourceTree = "<group>";
 		};
 		751258311B21D08F00ABD013 /* LRC */ = {
 			isa = PBXGroup;
 			children = (
-				751258401B21D11100ABD013 /* SYGradientView.h */,
-				751258411B21D11100ABD013 /* SYGradientView.m */,
-				751258421B21D11100ABD013 /* SYLrcMaskLayer.h */,
-				751258431B21D11100ABD013 /* SYLrcMaskLayer.m */,
-				751258441B21D11100ABD013 /* SYLrcMaskView.h */,
-				751258451B21D11100ABD013 /* SYLrcMaskView.m */,
-				751258461B21D11100ABD013 /* SYLrcView.h */,
-				751258471B21D11100ABD013 /* SYLrcView.m */,
+				52051A6E1B25BD6300DC1450 /* Tools */,
+				52765FDA1B250D76003C2229 /* Controller */,
+				52765FD61B25011F003C2229 /* Model */,
+				52765FD51B2500F7003C2229 /* View */,
 			);
 			name = LRC;
 			sourceTree = "<group>";
@@ -412,14 +459,14 @@
 			name = Controller;
 			sourceTree = "<group>";
 		};
-		751258631B21D1FD00ABD013 /* SYRootController */ = {
+		751258631B21D1FD00ABD013 /* RootController */ = {
 			isa = PBXGroup;
 			children = (
 				751258661B21D20C00ABD013 /* Controller */,
 				751258651B21D20900ABD013 /* Model */,
 				751258641B21D20200ABD013 /* View */,
 			);
-			name = SYRootController;
+			name = RootController;
 			sourceTree = "<group>";
 		};
 		751258641B21D20200ABD013 /* View */ = {
@@ -676,9 +723,11 @@
 				7512588E1B21D3A900ABD013 /* MIBServer.m in Sources */,
 				52B6CC4D1A9BF53D00E043C0 /* main.m in Sources */,
 				751258091B21CE7800ABD013 /* SYAuthor.m in Sources */,
+				52765FD91B25014A003C2229 /* SYLrcLine.m in Sources */,
 				7512586D1B21D26B00ABD013 /* SYCircleModel.m in Sources */,
+				52051A711B25BD8800DC1450 /* SYLrcTools.m in Sources */,
 				751258261B21D00B00ABD013 /* Gloable.c in Sources */,
-				7512584B1B21D11100ABD013 /* SYLrcView.m in Sources */,
+				7512584B1B21D11100ABD013 /* SYLrc.m in Sources */,
 				7512585A1B21D16300ABD013 /* SYBackGroundScroll.m in Sources */,
 				751258731B21D28100ABD013 /* SYCircleCell.m in Sources */,
 				7512585F1B21D16300ABD013 /* SYTitleButton.m in Sources */,
@@ -690,6 +739,7 @@
 				751258121B21CEF300ABD013 /* SYAudioController.m in Sources */,
 				7512580C1B21CE7800ABD013 /* SYModel.m in Sources */,
 				52E4C7EE1B19615D00071FE8 /* SYCatcheTool.m in Sources */,
+				52765FDD1B25133E003C2229 /* SYLrcView.m in Sources */,
 				5222CA711B1F13700016C4A1 /* SYQueue.m in Sources */,
 				751258811B21D36000ABD013 /* NSString+Tools.m in Sources */,
 				7512580F1B21CEAA00ABD013 /* SYSong.m in Sources */,

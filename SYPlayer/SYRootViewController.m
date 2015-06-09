@@ -75,7 +75,7 @@
     [self.author save];
     SYLog(@"%@ dealloc",NSStringFromClass([self class]));
 }
-#pragma - mark UICollectionViewDataSource
+#pragma mark -  UICollectionViewDataSource
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
     return 1;
@@ -98,7 +98,7 @@
     return cell;
 }
 
-#pragma - mark UICollectionViewDelegate
+#pragma mark -  UICollectionViewDelegate
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     SYCircleModel *p = self.circles[indexPath.item];

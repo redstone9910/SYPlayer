@@ -11,7 +11,7 @@
 #import "SYPlayingViewController.h"
 #import "SYTitleButton.h"
 #import "SYPlayerConsole.h"
-#import "SYLrcView.h"
+#import "SYLrc.h"
 #import "SYSongCell.h"
 #import "SYSong.h"
 #import "SYAudioController.h"
@@ -68,7 +68,7 @@ typedef void (^SYDownloadCompletion)();
 /** 控制台 */
 @property (nonatomic,strong) SYPlayerConsole * playerConsole;
 /** 歌词显示 */
-@property (nonatomic,strong) SYLrcView *lrcView;
+@property (nonatomic,strong) SYLrc *lrcView;
 @property (strong, nonatomic) SYAlbumTableView *albumTable;
 /** 广点通 */
 @property (nonatomic,strong) GDTMobBannerView * bannerView;
@@ -201,8 +201,7 @@ typedef void (^SYDownloadCompletion)();
     [self.playerConsole addConstraints:@[cnsH2]];
     
     /** 歌词 */
-    self.lrcView = [SYLrcView lrcView];
-    self.lrcView.lrcFile = nil;
+    self.lrcView = [SYLrc lrc];
     self.lrcView.delegate = self;
     self.lrcView.backgroundScroll = self.backgroundScroll;
     
@@ -268,14 +267,15 @@ typedef void (^SYDownloadCompletion)();
     }
 }
 
-#warning 拖动过快时播放会死机
 /** 跳转到播放位置 */
 -(void)seekToNewTime:(float)newTime
 {
     FSStreamPosition pos = {0};
     pos.position = newTime / self.playerConsole.timeTotalInSecond;
     
+    self.audioController.volume = 0;
     [self.audioController.activeStream seekToPosition:pos];
+    self.audioController.volume = 1;
 //    NSLog(@"seekToNewTime:%.1f",newTime);
 }
 
@@ -359,7 +359,7 @@ typedef void (^SYDownloadCompletion)();
     
     self.albumTable.selectedRow = [self.author playingAlbum].playingIndex;
     
-    self.lrcView.lrcFile = [self.author playingSong].lrcPath;
+    self.lrcView.song = [self.author playingSong];
 }
 #pragma mark - IBAction
 
@@ -493,17 +493,20 @@ typedef void (^SYDownloadCompletion)();
 }
 #pragma mark - SYLrcViewDelegate
 /** 拖动LRC视图改变播放进度 */
--(void)lrcViewProgressChanged:(SYLrcView *)lrcView
+-(void)lrcProgressChanged:(SYLrc *)lrc
 {
-    self.playerConsole.timeProgressInSecond = lrcView.timeProgressInSecond;
+    self.playerConsole.timeProgressInSecond = lrc.timeProgressInSecond;
     
     if (self.isSeeking) {
         self.seeking = NO;
     }
-    else [self seekToNewTime:lrcView.timeProgressInSecond];
+    else [self seekToNewTime:lrc.timeProgressInSecond];
+}
+-(BOOL)lrcLineShouldUpdate:(SYLrc *)lrc{
+    return YES;
 }
 /** 一句播完 */
--(void)lrcView:(SYLrcView *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence time:(float)time
+-(void)lrcView:(SYLrc *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence time:(float)time
 {
 //    [SYDropdownAlert dismissAllAlert];
     NSString *name = [self.author playingSong].name;
@@ -518,8 +521,8 @@ typedef void (^SYDownloadCompletion)();
         weakSelf.playerConsole.playing = YES;
         [weakSelf playerConsolePlayingStatusChanged:self.playerConsole];
         [weakSelf.recordView loadSentence:sentence songName:(NSString *)name duration:inteval];
-        
-        [lrcView nextSentence:time];
+#warning 此处重新处理
+//        [lrcView nextSentence:time];
         
         [weakSelf popOutRecorder:NO];
         [UIView animateWithDuration:0.5 animations:^{

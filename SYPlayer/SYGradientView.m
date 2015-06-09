@@ -24,6 +24,7 @@
 @implementation SYGradientView
 
 - (void)addMask:(BOOL)clearMode animateDuration:(float)duration{
+//    iOS8.0以下maskView不可用
 //    CGRect frame = {self.contentOffset.x,self.contentOffset.y,self.bounds.size};
 //    SYLrcMaskView *maskView = [[SYLrcMaskView alloc] initWithFrame:frame];
 //    maskView.backgroundColor = [UIColor clearColor];
