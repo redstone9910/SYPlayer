@@ -82,7 +82,7 @@
 -(void)nextSentence
 {
     [UIView animateWithDuration:0.3 animations:^{
-        self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, lrcView.offset);
+        self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, self.offset);
     }];
 }
 #pragma mark - Property

@@ -16,7 +16,8 @@ typedef enum lrcPlayMode
     lrcPlayModeSingleSentence = 1,
 } lrcPlayMode;
 
-@protocol SYLrcViewDelegate <NSObject>
+@protocol SYLrcDelegate <NSObject>
+@optional
 /** 拖动进度条 */
 -(void)lrcProgressChanged:(SYLrc *)lrc;
 /** 一句变色之前 */
@@ -43,5 +44,5 @@ typedef enum lrcPlayMode
 /** 跳转到下一句(单句模式需要手动调用) */
 -(void)nextSentence;
 /** 代理 */
-@property (nonatomic,weak) id <SYLrcViewDelegate> delegate;
+@property (nonatomic,weak) id <SYLrcDelegate> delegate;
 @end

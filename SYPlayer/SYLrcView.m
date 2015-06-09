@@ -47,7 +47,10 @@
     
     CGRect vframe = _customFrame;
     SYLrcLine *line = self.lines.lastObject;
-    vframe.size.height = CGRectGetMaxY(line.label.frame);
+    float height = CGRectGetMaxY(line.label.frame);
+    if(height){
+        vframe.size.height = height;
+    }
     self.frame = vframe;
     if ([self.delegate respondsToSelector:@selector(lrcLineDidLayoutSubviews:)]) {
         [self.delegate lrcLineDidLayoutSubviews:self];
@@ -55,13 +58,16 @@
 //    NSLog(@"%@ layoutSubviews:%@",[self class],NSStringFromCGRect(self.frame));
 }
 -(void)checkUpdate:(SYLrcLine*)currentLine{
+    //0行:self.lastLine = nil,currentLine = nil
+    //中间行:self.lastLine != nil,currentLine != nil
+    //末行:self.lastLine != nil,currentLine = nil
     BOOL update = YES;
     if (self.lastLine != currentLine) {
         self.lastLine = currentLine;
         _currentTime = self.lastLine.startTime;
         _offset = self.lastLine.label.frame.origin.y;
         if (currentLine == nil) {
-            _offset = CGRectGetMaxY(self.bounds);
+            _offset = 0;
         }
         if ([self.delegate respondsToSelector:@selector(lrcLineShouldUpdate:)]) {
             update = [self.delegate lrcLineShouldUpdate:self];
@@ -198,7 +204,7 @@
 /** 歌词排序 */
 - (NSArray *)bubbleSort:(NSArray *)array
 {
-    NSMutableArray *src = [array copy];
+    NSMutableArray *src = [array mutableCopy];
     int i, y;
     
     for (i = 0; i < [src count] - 1; i++) {
@@ -211,13 +217,20 @@
         }
     }
     
+    SYLrcLine *startLine = [SYLrcLine lrcLineWithLine:@"[00:00.00]    "];
+    [src insertObject:startLine atIndex:0];
+    
+    SYLrcLine *line = src.lastObject;
+    int time = line.startTime + 5;
+    SYLrcLine *endLine = [SYLrcLine lrcLineWithLine:[NSString stringWithFormat:@"[%02d:%02d.00]    ",time / 60,time % 60]];
+    endLine.endTime = 3600 - 1;
+    [src addObject:endLine];
+    
     for (i = 0; i < [src count] - 1; i++){
         SYLrcLine *linePrefix = src[i];
         SYLrcLine *lineSuffix = src[i + 1];
         linePrefix.endTime = lineSuffix.startTime;
     }
-    SYLrcLine *lineLast = [src lastObject];
-    lineLast.endTime = lineLast.startTime + 5;
     
     return [src copy];
 }

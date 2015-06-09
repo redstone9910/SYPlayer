@@ -51,7 +51,7 @@ typedef void (^SYDownloadCompletion)();
 //#define GDT_BANNERID @"9079537207574943610"
 #endif
 
-@interface SYPlayingViewController ()<SYTitleButtonDelegate,SYPlayerConsoleDelegate,SYLrcViewDelegate,UITableViewDelegate,UITableViewDataSource,SYAudioControllerDelegate,SYSongCellDelegate,GDTMobBannerViewDelegate>
+@interface SYPlayingViewController ()<SYTitleButtonDelegate,SYPlayerConsoleDelegate,SYLrcDelegate,UITableViewDelegate,UITableViewDataSource,SYAudioControllerDelegate,SYSongCellDelegate,GDTMobBannerViewDelegate>
 /** 收藏按钮 */
 @property (strong, nonatomic) UIButton *favoriteBtn;
 /** 后退按钮 */
@@ -68,7 +68,7 @@ typedef void (^SYDownloadCompletion)();
 /** 控制台 */
 @property (nonatomic,strong) SYPlayerConsole * playerConsole;
 /** 歌词显示 */
-@property (nonatomic,strong) SYLrc *lrcView;
+@property (nonatomic,strong) SYLrc *lrc;
 @property (strong, nonatomic) SYAlbumTableView *albumTable;
 /** 广点通 */
 @property (nonatomic,strong) GDTMobBannerView * bannerView;
@@ -96,9 +96,10 @@ typedef void (^SYDownloadCompletion)();
 @end
 
 @implementation SYPlayingViewController
--(void)loadView{
-    [super loadView];
-    
+//-(void)loadView{
+//    [super loadView];
+-(void)viewDidLoad{
+    [super viewDidLoad];
     self.view.backgroundColor = [UIColor clearColor];
     
     NSMutableString *t_evnt = [NSMutableString stringWithFormat:@"Volume:%@",[self.author playingAlbum].name];
@@ -201,17 +202,17 @@ typedef void (^SYDownloadCompletion)();
     [self.playerConsole addConstraints:@[cnsH2]];
     
     /** 歌词 */
-    self.lrcView = [SYLrc lrc];
-    self.lrcView.delegate = self;
-    self.lrcView.backgroundScroll = self.backgroundScroll;
+    self.lrc = [SYLrc lrc];
+    self.lrc.delegate = self;
+    self.lrc.backgroundScroll = self.backgroundScroll;
     
-    [self.view addSubview:self.lrcView];
-    self.lrcView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.lrc];
+    self.lrc.translatesAutoresizingMaskIntoConstraints = NO;
     
-    NSLayoutConstraint *cnsT3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-    NSLayoutConstraint *cnsB3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.playerConsole attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    NSLayoutConstraint *cnsL3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-    NSLayoutConstraint *cnsR3 = [NSLayoutConstraint constraintWithItem:self.lrcView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+    NSLayoutConstraint *cnsT3 = [NSLayoutConstraint constraintWithItem:self.lrc attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.titleListBtn attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    NSLayoutConstraint *cnsB3 = [NSLayoutConstraint constraintWithItem:self.lrc attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.playerConsole attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    NSLayoutConstraint *cnsL3 = [NSLayoutConstraint constraintWithItem:self.lrc attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    NSLayoutConstraint *cnsR3 = [NSLayoutConstraint constraintWithItem:self.lrc attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
     [self.view addConstraints:@[cnsT3,cnsB3,cnsL3,cnsR3]];
     
     /** 歌曲列表 */
@@ -359,7 +360,7 @@ typedef void (^SYDownloadCompletion)();
     
     self.albumTable.selectedRow = [self.author playingAlbum].playingIndex;
     
-    self.lrcView.song = [self.author playingSong];
+    self.lrc.song = [self.author playingSong];
 }
 #pragma mark - IBAction
 
@@ -446,7 +447,7 @@ typedef void (^SYDownloadCompletion)();
 }
 /** 拖动进度条 */
 -(void)playerConsoleProgressChanged:(SYPlayerConsole *)console {
-    self.lrcView.timeProgressInSecond = console.timeProgressInSecond;
+    self.lrc.timeProgressInSecond = console.timeProgressInSecond;
     if (self.isSeeking) {
         self.seeking = NO;
     }
@@ -463,9 +464,9 @@ typedef void (^SYDownloadCompletion)();
 /** 播放模式改变 */
 -(void)playerConsolePlayModeStateChanged:(SYPlayerConsole *)console withModeName:(NSString *)name{
     if (console.playMode == playModeStateSingleSentenceRepeat) {
-        self.lrcView.playMode = lrcPlayModeSingleSentence;
+        self.lrc.playMode = lrcPlayModeSingleSentence;
     }else{
-        self.lrcView.playMode = lrcPlayModeWhole;
+        self.lrc.playMode = lrcPlayModeWhole;
     }
 }
 /** 录音模式改变 */
@@ -475,12 +476,12 @@ typedef void (^SYDownloadCompletion)();
         [self.audioController changePlayPauseStatus];
     }
     if (console.recording) {
-        self.lrcView.playMode = lrcPlayModeSingleSentence;
+        self.lrc.playMode = lrcPlayModeSingleSentence;
         [self popOutRecorder:YES];
         self.recordView.animating = NO;
         [SYDropdownAlert showText:@"跟读模式 请稍候..."];
     }else{
-        self.lrcView.playMode = lrcPlayModeWhole;
+        self.lrc.playMode = lrcPlayModeWhole;
         [self popOutRecorder:NO];
         [UIView animateWithDuration:0.5 animations:^{
             [self.view layoutIfNeeded];
@@ -491,7 +492,7 @@ typedef void (^SYDownloadCompletion)();
         [SYDropdownAlert dismissAllAlert];
     }
 }
-#pragma mark - SYLrcViewDelegate
+#pragma mark - SYlrcDelegate
 /** 拖动LRC视图改变播放进度 */
 -(void)lrcProgressChanged:(SYLrc *)lrc
 {
@@ -506,7 +507,7 @@ typedef void (^SYDownloadCompletion)();
     return YES;
 }
 /** 一句播完 */
--(void)lrcView:(SYLrc *)lrcView sentenceInterval:(float)inteval sentence:(NSString *)sentence time:(float)time
+-(void)lrc:(SYLrc *)lrc sentenceInterval:(float)inteval sentence:(NSString *)sentence time:(float)time
 {
 //    [SYDropdownAlert dismissAllAlert];
     NSString *name = [self.author playingSong].name;
@@ -522,7 +523,7 @@ typedef void (^SYDownloadCompletion)();
         [weakSelf playerConsolePlayingStatusChanged:self.playerConsole];
         [weakSelf.recordView loadSentence:sentence songName:(NSString *)name duration:inteval];
 #warning 此处重新处理
-//        [lrcView nextSentence:time];
+//        [lrc nextSentence:time];
         
         [weakSelf popOutRecorder:NO];
         [UIView animateWithDuration:0.5 animations:^{
@@ -561,10 +562,10 @@ typedef void (^SYDownloadCompletion)();
         if ((cst.firstItem == self.albumTable) && (cst.firstAttribute == NSLayoutAttributeBottom)) {
             if (titleButton.isOpened) {
                 cst.constant = 0;
-                self.lrcView.clearMode = YES;
+                self.lrc.clearMode = YES;
             }else{
                 cst.constant = -(self.playerConsole.frame.origin.y - self.albumTable.frame.origin.y);
-                self.lrcView.clearMode = NO;
+                self.lrc.clearMode = NO;
             }
             [UIView animateWithDuration:0.3 animations:^{
                 [self.view layoutIfNeeded];
@@ -650,7 +651,7 @@ typedef void (^SYDownloadCompletion)();
             self.playerConsole.timeTotalInSecond = timeTotle;
         }
         self.playerConsole.timeProgressInSecond = cur.playbackTimeInSeconds;
-        self.lrcView.timeProgressInSecond = cur.playbackTimeInSeconds;
+        self.lrc.timeProgressInSecond = cur.playbackTimeInSeconds;
     }
 }
 -(void)SYAudioControllerWillPlay:(SYAudioController *)audioController{
@@ -722,7 +723,7 @@ typedef void (^SYDownloadCompletion)();
 //        //停止
 //        self.playerConsole.stopped = YES;
 //        [self.audioController stop];
-//        self.lrcView.lrcFile = nil;
+//        self.lrc.lrcFile = nil;
 //        self.titleListBtn.Opened = YES;
 //    }
     [self.audioController startPlay];

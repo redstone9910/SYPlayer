@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 @class SYLrcView;
 
-@protocol SYLrcDelegate <NSObject>
+@protocol SYLrcViewDelegate <NSObject>
 @optional
 -(BOOL)lrcLineShouldUpdate:(SYLrcView *)lrcView;
 -(void)lrcLineDidUpdate:(SYLrcView *)lrcView;
@@ -30,5 +30,5 @@
 /** LRC源文件(全路径) */
 @property (nonatomic,copy) NSString *lrcFile;
 /** 代理 */
-@property (nonatomic,weak) id delegate;
+@property (nonatomic,weak) id<SYLrcViewDelegate> delegate;
 @end

@@ -62,7 +62,9 @@
                 [[SYOperationQueue sharedOperationQueue] addOperationWithBlock:^{
                     [self.author.playingSong save];
                 }];
-                [self startPlay];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self startPlay];
+                });
             }else{
                 if ([self.sydelegate respondsToSelector:@selector(SYAudioControllerFetchURLFailed:)]) {
                     [self.sydelegate SYAudioControllerFetchURLFailed:self];
