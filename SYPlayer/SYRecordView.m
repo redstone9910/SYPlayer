@@ -272,6 +272,7 @@ typedef enum recordStatus{
             self.statusImage.image = nil;
             self.timeTotal = 0;
             self.recordProgress.progress = 0;
+            self.animating = YES;
             
             [self stopRecord];
             
@@ -284,6 +285,7 @@ typedef enum recordStatus{
             self.statusImage.animationImages = nil;
             self.statusImage.image = [UIImage imageNamed:@"mic1"];
             self.recordProgress.progress = 0;
+            self.animating = NO;
             
             self.recordStatus.text = self.statusArray[self.status];
             [SYDropdownAlert showText:[leadingText stringByAppendingString:self.statusArray[self.status]]];
@@ -293,6 +295,7 @@ typedef enum recordStatus{
             self.statusImage.animationImages = self.micImages;
             self.statusImage.animationDuration = 4.0 / 6;
             [self.statusImage startAnimating];
+            self.animating = NO;
             
             self.recordStatus.text = @"";
             [SYDropdownAlert showText:[leadingText stringByAppendingString:self.statusArray[self.status]]];
@@ -302,6 +305,7 @@ typedef enum recordStatus{
             self.statusImage.animationImages = self.speakerImages;
             self.statusImage.animationDuration = 4.0 / 6;
             [self.statusImage startAnimating];
+            self.animating = NO;
             
             self.recordStatus.text = @"";
             [SYDropdownAlert showText:[leadingText stringByAppendingString:self.statusArray[self.status]]];

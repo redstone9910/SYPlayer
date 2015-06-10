@@ -75,7 +75,7 @@
             [self.sydelegate SYAudioControllerFetchingURL:self];
         }
         if (self.isPlaying) {
-            [self changePlayPauseStatus];
+            [self setPause:YES];
         }
         return;
     }
@@ -97,6 +97,17 @@
     [self play];
 }
 
+-(void)setPause:(BOOL)pause{
+    if (pause) {
+        if (self.playing) {
+            [self changePlayPauseStatus];
+        }
+    }else{
+        if (!self.playing) {
+            [self changePlayPauseStatus];
+        }
+    }
+}
 -(void)dealloc{
     SYLog(@"%@ dealloc",NSStringFromClass([self class]));
 }

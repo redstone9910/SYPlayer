@@ -181,11 +181,11 @@
         [self.powerBtn addConstraints:@[cnsW,cnsH]];
     }
     
-    self.playModeBtn.hidden = YES;
+//    self.playModeBtn.hidden = YES;
     [self addSubview:self.playModeBtn];
     {
-        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.micBtn attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
-        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.micBtn attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:0.1 constant:0];
         [self addConstraints:@[cnsX,cnsY]];
         NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
         NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
@@ -377,7 +377,7 @@
 }
 -(UIButton *)playModeBtn{
     if (_playModeBtn == nil) {
-        _playModeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _playModeBtn = [UIButton buttonWithType:UIButtonTypeContactAdd];
         [_playModeBtn addTarget:self action:@selector(playModeClick) forControlEvents:UIControlEventTouchUpInside];
         _playModeBtn.translatesAutoresizingMaskIntoConstraints = NO;
     }

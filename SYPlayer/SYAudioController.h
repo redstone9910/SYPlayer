@@ -30,6 +30,8 @@
 @interface SYAudioController : FSAudioController
 /** 开始播放 */
 -(void)startPlay;
+/** 播放暂停控制 */
+-(void)setPause:(BOOL)pause;
 /** 播放/暂停 */
 @property (nonatomic,assign,getter=isPlaying) BOOL playing;
 /** 停止 */
@@ -38,9 +40,6 @@
 @property (nonatomic,strong) SYAuthor * author;
 /** 单例 */
 +(instancetype)sharedAudioController;
-
-/** 播放暂停控制 */
--(void)changePlayPauseStatus;
 
 /** 代理 */
 @property (nonatomic,weak) id<SYAudioControllerDelegate> sydelegate;

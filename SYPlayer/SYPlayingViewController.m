@@ -276,7 +276,12 @@ typedef void (^SYDownloadCompletion)();
     pos.position = newTime / self.playerConsole.timeTotalInSecond;
     
     self.audioController.volume = 0;
+    BOOL playing = self.audioController.playing;
+    [self.audioController setPause:NO];
     [self.audioController.activeStream seekToPosition:pos];
+    if (!playing) {
+        [self.audioController setPause:YES];
+    }
     self.audioController.volume = 1;
 //    NSLog(@"seekToNewTime:%.1f",newTime);
 }
@@ -456,7 +461,7 @@ typedef void (^SYDownloadCompletion)();
 }
 /** 播放/暂停状态改变 */
 -(void)playerConsolePlayingStatusChanged:(SYPlayerConsole *)console{
-    [self.audioController changePlayPauseStatus];
+    [self.audioController setPause:!console.playing];
 }
 /** 展示隐藏列表 */
 -(void)playerConsoleListClick:(SYPlayerConsole *)console{
@@ -466,15 +471,12 @@ typedef void (^SYDownloadCompletion)();
 /** 录音模式改变 */
 -(void)playerConsoleRecordingStatusChanged:(SYPlayerConsole *)console
 {
-    if (!self.audioController.playing) {
-        [self.audioController changePlayPauseStatus];
-    }
+    [self.audioController setPause:NO];
     if (console.recording) {
-        [self popOutRecorder:YES];
-        self.recordView.animating = NO;
         [SYDropdownAlert showText:@"跟读模式 请稍候..."];
     }else{
         [self popOutRecorder:NO];
+        self.recordView.animating = YES;
         [UIView animateWithDuration:0.5 animations:^{
             [self.view layoutIfNeeded];
         } completion:^(BOOL finished) {
@@ -501,35 +503,48 @@ typedef void (^SYDownloadCompletion)();
         if (lrc.playingLine.startTime == 0) {//正在0行,跳过
             [self.recordView stop];
         }else if (lrc.prevLine.startTime == 0) {//正在1行,装载1行时长并播放原音
-            [self.recordView loadSentence:lrc.playingLine.text songName:@"" duration:lrc.playingLine.endTime - lrc.playingLine.startTime];
-            [self.recordView startPlayCompletion:^{}];
+            [self popOutRecorder:NO];
+            [UIView animateWithDuration:0.5 animations:^{
+                [self.view layoutIfNeeded];
+            } completion:^(BOOL finished) {
+                [self.recordView loadSentence:lrc.playingLine.text songName:@"" duration:lrc.playingLine.endTime - lrc.playingLine.startTime];
+                [self.recordView startPlayCompletion:^{}];
+                [self.audioController setPause:NO];
+            }];
         }else if (lrc.playingLine.startTime >= 3600 - 1){//正在末+1行,跳过
             [self.recordView stop];
-        }else{//上一行结束,开始录音,录音结束,下一行开始
+        }else if (!(lrc.prevLine.startTime >= lrc.playingLine.startTime)){//上一行结束,开始录音,录音结束,下一行开始
             __weak typeof(self) weakSelf = self;
             [self popOutRecorder:YES];
-            [self.recordView startRecordCompletion:^(NSString *recordPath) {
-                [lrc nextSentence];
-                [weakSelf popOutRecorder:NO];
-                [UIView animateWithDuration:0.5 animations:^{
-                    [weakSelf.view layoutIfNeeded];
-                } completion:^(BOOL finished) {
-                    [weakSelf.recordView loadSentence:lrc.playingLine.text songName:@"" duration:lrc.playingLine.endTime - lrc.playingLine.startTime];
-                    [weakSelf.recordView startPlayCompletion:^{}];
-                    if (!self.audioController.playing) {
-                        [self playerConsolePlayingStatusChanged:self.playerConsole];
+            self.recordView.animating = YES;
+            [UIView animateWithDuration:0.5 animations:^{
+                [self.view layoutIfNeeded];
+            } completion:^(BOOL finished) {
+                [self.recordView startRecordCompletion:^(NSString *recordPath) {
+                    SYLrcLine *line;
+                    if (weakSelf.playerConsole.playMode == playModeStateSingleSentenceRepeat) {
+                        line = lrc.prevLine;
+                        [weakSelf seekToNewTime:line.startTime];
+                    }else{
+                        [lrc nextSentence];
+                        line = lrc.playingLine;
                     }
+                    
+                    [weakSelf popOutRecorder:NO];
+                    [UIView animateWithDuration:0.5 animations:^{
+                        [weakSelf.view layoutIfNeeded];
+                    } completion:^(BOOL finished) {
+                        [weakSelf.recordView loadSentence:line.text songName:@"" duration:lrc.playingLine.endTime - lrc.playingLine.startTime];
+                        [weakSelf.recordView startPlayCompletion:^{}];
+                        [self.audioController setPause:NO];
+                    }];
                 }];
             }];
-            if (self.audioController.playing) {
-                [self playerConsolePlayingStatusChanged:self.playerConsole];
-            }
+            [self.audioController setPause:YES];
             return NO;
         }
         
-        if (!self.audioController.playing) {
-            [self playerConsolePlayingStatusChanged:self.playerConsole];
-        }
+        [self.audioController setPause:NO];
         return YES;
     }
     return YES;

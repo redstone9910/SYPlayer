@@ -217,12 +217,12 @@
         }
     }
     
-    SYLrcLine *startLine = [SYLrcLine lrcLineWithLine:@"[00:00.00]First"];
+    SYLrcLine *startLine = [SYLrcLine lrcLineWithLine:@"[00:00.00] "];
     [src insertObject:startLine atIndex:0];
     
     SYLrcLine *line = src.lastObject;
     int time = line.startTime + 5;
-    SYLrcLine *endLine = [SYLrcLine lrcLineWithLine:[NSString stringWithFormat:@"[%02d:%02d.00]Last",time / 60,time % 60]];
+    SYLrcLine *endLine = [SYLrcLine lrcLineWithLine:[NSString stringWithFormat:@"[%02d:%02d.00] ",time / 60,time % 60]];
     endLine.endTime = 3600 - 1;
     [src addObject:endLine];
     
