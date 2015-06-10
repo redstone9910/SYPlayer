@@ -16,8 +16,6 @@
 @property (nonatomic,strong) NSArray * lines;
 /** title */
 @property (nonatomic,strong) UILabel *titleLabel;
-/** 上一行歌词 */
-@property (nonatomic,strong) SYLrcLine *lastLine;
 @end
 
 @implementation SYLrcView
@@ -52,28 +50,30 @@
         vframe.size.height = height;
     }
     self.frame = vframe;
-    if ([self.delegate respondsToSelector:@selector(lrcLineDidLayoutSubviews:)]) {
-        [self.delegate lrcLineDidLayoutSubviews:self];
+    if ([self.delegate respondsToSelector:@selector(lrcViewLineDidLayoutSubviews:)]) {
+        [self.delegate lrcViewLineDidLayoutSubviews:self];
     }
 //    NSLog(@"%@ layoutSubviews:%@",[self class],NSStringFromCGRect(self.frame));
 }
--(void)checkUpdate:(SYLrcLine*)currentLine{
-    //0行:self.lastLine = nil,currentLine = nil
-    //中间行:self.lastLine != nil,currentLine != nil
-    //末行:self.lastLine != nil,currentLine = nil
+-(void)checkUpdate:(SYLrcLine*)playingLine{
     BOOL update = YES;
-    if (self.lastLine != currentLine) {
-        self.lastLine = currentLine;
-        _currentTime = self.lastLine.startTime;
-        _offset = self.lastLine.label.frame.origin.y;
-        if (currentLine == nil) {
-            _offset = 0;
-        }
-        if ([self.delegate respondsToSelector:@selector(lrcLineShouldUpdate:)]) {
-            update = [self.delegate lrcLineShouldUpdate:self];
-        }
-        if (update) {
-            [self nextSentence];
+    if (self.playingLine != playingLine) {
+        self.prevLine = self.playingLine;
+        self.playingLine = playingLine;
+
+        if (!((self.prevLine == [self.lines lastObject]) && (self.playingLine == [self.lines firstObject]))){
+            
+            _currentTime = self.playingLine.startTime;
+            _offset = self.playingLine.label.frame.origin.y;
+            if (playingLine == nil) {
+                _offset = 0;
+            }
+            if ([self.delegate respondsToSelector:@selector(lrcViewLineShouldUpdate:)]) {
+                update = [self.delegate lrcViewLineShouldUpdate:self];
+            }
+            if (update) {
+                [self nextSentence];
+            }
         }
     }
 }
@@ -81,8 +81,8 @@
 -(void)nextSentence{
     [self.lines makeObjectsPerformSelector:@selector(updateState)];
     
-    if ([self.delegate respondsToSelector:@selector(lrcLineDidUpdate:)]) {
-        [self.delegate lrcLineDidUpdate:self];
+    if ([self.delegate respondsToSelector:@selector(lrcViewLineDidUpdate:)]) {
+        [self.delegate lrcViewLineDidUpdate:self];
     }
 }
 #pragma mark -  property
@@ -126,8 +126,8 @@
         if (index == 0) {
             lastLable = self.titleLabel;
         }else{
-            SYLrcLine *lastLine = self.lines[index - 1];
-            lastLable = lastLine.label;
+            SYLrcLine *playingLine = self.lines[index - 1];
+            lastLable = playingLine.label;
         }
         line.label.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:line.label];
@@ -156,7 +156,7 @@
 -(void)setCurrentTime:(float)currentTime{
     _currentTime = currentTime;
     
-    SYLrcLine *currentLine;
+    SYLrcLine *playingLine;
     for (int index = 0; index < self.lines.count; index ++) {
         SYLrcLine *line = self.lines[index];
         if (line.endTime <= currentTime) {
@@ -165,16 +165,16 @@
             line.state = lineStateFuture;
         }else if ((line.startTime <= currentTime) && (line.endTime > currentTime)) {
             line.state = lineStateCurrent;
-            currentLine = line;
+            playingLine = line;
         }
     }
     
-    [self checkUpdate:currentLine];
+    [self checkUpdate:playingLine];
 }
 -(void)setOffset:(float)offset{
     _offset = offset;
     
-    SYLrcLine *currentLine;
+    SYLrcLine *playingLine;
     for (int index = 0; index < self.lines.count; index ++) {
         SYLrcLine *line = self.lines[index];
         float lineY = line.label.frame.origin.y;
@@ -189,10 +189,10 @@
             line.state = lineStatePast;
         }else if ((lineY <= offset) && (nextLineY > offset)) {
             line.state = lineStateCurrent;
-            currentLine = line;
+            playingLine = line;
         }
     }
-    [self checkUpdate:currentLine];
+    [self checkUpdate:playingLine];
 }
 
 -(void)setCustomFrame:(CGRect)customFrame{
@@ -217,12 +217,12 @@
         }
     }
     
-    SYLrcLine *startLine = [SYLrcLine lrcLineWithLine:@"[00:00.00]    "];
+    SYLrcLine *startLine = [SYLrcLine lrcLineWithLine:@"[00:00.00]First"];
     [src insertObject:startLine atIndex:0];
     
     SYLrcLine *line = src.lastObject;
     int time = line.startTime + 5;
-    SYLrcLine *endLine = [SYLrcLine lrcLineWithLine:[NSString stringWithFormat:@"[%02d:%02d.00]    ",time / 60,time % 60]];
+    SYLrcLine *endLine = [SYLrcLine lrcLineWithLine:[NSString stringWithFormat:@"[%02d:%02d.00]Last",time / 60,time % 60]];
     endLine.endTime = 3600 - 1;
     [src addObject:endLine];
     

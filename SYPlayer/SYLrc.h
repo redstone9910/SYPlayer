@@ -9,12 +9,7 @@
 #import <UIKit/UIKit.h>
 @class SYLrc;
 @class SYSong;
-
-typedef enum lrcPlayMode
-{
-    lrcPlayModeWhole = 0,
-    lrcPlayModeSingleSentence = 1,
-} lrcPlayMode;
+@class SYLrcLine;
 
 @protocol SYLrcDelegate <NSObject>
 @optional
@@ -24,20 +19,20 @@ typedef enum lrcPlayMode
 -(BOOL)lrcLineShouldUpdate:(SYLrc *)lrc;
 /** 一句变色之后 */
 -(void)lrcLineDidUpdate:(SYLrc *)lrc;
-/** 单句模式暂停 */
--(void)lrc:(SYLrc *)lrc sentenceInterval:(float)inteval sentence:(NSString *)sentence time:(float)time;
 @end
 
 @interface SYLrc : UIView
 /** 当前播放进度(秒) */
 @property (nonatomic,assign) float timeProgressInSecond;
-/** 单曲/单句模式 */
-@property (nonatomic,assign) lrcPlayMode playMode;
 /** 背景图片Scroll */
 @property (weak, nonatomic) UIScrollView *backgroundScroll;
 @property (nonatomic,assign) BOOL clearMode;
 /** 数据源 */
 @property (nonatomic,strong) SYSong *song;
+/** 当前行 */
+@property (nonatomic,strong) SYLrcLine *playingLine;
+/** 上一行 */
+@property (nonatomic,strong) SYLrcLine *prevLine;
 
 /** 创建新LRC View */
 +(instancetype) lrc;

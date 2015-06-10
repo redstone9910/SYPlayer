@@ -17,7 +17,7 @@
 #define lrcOffset 0.3
 #define edgeInsets 10
 
-@interface SYLrc ()<UIScrollViewDelegate,SYLrcDelegate>
+@interface SYLrc ()<UIScrollViewDelegate,SYLrcViewDelegate>
 /** 用于显示歌词的Scroll */
 @property (strong, nonatomic) SYGradientView *lrcScroll;
 /** 歌词 */
@@ -81,6 +81,7 @@
 /** 跳转到下一句(单句模式需要手动调用) */
 -(void)nextSentence
 {
+    [self.lrcView nextSentence];
     [UIView animateWithDuration:0.3 animations:^{
         self.lrcScroll.contentOffset = CGPointMake(-edgeInsets, self.offset);
     }];
@@ -157,17 +158,17 @@
 }
 
 #pragma mark -  SYLrcDelegate
--(BOOL)lrcLineShouldUpdate:(SYLrcView *)lrcView{
+-(BOOL)lrcViewLineShouldUpdate:(SYLrcView *)lrcView{
+    BOOL update = YES;
     if (self.lrcDragging){
-//        NSLog(@"Dragging:%.1f s",self.lrcView.currentTime);
         _timeProgressInSecond = self.lrcView.currentTime;
         if ([self.delegate respondsToSelector:@selector(lrcProgressChanged:)]) {
             [self.delegate lrcProgressChanged:self];
         }
     }else{
-//        NSLog(@"notDragging:%.1f point",self.lrcScroll.contentOffset.y);
         self.offset = lrcView.offset;
-        BOOL update = YES;
+        self.prevLine = lrcView.prevLine;
+        self.playingLine = lrcView.playingLine;
         if ([self.delegate respondsToSelector:@selector(lrcLineShouldUpdate:)]) {
             update = [self.delegate lrcLineShouldUpdate:self];
         }
@@ -175,12 +176,12 @@
             [self nextSentence];
         }
     }
-    return YES;
+    return update;
 }
--(void)lrcLineDidUpdate:(SYLrcView *)lrcView{
+-(void)lrcViewLineDidUpdate:(SYLrcView *)lrcView{
     
 }
--(void)lrcLineDidLayoutSubviews:(SYLrcView *)lrcView{
+-(void)lrcViewLineDidLayoutSubviews:(SYLrcView *)lrcView{
     self.lrcScroll.contentSize = CGSizeMake(0, self.lrcView.bounds.size.height + self.lrcScroll.bounds.size.height);
 }
 @end

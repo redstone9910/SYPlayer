@@ -1,3 +1,53 @@
+2015-06-10 11:22:07.353 SYPlayer[2369:90296] (null) ,First;
+2015-06-10 11:22:07.719 SYPlayer[2369:90296] First ,Lesson 1;
+2015-06-10 11:22:09.820 SYPlayer[2369:90296] Lesson 1 ,Excuse me!;
+2015-06-10 11:22:12.719 SYPlayer[2369:90296] Excuse me! ,Listen to the tape then answer this question.;
+2015-06-10 11:22:17.921 SYPlayer[2369:90296] Listen to the tape then answer this question. ,Whose handbag is it?;
+2015-06-10 11:22:22.221 SYPlayer[2369:90296] Whose handbag is it? ,Excuse me!;
+2015-06-10 11:22:23.821 SYPlayer[2369:90296] Excuse me! ,Yes?;
+2015-06-10 11:22:25.110 SYPlayer[2369:90296] Yes? ,Is this your handbag?;
+2015-06-10 11:22:25.184 SYPlayer[2369:90296] Is this your handbag? ,Pardon?;
+2015-06-10 11:22:25.430 SYPlayer[2369:90296] Pardon? ,Is this your handbag?;
+2015-06-10 11:22:29.116 SYPlayer[2369:90296] Is this your handbag? ,Yes it is.;
+2015-06-10 11:22:31.917 SYPlayer[2369:90296] Yes it is. ,Thank you very much.;
+2015-06-10 11:22:36.417 SYPlayer[2369:90296] Thank you very much. ,Last;
+2015-06-10 11:22:39.316 SYPlayer[2369:90296] Last ,First;
+
+2015-06-10 11:22:39.627 SYPlayer[2369:90296] First ,First;
+2015-06-10 11:22:40.228 SYPlayer[2369:90296] First ,Lesson 3;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 2015-05-27 09:13:09.948 SYPlayer[1463:318481] 09:13:09.948 ERROR:     [0x196e98310] AVAudioSession.mm:646: -[AVAudioSession setActive:withOptions:error:]: Deactivating an audio session that has running I/O. All I/O should be stopped or paused prior to deactivating the audio session.
 
 if (metaData[@"StreamUrl"] && [metaData[@"StreamUrl"] length] > 0) {

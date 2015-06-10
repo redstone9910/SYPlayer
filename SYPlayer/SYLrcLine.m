@@ -43,9 +43,8 @@
     return self;
 }
 
-/** 接收timeUpdate通知 */
--(void)timeUpdate:(NSNotification *)notification{
-    
+-(NSString *)description{
+    return [NSString stringWithFormat:@"text:%@,startTime:%.1f,endTime:%.1f",self.text,self.startTime,self.endTime];
 }
 /** 格式示例:[00:26.50]Tim is an engineer. */
 -(void)setLine:(NSString *)line{
@@ -61,6 +60,9 @@
         NSArray *timeObj2 = [timeStr1 componentsSeparatedByString:@"["];
         NSString *timeStr2 = timeObj2[1];
         float time = [SYLrcTools timeWithString:timeStr2] + timeOffset;
+        if (time < 0) {
+            time = 0;
+        }
         
 //        int minute = (int)time / 60;
 //        float second = time - minute * 60;

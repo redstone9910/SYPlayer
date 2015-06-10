@@ -8,12 +8,13 @@
 
 #import <UIKit/UIKit.h>
 @class SYLrcView;
+@class SYLrcLine;
 
 @protocol SYLrcViewDelegate <NSObject>
 @optional
--(BOOL)lrcLineShouldUpdate:(SYLrcView *)lrcView;
--(void)lrcLineDidUpdate:(SYLrcView *)lrcView;
--(void)lrcLineDidLayoutSubviews:(SYLrcView *)lrcView;
+-(BOOL)lrcViewLineShouldUpdate:(SYLrcView *)lrcView;
+-(void)lrcViewLineDidUpdate:(SYLrcView *)lrcView;
+-(void)lrcViewLineDidLayoutSubviews:(SYLrcView *)lrcView;
 @end
 
 @interface SYLrcView : UIView
@@ -29,6 +30,10 @@
 @property (nonatomic,assign) float currentTime;
 /** LRC源文件(全路径) */
 @property (nonatomic,copy) NSString *lrcFile;
+/** 上一行 */
+@property (nonatomic,strong) SYLrcLine *prevLine;
+/** 正在播放行 */
+@property (nonatomic,strong) SYLrcLine *playingLine;
 /** 代理 */
 @property (nonatomic,weak) id<SYLrcViewDelegate> delegate;
 @end

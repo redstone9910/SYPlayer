@@ -243,6 +243,7 @@ typedef enum recordStatus{
     self.updateTimer = nil;
     
     [self.audioController stop];
+    [self stopRecord];
 }
 #pragma mark - Property
 -(NSArray *)statusArray
@@ -271,6 +272,8 @@ typedef enum recordStatus{
             self.statusImage.image = nil;
             self.timeTotal = 0;
             self.recordProgress.progress = 0;
+            
+            [self stopRecord];
             
             self.recordStatus.text = self.statusArray[self.status];
             [SYDropdownAlert dismissAllAlert];

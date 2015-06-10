@@ -30,6 +30,7 @@
 #import "SYDropdownAlert.h"
 #import "FXBlurView.h"
 #import "SYOperationQueue.h"
+#import "SYLrcLine.h"
 
 #import "MBProgressHUD.h"
 #import "FSAudioController.h"
@@ -461,14 +462,7 @@ typedef void (^SYDownloadCompletion)();
 -(void)playerConsoleListClick:(SYPlayerConsole *)console{
     self.titleListBtn.Opened = !self.titleListBtn.Opened;
 }
-/** 播放模式改变 */
--(void)playerConsolePlayModeStateChanged:(SYPlayerConsole *)console withModeName:(NSString *)name{
-    if (console.playMode == playModeStateSingleSentenceRepeat) {
-        self.lrc.playMode = lrcPlayModeSingleSentence;
-    }else{
-        self.lrc.playMode = lrcPlayModeWhole;
-    }
-}
+
 /** 录音模式改变 */
 -(void)playerConsoleRecordingStatusChanged:(SYPlayerConsole *)console
 {
@@ -476,12 +470,10 @@ typedef void (^SYDownloadCompletion)();
         [self.audioController changePlayPauseStatus];
     }
     if (console.recording) {
-        self.lrc.playMode = lrcPlayModeSingleSentence;
         [self popOutRecorder:YES];
         self.recordView.animating = NO;
         [SYDropdownAlert showText:@"跟读模式 请稍候..."];
     }else{
-        self.lrc.playMode = lrcPlayModeWhole;
         [self popOutRecorder:NO];
         [UIView animateWithDuration:0.5 animations:^{
             [self.view layoutIfNeeded];
@@ -503,57 +495,50 @@ typedef void (^SYDownloadCompletion)();
     }
     else [self seekToNewTime:lrc.timeProgressInSecond];
 }
+/** 上一句播完,准备显示下一句 */
 -(BOOL)lrcLineShouldUpdate:(SYLrc *)lrc{
+    if (self.playerConsole.recording){
+        if (lrc.playingLine.startTime == 0) {//正在0行,跳过
+            [self.recordView stop];
+        }else if (lrc.prevLine.startTime == 0) {//正在1行,装载1行时长并播放原音
+            [self.recordView loadSentence:lrc.playingLine.text songName:@"" duration:lrc.playingLine.endTime - lrc.playingLine.startTime];
+            [self.recordView startPlayCompletion:^{}];
+        }else if (lrc.playingLine.startTime >= 3600 - 1){//正在末+1行,跳过
+            [self.recordView stop];
+        }else{//上一行结束,开始录音,录音结束,下一行开始
+            __weak typeof(self) weakSelf = self;
+            [self popOutRecorder:YES];
+            [self.recordView startRecordCompletion:^(NSString *recordPath) {
+                [lrc nextSentence];
+                [weakSelf popOutRecorder:NO];
+                [UIView animateWithDuration:0.5 animations:^{
+                    [weakSelf.view layoutIfNeeded];
+                } completion:^(BOOL finished) {
+                    [weakSelf.recordView loadSentence:lrc.playingLine.text songName:@"" duration:lrc.playingLine.endTime - lrc.playingLine.startTime];
+                    [weakSelf.recordView startPlayCompletion:^{}];
+                    if (!self.audioController.playing) {
+                        [self playerConsolePlayingStatusChanged:self.playerConsole];
+                    }
+                }];
+            }];
+            if (self.audioController.playing) {
+                [self playerConsolePlayingStatusChanged:self.playerConsole];
+            }
+            return NO;
+        }
+        
+        if (!self.audioController.playing) {
+            [self playerConsolePlayingStatusChanged:self.playerConsole];
+        }
+        return YES;
+    }
     return YES;
 }
-/** 一句播完 */
--(void)lrc:(SYLrc *)lrc sentenceInterval:(float)inteval sentence:(NSString *)sentence time:(float)time
-{
-//    [SYDropdownAlert dismissAllAlert];
-    NSString *name = [self.author playingSong].name;
+/** 一句显示完毕 */
+-(void)lrcLineDidUpdate:(SYLrc *)lrc{
     
-    self.playerConsole.playing = NO;
-    [self playerConsolePlayingStatusChanged:self.playerConsole];
-    
-    __weak typeof(self) weakSelf = self;
-    
-    [self popOutRecorder:YES];
-    [self.recordView startRecordCompletion:^(NSString *recordPath) {
-        weakSelf.playerConsole.playing = YES;
-        [weakSelf playerConsolePlayingStatusChanged:self.playerConsole];
-        [weakSelf.recordView loadSentence:sentence songName:(NSString *)name duration:inteval];
-#warning 此处重新处理
-//        [lrc nextSentence:time];
-        
-        [weakSelf popOutRecorder:NO];
-        [UIView animateWithDuration:0.5 animations:^{
-            [weakSelf.view layoutIfNeeded];
-        } completion:^(BOOL finished) {
-            weakSelf.recordView.animating = NO;
-            [weakSelf.recordView startPlayCompletion:^{
-                if (inteval == 0) {
-                    weakSelf.playerConsole.playing = NO;
-                    [weakSelf playerConsolePlayingStatusChanged:weakSelf.playerConsole];
-                    
-                    [weakSelf.recordView startRecordCompletion:^(NSString *recordPath){
-                        [weakSelf.recordView stop];
-                        
-                        weakSelf.playerConsole.playing = YES;
-                        [weakSelf playerConsolePlayingStatusChanged:self.playerConsole];
-                        [weakSelf.view bringSubviewToFront:weakSelf.playerConsole];
-                    }];
-                }
-            }];
-        }];
-    }];
-    [UIView animateWithDuration:0.5 animations:^{
-        [self.view layoutIfNeeded];
-    } completion:^(BOOL finished) {
-        self.recordView.animating = NO;
-    }];
-    
-    [self.view bringSubviewToFront:self.recordView];
 }
+
 #pragma mark - SYTitleButtonDelegate
 /** 播放列表展开/关闭 */
 -(void)titleButtonBtnClicked:(SYTitleButton *)titleButton
