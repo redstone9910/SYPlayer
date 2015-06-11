@@ -184,8 +184,8 @@
 //    self.playModeBtn.hidden = YES;
     [self addSubview:self.playModeBtn];
     {
-        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
-        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:0.1 constant:0];
+        NSLayoutConstraint *cnsX = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.playBtn attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+        NSLayoutConstraint *cnsY = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.playBtn attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
         [self addConstraints:@[cnsX,cnsY]];
         NSLayoutConstraint *cnsW = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
         NSLayoutConstraint *cnsH = [NSLayoutConstraint constraintWithItem:self.playModeBtn attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:64];
@@ -200,6 +200,8 @@
         [self addConstraints:@[cnsT,cnsB,cnsL,cnsR]];
     }
     
+    self.playMode = playModeStateRepeat;
+    self.recording = NO;
 }
 
 #pragma mark - IBAction
@@ -377,7 +379,7 @@
 }
 -(UIButton *)playModeBtn{
     if (_playModeBtn == nil) {
-        _playModeBtn = [UIButton buttonWithType:UIButtonTypeContactAdd];
+        _playModeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_playModeBtn addTarget:self action:@selector(playModeClick) forControlEvents:UIControlEventTouchUpInside];
         _playModeBtn.translatesAutoresizingMaskIntoConstraints = NO;
     }
@@ -395,7 +397,7 @@
 -(NSArray *)modeImageArray
 {
     if (_modeImageArray == nil) {
-        _modeImageArray = @[@"mode_repeat",@"mode_single_repeat",@"mode_shuffle",@"mode_single_repeat"];
+        _modeImageArray = @[@"player_btn_shuffle_normal",@"player_btn_repeat_normal",@"mode_shuffle",@"mode_single_repeat"];
     }
     return _modeImageArray;
 }
@@ -506,7 +508,8 @@
 {
     _recording = recording;
     if (_recording) {
-        self.playBtn.enabled = NO;
+        self.playBtn.hidden = YES;
+        self.playModeBtn.hidden = NO;
         self.nextBtn.enabled = NO;
         self.prevBtn.enabled = NO;
         self.playSlider.enabled = NO;
@@ -523,7 +526,8 @@
         self.micImage.animationDuration = 4.0 / 6;
         [self.micImage startAnimating];
     }else{
-        self.playBtn.enabled = YES;
+        self.playBtn.hidden = NO;
+        self.playModeBtn.hidden = YES;
         self.nextBtn.enabled = YES;
         self.prevBtn.enabled = YES;
         self.playSlider.enabled = YES;
